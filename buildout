@@ -1,7 +1,43 @@
+UAT:
+  ApplicationName: thirdPartyAAMAZE_sys
+  IntegrationNode: 
+  IntegrationServer:  
+  Overrides:
+    additionalInstances: 3
 
-Checking Deploy Variable
+SIT: 
+  ApplicationName: thirdPartyAAMAZE_sys
+  IntegrationNode: 
+  IntegrationServer: 
+  Overrides:
+    additionalInstances: 3
 
-View raw log
+DEV: 
+  ApplicationName: thirdPartyAAMAZE_sys
+  IntegrationNode: PAYMENT_SYS
+  IntegrationServer: Payment_S_03
+  Deploy: false
+  Overrides:
+    additionalInstances: 4
+
+  Cache:
+    - "INSERT into EISDEV.cache_details (FIELD_NAME, FIELD_VALUE, REQUEST_ACTION, PROCESSING_ACTION, RESPONSE_ACTION, SOURCE_ID, BACKEND_TYPE, BACKEND_SUB_TYPE, TRAN_CODE, SERVICE_NAME,CREATION_TIME) VALUES('IT_JVP_THINK360_SA_DOWNLOAD_REPORT_CONTENT_CHECK_CCSID_TEST01','Y','CONTENT_CHECK','SOURCE ID CONFIGURATION','NULL','MULTIPLE','THINK360','SA_DOWNLOAD_REPORT','IT_JVP','thirdPartyAAMAZE_sys',TRUNC(SYSDATE))"
+    - "INSERT into EISDEV.cache_details (FIELD_NAME, FIELD_VALUE, REQUEST_ACTION, PROCESSING_ACTION, RESPONSE_ACTION, SOURCE_ID, BACKEND_TYPE, BACKEND_SUB_TYPE, TRAN_CODE, SERVICE_NAME,CREATION_TIME) VALUES('IT_JVP_THINK360_SA_DOWNLOAD_REPORT_CCSID_TEST02','ST|Y2','SOURCE_ID','SOURCE ID CONFIGURATION','NULL','MULTIPLE','THINK360','SA_DOWNLOAD_REPORT','IT_JVP','thirdPartyAAMAZE_sys',TRUNC(SYSDATE))"
+
+PRE-PROD:
+  ApplicationName: thirdPartyAAMAZE_sys
+  IntegrationNode:
+  IntegrationServer:
+  Overrides:
+    additionalInstances: 3
+
+main:
+  ApplicationName: thirdPartyAAMAZE_sys
+  IntegrationNode:
+  IntegrationServer:
+  Overrides:
+    additionalInstances: 3
+
 
 Starting: Checking Deploy Variable
 ==============================================================================
@@ -13,6 +49,50 @@ Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/c
 ==============================================================================
 Generating script.
 ========================== Starting Command Output ===========================
-/usr/bin/bash --noprofile --norc /home/azagent/_work/_temp/5ec0cb1f-4f15-4ef8-8a6a-c84ea2b82430.sh
-DeployFlag env = ''
+/usr/bin/bash --noprofile --norc /home/azagent/_work/_temp/8bdf2b1c-8d06-46f0-b1ca-e535f85b64c3.sh
+DeployFlag env = true
 Finishing: Checking Deploy Variable
+
+
+Starting: mqsipackagebar
+==============================================================================
+Task         : Command line
+Description  : Run a command line script using Bash on Linux and macOS and cmd.exe on Windows
+Version      : 2.231.0
+Author       : Microsoft Corporation
+Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/command-line
+==============================================================================
+Generating script.
+========================== Starting Command Output ===========================
+/usr/bin/bash --noprofile --norc /home/azagent/_work/_temp/6545e06b-a115-4900-a49a-80712939d187.sh
+DeployFlag env = 'true'
+BIP8409I: Compiling Java project '/home/azagent/_work/37/s/thirdPartyAAMAZE_sys/SBI Life' 
+BIP1859I: Successfully added file 'SBI Life/SBI Life.jar' to the BAR file.
+BIP1859I: Successfully added file 'gen/thirdPartyAAMAZE_sys.msgflow' to the BAR file.
+BIP1859I: Successfully added file 'restapi.descriptor' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartyAAMAZE_sys.subflow' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartyAAMAZE_sysInputCatchHandler.subflow' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartyAAMAZE_sysInputFailureHandler.subflow' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartyAAMAZE_sysInputTimeoutHandler.subflow' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartyAAMAZE_sys_Compute.esql' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartyAAMAZE_sys_Compute1.esql' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartyAAMAZE_sys_Compute2.esql' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartyAAMAZE_sys_Compute3.esql' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartyAAMAZE_sys_Filter.esql' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartySBILife_sys.json' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartySBILife_sys_Compute.esql' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartySBILife_sys_Compute1.esql' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartySBILife_sys_Compute2.esql' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartySBILife_sys_Compute3.esql' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartySBILife_sys_Filter.esql' to the BAR file.
+BIP1849W: The application 'thirdPartyAAMAZE_sys' references project 'EIS_API_LOGGER' which does not exist.
+BIP1853I: Application file 'thirdPartyAAMAZE_sys.appzip' successfully added to the BAR file.
+BIP1138I: Applying overrides using runtime ibmint apply overrides...
+BIP1140I: Overriding property thirdPartyAAMAZE_sys#HTTP Request.URLSpecifier with 'http://10.176.31.240:8443/login' in 'thirdPartyAAMAZE_sys.appzip/META-INF/broker.xml' ...
+BIP1140I: Overriding property gen.thirdPartyAAMAZE_sys#additionalInstances with '1' in 'thirdPartyAAMAZE_sys.appzip/META-INF/broker.xml' ...
+BIP1143I: Saving Bar file /home/azagent/_work/37/s/_build/thirdPartyAAMAZE_sys.bar...
+BIP8071I: Successful command completion. 
+BIP1138I: Applying overrides using runtime mqsiapplybaroverrides...
+BIP1140I: Overriding property gen.thirdPartyAAMAZE_sys#additionalInstances with '4' in 'thirdPartyAAMAZE_sys.appzip/META-INF/broker.xml' ...
+BIP1143I: Saving Bar file /home/azagent/_work/37/s/_build/thirdPartyAAMAZE_sys.bar...
+
