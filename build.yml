@@ -19,6 +19,9 @@ jobs:
             echo "##vso[task.setvariable variable=DeployFlag]false"
           else
             echo "##vso[task.setvariable variable=DeployFlag]true" 
+          fi
+
+          echo "DeployFlag env = '$DEPLOYFLAG'"
 
     - task: CmdLine@2
       displayName: mqsipackagebar
