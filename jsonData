@@ -1,0 +1,62 @@
+{
+  "hasChildren": true,
+  "name": "ACCOUNT_EXP",
+  "type": "integrationNode",
+  "uri": "/apiv2",
+  "properties": {
+    "defaultQueueManagerName": "QM_ACCOUNT_EXP",
+    "httpConnectorPort": 4001,
+    "httpsConnectorPort": 7083,
+    "restAdminListenerPort": 4418,
+    "restAdminListenerIPCSocket": "/var/mqsi/ACCOUNT_EXP.uds"
+  },
+  "descriptiveProperties": {
+    "productName": "IBM App Connect Enterprise",
+    "version": "13.0.3.0",
+    "buildLevel": "ib000-L250327.4763 (S000-L250327.14116)",
+    "platformName": "Linux",
+    "platformArchitecture": "x86_64",
+    "platformVersion": "5.14.0-570.60.1.el9_6.x86_64"
+  },
+  "active": {
+    "processId": "3327759"
+  },
+  "trace": {
+    "agent": {
+      "name": "agentTrace",
+      "type": "trace",
+      "children": {
+        "serviceTrace": {
+          "name": "serviceTrace",
+          "type": "serviceTrace",
+          "properties": {
+            "traceLevel": "none",
+            "traceMode": "safe",
+            "traceSizeKb": 1048576
+          },
+          "active": {
+            "traceLevel": "none",
+            "traceMode": "safe",
+            "traceSizeKb": 1048576
+          }
+        }
+      }
+    },
+    "name": "trace",
+    "type": "trace"
+  },
+  "children": {
+    "servers": {
+      "hasChildren": true,
+      "name": "integration-servers",
+      "type": "integrationServers",
+      "uri": "/apiv2/servers"
+    },
+    "logs": {
+      "hasChildren": false,
+      "name": "logs",
+      "type": "logs",
+      "uri": "/apiv2/logs"
+    }
+  }
+}
