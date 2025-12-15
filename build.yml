@@ -1,0 +1,57 @@
+
+jobs:
+  - job: Build_Job
+    displayName: Agent job 1
+    pool:
+      name: TFS-RH-1
+    steps:
+    - checkout: self
+
+    - task: CmdLine@2
+      displayName: Checking Deploy Variable
+      inputs: 
+        script: |
+          set -e
+          config_path=$(find . -name "config.yml")
+          DEPLOY=$(yq e '.Deploy // "true"' "$config_path")
+
+          if [ "$DEPLOY" = "false" ]; then
+            echo "##vso[task.setvariable variable=DeployFlag]false"
+          else
+            echo "##vso[task.setvariable variable=DeployFlag]true" 
+
+    - task: CmdLine@2
+      displayName: mqsipackagebar
+      condition: eq(variables['DeployFlag'], 'true')
+      env:
+        BRANCH: $(Build.SourceBranchName)
+      inputs:
+        script: |
+          set -e
+          . /opt/IBM/ace/server/bin/mqsiprofile
+          config_path=$(find . -name "config.yml")
+          override_path=$(find . -type f -iname "override.properties")
+          applicationName=$(yq ".$BRANCH.ApplicationName" "$config_path")
+          yq -i ".BRANCH = strenv(BRANCH)" "$config_path"
+          if [ -n "$override_path" ] && [ -f "$override_path" ];
+          then ibmint package --input-path $(build.sourcesDirectory)/ --output-bar-file $(build.sourcesDirectory)/_build/"$applicationName".bar --java-version 8 --overrides-file "$override_path";
+          else ibmint package --input-path $(build.sourcesDirectory)/ --output-bar-file $(build.sourcesDirectory)/_build/"$applicationName".bar --java-version 8 ;
+          fi
+          yq ".$BRANCH.Overrides | to_entries[] | \"\(.key) \(.value)\"" "$config_path" | while read key value;
+          do [ -z "$key" ] && continue;
+          mqsiapplybaroverride  -b $(build.sourcesDirectory)/_build/"$applicationName".bar -k "$applicationName" -m "gen.$applicationName#$key=$value";
+          done
+
+    - task: CopyFiles@2
+      displayName: 'Copy Files to: $(build.sourcesDirectory)/_build/'
+      condition: eq(variables['DeployFlag'], 'true')
+      inputs:
+        SourceFolder: ' $(build.sourcesDirectory)/Config/'
+        TargetFolder: $(build.sourcesDirectory)/_build/
+        OverWrite: true
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact: drop'
+      condition: eq(variables['DeployFlag'], 'true')
+      inputs:
+        PathtoPublish: $(build.sourcesDirectory)/_build/
