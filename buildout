@@ -1,0 +1,18 @@
+
+Checking Deploy Variable
+
+View raw log
+
+Starting: Checking Deploy Variable
+==============================================================================
+Task         : Command line
+Description  : Run a command line script using Bash on Linux and macOS and cmd.exe on Windows
+Version      : 2.231.0
+Author       : Microsoft Corporation
+Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/command-line
+==============================================================================
+Generating script.
+========================== Starting Command Output ===========================
+/usr/bin/bash --noprofile --norc /home/azagent/_work/_temp/5ec0cb1f-4f15-4ef8-8a6a-c84ea2b82430.sh
+DeployFlag env = ''
+Finishing: Checking Deploy Variable
