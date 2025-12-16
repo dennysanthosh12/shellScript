@@ -1,0 +1,11 @@
+[root@EISUATEXP09 ~]# dnf -v repoquery
+Loaded plugins: builddep, changelog, config-manager, copr, debug, debuginfo-install, download, generate_completion_cache, groups-manager, needs-restarting, notify-packagekit, playground, product-id, repoclosure, repodiff, repograph, repomanage, reposync, subscription-manager, system-upgrade, uploadprofile
+Updating Subscription Management repositories.
+Unable to read consumer identity
+
+This system is not registered with an entitlement server. You can use subscription-manager to register.
+
+DNF version: 4.14.0
+cachedir: /var/cache/dnf
+Error: No handle specified
+[root@EISUATEXP09 ~]#
