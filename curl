@@ -1,34 +1,27 @@
+- task: CmdLine@2
+            displayName: Update Cache in Server
+            condition: eq(variables['CacheFlag'], 'true')
+            inputs:
+              workingDirectory: $(Pipeline.Workspace)/drop/
+              script: |
+                set -e
+                config_path=$(find . -name "config.yml")
+                if [ -n "$config_path" ] && [ -f "$config_path" ];
+                then BRANCH=$(yq '.BRANCH' "$config_path") ;
+                else echo "config.yml file was not found !!"; exit 1;
+                fi
 
-curl -X GET http://10.177.44.58:8002/cache/v1/loadCache?FIELD_NAME=Y2AUT 
+                IntegrationNode=$(yq ".$BRANCH.IntegrationNode" "$config_path")
 
- curl -k -X POST http://10.177.44.58:8002/cache/v1/loadCache -d'[{"FIELD_NAME":"Y2AUTH","FIELD_VALUE":"5"},{"FIELD_NAME":"Y2AUTH2","FIELD_VALUE":"1"}]'
-
- 
- for broker in $(ls /opt/tomcat/broker/PRE-PROD/*.broker); do cat "$broker" | grep host | cut -d"\"" -f4; done
-
-if yq -e '.DEV.Cache' config.yml >/dev/null 2>&1; then
-  curl -k -X POST http://10.177.44.58:8002/cache/v1/loadCache \
-    -H "Content-Type: application/json" \
-    -d "$(yq -c '.DEV.Cache | map({FIELD_NAME, FIELD_VALUE})' config.yml)"
-fi
-
-
-#!/bin/bash
-set -e  # exit on any command failure
-
-# Load DEV cache (case-insensitive)
-payload=$(yq '. | to_entries | map(select(.key | test("dev"; "i"))) | .[0].value.Cache' config.yml | jq '[.[] | {FIELD_NAME, FIELD_VALUE}]')
-
-# Call the loadCache API
-response=$(curl -s -k -X POST \
-  http://10.177.44.58:8002/cache/v1/loadCache \
-  -H "Content-Type: application/json" \
-  -d "$payload")
-
-# Check response
-if [[ "$response" != *'"Response":"success"'* ]]; then
-  echo "Cache load failed: $response"
-  exit 1
-fi
-
-echo "Cache load successful"
+                for broker_file in /home/devops/broker/$BRANCH/$IntegrationNode*; do
+                host=$(cat "$broker_file" | grep host | cut -d"\"" -f4)
+                if yq -e ".$BRANCH.Cache' "$config_path" >/dev/null 2>&1; then
+                  response=$(curl -s -k -X POST http://"$host":8002/cache/v1/loadCache \
+                  -H "Content-Type: application/json" \
+                  -d "$(yq -o=json ".$BRANCH.Cache | map({"FIELD_NAME": .FIELD_NAME, "FIELD_VALUE": .FIELD_VALUE})" "$config_path")")
+                  if [[ "$response" != *'"Response":"success"'* ]]; then
+                    echo "Cache load failed: $response"
+                    exit 1
+                  fi
+                  echo "Cache load successful"
+                fi
