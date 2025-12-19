@@ -11,3 +11,24 @@ if yq -e '.DEV.Cache' config.yml >/dev/null 2>&1; then
     -H "Content-Type: application/json" \
     -d "$(yq -c '.DEV.Cache | map({FIELD_NAME, FIELD_VALUE})' config.yml)"
 fi
+
+
+#!/bin/bash
+set -e  # exit on any command failure
+
+# Load DEV cache (case-insensitive)
+payload=$(yq '. | to_entries | map(select(.key | test("dev"; "i"))) | .[0].value.Cache' config.yml | jq '[.[] | {FIELD_NAME, FIELD_VALUE}]')
+
+# Call the loadCache API
+response=$(curl -s -k -X POST \
+  http://10.177.44.58:8002/cache/v1/loadCache \
+  -H "Content-Type: application/json" \
+  -d "$payload")
+
+# Check response
+if [[ "$response" != *'"Response":"success"'* ]]; then
+  echo "Cache load failed: $response"
+  exit 1
+fi
+
+echo "Cache load successful"
