@@ -1,0 +1,13 @@
+2025-12-20 16:11:34.553 [info] [main] Log level: Info
+2025-12-20 16:11:34.553 [info] [main] Validating found git in: "C:\Program Files\Git\cmd\git.exe"
+2025-12-20 16:11:34.553 [info] [main] Validating found git in: "C:\Program Files (x86)\Git\cmd\git.exe"
+2025-12-20 16:11:34.553 [info] [main] Validating found git in: "C:\Program Files\Git\cmd\git.exe"
+2025-12-20 16:11:34.553 [info] [main] Validating found git in: "C:\Users\v1020401\AppData\Local\Programs\Git\cmd\git.exe"
+2025-12-20 16:11:36.785 [info] [main] Using git "2.50.1.windows.1" from "C:\Users\v1020401\AppData\Local\Programs\Git\cmd\git.exe"
+2025-12-20 16:11:36.785 [info] [Model][doInitialScan] Initial repository scan started
+2025-12-20 16:11:36.788 [info] [Model][doInitialScan] Initial repository scan completed - repositories (0), closed repositories (0), parent repositories (0), unsafe repositories (0)
+2025-12-20 16:11:44.767 [info] [GitProtocolHandler][handleUri] URI:(vscode://vscode.git/clone?url%3Dhttps%3A%2F%2Feistfsserver.sbi.co.in%2Ftfs%2FSBIPOC%2Fdevops_testing%2F_git%2Fmisc-thirdpartyaamaze_test_sapi)
+2025-12-20 16:11:44.776 [info] [GitProtocolHandler][clone] Executing git.clone for https://eistfsserver.sbi.co.in/tfs/SBIPOC/devops_testing/_git/misc-thirdpartyaamaze_test_sapi
+2025-12-20 16:12:45.462 [info] > git clone https://eistfsserver.sbi.co.in/tfs/SBIPOC/devops_testing/_git/misc-thirdpartyaamaze_test_sapi e:\GIT_REPOSITORY\misc-thirdpartyaamaze_test_sapi --progress [3867ms]
+2025-12-20 16:12:45.462 [info] Cloning into 'e:\GIT_REPOSITORY\misc-thirdpartyaamaze_test_sapi'...
+fatal: unable to access 'https://eistfsserver.sbi.co.in/tfs/SBIPOC/devops_testing/_git/misc-thirdpartyaamaze_test_sapi/': CONNECT tunnel failed, response 503
