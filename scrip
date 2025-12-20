@@ -1,13 +1,17 @@
-keytool -import -alias maven_central -keystore "C:\Path\To\Your\JDK\lib\security\cacerts" -file "C:\path\to\maven.cer"
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  3.965 s
+[INFO] Finished at: 2025-12-20T15:16:55+05:30
+[INFO] ------------------------------------------------------------------------
+[ERROR] Plugin org.apache.maven.plugins:maven-dependency-plugin:3.9.0 or one of its dependencies could not be resolved:
+[ERROR]         Could not transfer artifact org.apache.maven.plugins:maven-dependency-plugin:jar:3.9.0 from/to central (https://repo.maven.apache.org/maven2): status code: 403, reason phrase: Forbidden (403)
+[ERROR] -> [Help 1]
+[ERROR]
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR]
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/PluginResolutionException
 
-mvn dependency:go-offline -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dmaven.wagon.http.ssl.ignore.validity.dates=true
-
-<mirrors>
-  <mirror>
-    <id>central-http</id>
-    <name>Central over HTTP</name>
-    <url>http://repo.maven.apache.org/maven2</url>
-    <mirrorOf>central</mirrorOf>
-  </mirror>
-</mirrors>
-
+E:\GIT_REPOSITORY\APIADMIN\APIADMIN\APIADMIN\APIADMIN>
