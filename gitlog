@@ -1,10 +1,10 @@
-stages:
+pool:
+  name: TFS-RH-1
 
-# ============== Validation and Init ============
+stages:
+# ============== Validation and Initilization ============
 - stage: Validation_Stage
   displayName: Validation and Intialization
-  pool:
-    name: TFS-RH-1
   jobs:
     - job: Validation_Job
       displayName: Validation
@@ -21,7 +21,7 @@ stages:
             script: |
               set -e
 
-              config_path=$(find . -name "config.yml" | head -1)
+              config_path=$(Build.SourcesDirectory)/Config/config.yml
               if [ -z "$config_path" ] || [ ! -f "$config_path" ]; then
                 echo "ERROR: config.yml not found"
                 exit 1
@@ -40,18 +40,19 @@ stages:
                 fi
               done
 
-              DEPLOY=$(yq e ".$BRANCH.Deploy" "$config_path" | tr -d '[:space:]')
+              DEPLOY=$(yq e ".$BRANCH.Deploy // true" "$config_path" | tr -d '[:space:]')
               CACHE_PRESENT=$(yq e ".$BRANCH.Cache // [] | length > 0" "$config_path")
 
               if [ "$DEPLOY" != true ] && [ "$DEPLOY" != false ]; then
                 echo "Invalid Deploy flag in config.yml"
+                exit 1
               fi
 
               echo "##vso[task.setvariable variable=DeployFlag;isOutput=true]$DEPLOY"
               echo "##vso[task.setvariable variable=CacheFlag;isOutput=true]$CACHE_PRESENT"
 
         - task: PublishBuildArtifacts@1
-          condition: eq(variables['DeployFlag'], 'false')
+          condition: eq(variables['val_task.DeployFlag'], 'false')
           inputs:
             PathtoPublish: $(build.sourcesDirectory)/Config/
             ArtifactName: drop
@@ -63,14 +64,12 @@ stages:
   dependsOn: Validation_Stage
   condition: |
     and(
-      succeeded(),
+      succeeded('Validation_Stage'),
       eq(
         stageDependencies.Validation_Stage.Validation_Job.outputs['val_task.DeployFlag'],
        'true' 
       )
     )
-  pool:
-    name: TFS-RH-1
   jobs:
     - job: Build_Job
       displayName: Agent Build job 
@@ -87,7 +86,7 @@ stages:
               set -e
               . /opt/IBM/ace/server/bin/mqsiprofile
 
-              config_path=$(find . -name "config.yml")
+              config_path=$(Build.SourcesDirectory)/Config/config.yml
               applicationName=$(yq e ".$BRANCH.ApplicationName" "$config_path")
               override_path=$(find . -iname "override.properties")
 
@@ -124,12 +123,10 @@ stages:
 # ================= RELEASE STAGE =================
 - stage: Release
   displayName: Deploy Stage
-  pool:
-    name: TFS-RH-1
   dependsOn: Build
   condition: |
     and(
-      succeeded(),
+      succeeded('Build  '),
       eq(
         stageDependencies.Validation_Stage.Validation_Job.outputs['val_task.DeployFlag'],
        'true' 
@@ -172,70 +169,77 @@ stages:
 # ================= CACHE STAGE =================
 - stage: Cache
   displayName: CACHE
-  pool:
-    name: TFS-RH-1
-  dependsOn: Validation_Stage
+  dependsOn: 
+    - Validation_Stage
+    - Build
   condition: |
     and(
-      succeeded(),
+      succeeded('Validation_Stage'),
       eq(
         stageDependencies.Validation_Stage.Validation_Job.outputs['val_task.CacheFlag'],
-       'true' 
+        'true'
+      ),
+      or(
+        eq(
+          stageDependencies.Validation_Stage.Validation_Job.outputs['val_task.DeployFlag'],
+          'false'
+        ),
+        succeeded('Build')
       )
     )
-    jobs:
-      - job: Build_Job
-        displayName: Agent Build job 
-        env:
-              BRANCH: $(Build.SourceBranchName)
-        steps:
-          
-          - download: current
-            artifact: drop
+  jobs:
+    - job: Cache_Job
+      displayName: Agent Build job 
+      env:
+            BRANCH: $(Build.SourceBranchName)
+      steps:
+        
+        - download: current
+          artifact: drop
 
-          - task: CmdLine@2
-            displayName: Update cache in Database
-            inputs:
-              workingDirectory: $(Pipeline.Workspace)/drop/
-              script: |
-                source ~/.bashrc
-                set -e
-                if [ ! -f config.yml ];
-                then echo "config.yml file was not found !!"; exit 1;
-                fi
-                yq ".$BRANCH.Cache[].Query" config.yml | while  IFS= read -r SQL;
-                do echo "---------------------------------------------------------";
-                echo "Executing SQL Cache Query";
-                echo "$SQL";
-                echo "---------------------------------------------------------";
-                OUTPUT=$(echo "$SQL" | isql "$BRANCH" "$DB_USER" "$DB_PASS" 2>&1);
-                STATUS=$?;
-                if [[ $STATUS -eq 0 ]] && echo "$OUTPUT" | grep -qi "SQLRowCount";
-                then echo "SUCCESS: Query executed";
-                else echo "FAILED: Query did not execute"; exit 1;
-                fi;
-                echo " ";
-                done
+        - task: CmdLine@2
+          displayName: Update cache in Database
+          inputs:
+            workingDirectory: $(Pipeline.Workspace)/drop/
+            script: |
+              source ~/.bashrc
+              set -e
+              if [ ! -f config.yml ];
+              then echo "config.yml file was not found !!"; exit 1;
+              fi
+              yq ".$BRANCH.Cache[].Query" config.yml | while  IFS= read -r SQL;
+              do echo "---------------------------------------------------------";
+              echo "Executing SQL Cache Query";
+              echo "$SQL";
+              echo "---------------------------------------------------------";
+              OUTPUT=$(echo "$SQL" | isql "$BRANCH" "$DB_USER" "$DB_PASS" 2>&1);
+              STATUS=$?;
+              if [[ $STATUS -eq 0 ]] && echo "$OUTPUT" | grep -qi "SQLRowCount";
+              then echo "SUCCESS: Query executed";
+              else echo "FAILED: Query did not execute"; exit 1;
+              fi;
+              echo " ";
+              done
 
-          - task: CmdLine@2
-            displayName: Update Cache in Server
-            inputs:
-              workingDirectory: $(Pipeline.Workspace)/drop/
-              script: |
-                set -e
+        - task: CmdLine@2
+          displayName: Update Cache in Server
+          inputs:
+            workingDirectory: $(Pipeline.Workspace)/drop/
+            script: |
+              set -e
 
-                IntegrationNode=$(yq ".$BRANCH.IntegrationNode" config.yml)
-                for broker_file in /home/devops/broker/$BRANCH/$IntegrationNode*; do
-                  host=$(cat "$broker_file" | grep host | cut -d"\"" -f4)
-                  if yq -e ".$BRANCH.Cache" "$config_path" >/dev/null 2>&1; then
-                    response=$(curl -s -k -X POST http://"$host":8002/cache/v1/loadCache \
-                    -H "Content-Type: application/json" \
-                    -d "$(yq -o=json ".$BRANCH.Cache | map({\"FIELD_NAME\": .FIELD_NAME, \"FIELD_VALUE\": .FIELD_VALUE})" config.yml)")
-                    if [[ "$response" != *'"RESPONSE":"success"'* ]]; then
-                      echo "Cache load failed: $response"
-                      exit 1
-                    fi
-                    echo "Cache load successful on $host"
-                    echo "$(yq -o=json ".$BRANCH.Cache | map({\"FIELD_NAME\": .FIELD_NAME, \"FIELD_VALUE\": .FIELD_VALUE})" config.yml)"
+              IntegrationNode=$(yq ".$BRANCH.IntegrationNode" config.yml)
+              for broker_file in /home/devops/broker/$BRANCH/$IntegrationNode*; do
+                host=$(cat "$broker_file" | grep host | cut -d"\"" -f4)
+                if yq -e ".$BRANCH.Cache" config.yml >/dev/null 2>&1; then
+                  response=$(curl -s -k -X POST http://"$host":8002/cache/v1/loadCache \
+                  -H "Content-Type: application/json" \
+                  -d "$(yq -o=json ".$BRANCH.Cache | map({\"FIELD_NAME\": .FIELD_NAME, \"FIELD_VALUE\": .FIELD_VALUE})" config.yml)")
+                  if [[ "$response" != *'"RESPONSE":"success"'* ]]; then
+                    echo "Cache load failed: $response"
+                    exit 1
                   fi
-                done
+                  echo "Cache load successful on $host"
+                  echo "$(yq -o=json ".$BRANCH.Cache | map({\"FIELD_NAME\": .FIELD_NAME, \"FIELD_VALUE\": .FIELD_VALUE})" config.yml)"
+                fi
+              done
