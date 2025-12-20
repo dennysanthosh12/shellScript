@@ -1,13 +1,159 @@
-2025-12-20 16:11:34.553 [info] [main] Log level: Info
-2025-12-20 16:11:34.553 [info] [main] Validating found git in: "C:\Program Files\Git\cmd\git.exe"
-2025-12-20 16:11:34.553 [info] [main] Validating found git in: "C:\Program Files (x86)\Git\cmd\git.exe"
-2025-12-20 16:11:34.553 [info] [main] Validating found git in: "C:\Program Files\Git\cmd\git.exe"
-2025-12-20 16:11:34.553 [info] [main] Validating found git in: "C:\Users\v1020401\AppData\Local\Programs\Git\cmd\git.exe"
-2025-12-20 16:11:36.785 [info] [main] Using git "2.50.1.windows.1" from "C:\Users\v1020401\AppData\Local\Programs\Git\cmd\git.exe"
-2025-12-20 16:11:36.785 [info] [Model][doInitialScan] Initial repository scan started
-2025-12-20 16:11:36.788 [info] [Model][doInitialScan] Initial repository scan completed - repositories (0), closed repositories (0), parent repositories (0), unsafe repositories (0)
-2025-12-20 16:11:44.767 [info] [GitProtocolHandler][handleUri] URI:(vscode://vscode.git/clone?url%3Dhttps%3A%2F%2Feistfsserver.sbi.co.in%2Ftfs%2FSBIPOC%2Fdevops_testing%2F_git%2Fmisc-thirdpartyaamaze_test_sapi)
-2025-12-20 16:11:44.776 [info] [GitProtocolHandler][clone] Executing git.clone for https://eistfsserver.sbi.co.in/tfs/SBIPOC/devops_testing/_git/misc-thirdpartyaamaze_test_sapi
-2025-12-20 16:12:45.462 [info] > git clone https://eistfsserver.sbi.co.in/tfs/SBIPOC/devops_testing/_git/misc-thirdpartyaamaze_test_sapi e:\GIT_REPOSITORY\misc-thirdpartyaamaze_test_sapi --progress [3867ms]
-2025-12-20 16:12:45.462 [info] Cloning into 'e:\GIT_REPOSITORY\misc-thirdpartyaamaze_test_sapi'...
-fatal: unable to access 'https://eistfsserver.sbi.co.in/tfs/SBIPOC/devops_testing/_git/misc-thirdpartyaamaze_test_sapi/': CONNECT tunnel failed, response 503
+trigger:
+  branches:
+    include:
+      - DEV
+      - SIT
+      - UAT
+      - PRE-PROD
+      - main
+
+resources:
+  repositories:
+    - repository: shared
+      type: git
+      name: Azure-Pipelines
+      ref: refs/heads/main
+
+extends:
+  template: templates/pipeline-template.yml@shared
+
+
+
+
+stages:
+
+# ================= BUILD STAGE =================
+- stage: Build
+  displayName: Build Stage
+  jobs:
+    - job: Build_Job
+      displayName: Agent job 1
+      pool:
+        name: TFS-RH-1
+      steps:
+        - checkout: self
+
+        - task: CmdLine@2
+          displayName: Initialize Build Pipeline Variable
+          env:
+            BRANCH: $(Build.SourceBranchName)
+          inputs:
+            script: |
+              set -e
+              echo "Branch: $BRANCH"
+
+              config_path=$(find . -name "config.yml")
+              DEPLOY=$(yq e ".$BRANCH.Deploy" "$config_path" | tr -d '[:space:]')
+
+              yq -i ".BRANCH = \"$BRANCH\"" "$config_path"
+
+              if [ "$DEPLOY" = "false" ]; then
+                echo "##vso[task.setvariable variable=DeployFlag]false"
+              else
+                echo "##vso[task.setvariable variable=DeployFlag]true"
+              fi
+
+        - task: CmdLine@2
+          displayName: mqsipackagebar
+          condition: eq(variables['DeployFlag'], 'true')
+          env:
+            BRANCH: $(Build.SourceBranchName)
+            DeployFlag: $(DeployFlag)
+          inputs:
+            script: |
+              set -e
+              . /opt/IBM/ace/server/bin/mqsiprofile
+
+              config_path=$(find . -name "config.yml")
+              applicationName=$(yq e ".$BRANCH.ApplicationName" "$config_path")
+
+              override_path=$(find . -iname "override.properties")
+
+              if [ -f "$override_path" ]; then
+                ibmint package --input-path $(Build.SourcesDirectory) \
+                               --output-bar-file $(Build.SourcesDirectory)/_build/$applicationName.bar \
+                               --java-version 8 \
+                               --overrides-file "$override_path"
+              else
+                ibmint package --input-path $(Build.SourcesDirectory) \
+                               --output-bar-file $(Build.SourcesDirectory)/_build/$applicationName.bar \
+                               --java-version 8
+              fi
+
+        - task: PublishBuildArtifacts@1
+          inputs:
+            PathtoPublish: $(Build.SourcesDirectory)/_build
+            ArtifactName: drop
+
+
+# ================= RELEASE STAGE =================
+- stage: Release
+  displayName: Deploy Stage
+  dependsOn: Build
+  jobs:
+    - deployment: DeployApp
+      displayName: Deployment Job
+      environment: $(Build.SourceBranchName)
+      pool:
+        name: TFS-RH-1
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+
+              - download: current
+                artifact: drop
+
+              - task: CmdLine@2
+                displayName: Initialize Release Variables
+                inputs:
+                  workingDirectory: $(Pipeline.Workspace)/drop
+                  script: |
+                    set -e
+                    config_path=$(find . -name "config.yml")
+
+                    BRANCH=$(yq e '.BRANCH' "$config_path")
+                    DEPLOY=$(yq e ".$BRANCH.Deploy" "$config_path" | tr -d '[:space:]')
+
+                    if [ "$DEPLOY" = "false" ]; then
+                      echo "##vso[task.setvariable variable=DeployFlag]false"
+                    else
+                      echo "##vso[task.setvariable variable=DeployFlag]true"
+                    fi
+
+                    CACHE_PRESENT=$(yq e ".$BRANCH.Cache // [] | length > 0" "$config_path")
+
+                    if [ "$CACHE_PRESENT" = "true" ]; then
+                      echo "##vso[task.setvariable variable=CacheFlag]true"
+                    else
+                      echo "##vso[task.setvariable variable=CacheFlag]false"
+                    fi
+
+              - task: CmdLine@2
+                displayName: Deployment
+                condition: eq(variables['DeployFlag'], 'true')
+                inputs:
+                  workingDirectory: $(Pipeline.Workspace)/drop
+                  script: |
+                    set -e
+                    . /opt/IBM/ace/server/bin/mqsiprofile
+
+                    config_path=$(find . -name "config.yml")
+                    BRANCH=$(yq e '.BRANCH' "$config_path")
+
+                    IntegrationNode=$(yq e ".$BRANCH.IntegrationNode" "$config_path")
+                    ApplicationName=$(yq e ".$BRANCH.ApplicationName" "$config_path")
+                    IntegrationServer=$(yq e ".$BRANCH.IntegrationServer" "$config_path")
+
+                    bar_path=$(find . -name "$ApplicationName.bar")
+
+                    for broker_file in /home/devops/broker/$BRANCH/$IntegrationNode*; do
+                      ibmint deploy \
+                        --input-bar-file "$bar_path" \
+                        --integration-node-file "$broker_file" \
+                        --output-server "$IntegrationServer"
+                    done
+
+
+
+
