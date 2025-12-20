@@ -1,42 +1,13 @@
-#!/bin/bash
+keytool -import -alias maven_central -keystore "C:\Path\To\Your\JDK\lib\security\cacerts" -file "C:\path\to\maven.cer"
 
-BROKER_PATH="$1"
-echo "$BROKER_PATH"
-ip=$(cat "$BROKER_PATH" | grep host | cut -d"\"" -f4)
-node=$(mqsilist -n "$BROKER_PATH" | grep "integration node" | head -n 1 | cut -d"'" -f4)
-mqsilist -n "$BROKER_PATH" | grep "Integration server" | grep "running" | cut -d"'" -f 2 | while read -r server; do
-( mqsilist -n "$BROKER_PATH" -e "$server" -d2 | \
-awk -v awk_node="$node" -v awk_server="$server" -v server_ip="$ip"  '
-/REST API|Application|Service/ {
-    # Extract artifact name inside single quotes
-    if (match($0, /'\''([^'\'']+)'\''/, name)) {
-        api_name = name[1]
-    }
+mvn dependency:go-offline -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dmaven.wagon.http.ssl.ignore.validity.dates=true
 
-    # Extract state (running or stopped)
-    if (match($0, /(running|stopped)/, st)) {
-        state_name = st[1]
-    }
-}
+<mirrors>
+  <mirror>
+    <id>central-http</id>
+    <name>Central over HTTP</name>
+    <url>http://repo.maven.apache.org/maven2</url>
+    <mirrorOf>central</mirrorOf>
+  </mirror>
+</mirrors>
 
-/Deployed:/ {
-    # Extract deployed date inside single quotes
-    if (match($0, /Deployed: '\''([^'\'']+)'\''/, dep)) {
-        full_deploy_date = dep[1]
-        deploy_date = substr(full_deploy_date, 1, 10)
-
-    }
-
-    # Print space-separated output if name exists
-    if (api_name != "") {
-      print (server_ip ? server_ip : "null"), (awk_node ? awk_node : "null"), (awk_server ? awk_server : "null"), api_name, (state_name ? state_name : "null"), (deploy_date ? deploy_date : "null")
-      fflush()
-    }
-
-    # Reset for next artifact
-    api_name = state_name = deploy_date = ""
-}'
-  )&
-  done
-
-wait
