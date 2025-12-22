@@ -53,8 +53,19 @@ stages:
               done
 
               DEPLOY=$(yq e ".$BRANCH.Deploy // true" "$config_path" | tr -d '[:space:]')
-              CACHE_PRESENT=$(yq e ".$BRANCH.Cache // [] | length > 0" "$config_path")
+              CACHE_PRESENT=$(yq e ".$BRANCH.Cache // [] | length > 0" "$config_path" | tr -d '[:space:]')
               echo "CACHE: $CACHE_PRESENT DEPLOY: $DEPLOY"
+              if [ "$DEPLOY" = true ] || [ "$DEPLOY" = "true" ]; then
+                DEPLOY="true"
+              else
+                DEPLOY="false"
+              fi
+              if [ "$CACHE_PRESENT" = true ] || [ "$CACHE_PRESENT" = "true" ]; then
+                CACHE_PRESENT="true"
+              else
+                CACHE_PRESENT="false"
+              fi
+
               if [ "$DEPLOY" != true ] && [ "$DEPLOY" != false ]; then
                 echo "Invalid Deploy flag in config.yml"
                 exit 1
@@ -63,8 +74,15 @@ stages:
               echo "##vso[task.setvariable variable=DeployFlag;isOutput=true]$DEPLOY"
               echo "##vso[task.setvariable variable=CacheFlag;isOutput=true]$CACHE_PRESENT"
 
+        - task: CmdLine@2
+          displayName: DIsplay values
+          inputs:
+            script: |
+              echo "DeployFlag : $DeployFlag"
+              echo "CacheFlag : $CacheFlag"
+
         - task: PublishBuildArtifacts@1
-          condition: eq(variables['val_task.DeployFlag'], 'false')
+          condition: eq(variables['val_task.DeployFlag'], false)
           inputs:
             PathtoPublish: $(build.sourcesDirectory)/Config/
             ArtifactName: drop
@@ -81,7 +99,7 @@ stages:
       succeeded('Validation_Stage'),
       eq(
         stageDependencies.Validation_Stage.Validation_Job.outputs['val_task.DeployFlag'],
-       'true' 
+        'true'
       )
     )
   jobs:
@@ -142,10 +160,10 @@ stages:
   dependsOn: Build
   condition: |
     and(
-      succeeded('Build  '),
+      succeeded('Build'),
       eq(
         stageDependencies.Validation_Stage.Validation_Job.outputs['val_task.DeployFlag'],
-       'true' 
+        'true' 
       )
     )
   jobs:
@@ -195,7 +213,7 @@ stages:
       succeeded('Validation_Stage'),
       eq(
         stageDependencies.Validation_Stage.Validation_Job.outputs['val_task.CacheFlag'],
-        'true'
+         'true'
       ),
       or(
         eq(
@@ -207,7 +225,7 @@ stages:
     )
   jobs:
     - job: Cache_Job
-      displayName: Agent Build job 
+      displayName: CACHE UPDATE
       steps:
         
         - download: current
@@ -263,3 +281,46 @@ stages:
                   echo "$(yq -o=json ".$BRANCH.Cache | map({\"FIELD_NAME\": .FIELD_NAME, \"FIELD_VALUE\": .FIELD_VALUE})" config.yml)"
                 fi
               done
+
+
+
+
+
+Validating repository
+
+View raw log
+
+Starting: Validating repository
+==============================================================================
+Task         : Command line
+Description  : Run a command line script using Bash on Linux and macOS and cmd.exe on Windows
+Version      : 2.231.0
+Author       : Microsoft Corporation
+Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/command-line
+==============================================================================
+Generating script.
+========================== Starting Command Output ===========================
+/usr/bin/bash --noprofile --norc /home/azagent/_work/_temp/bbbe03f0-e5b1-489d-b68f-6a83a0296a09.sh
+CACHE: true DEPLOY: true
+Finishing: Validating repository
+
+
+
+DIsplay values
+
+View raw log
+
+Starting: DIsplay values
+==============================================================================
+Task         : Command line
+Description  : Run a command line script using Bash on Linux and macOS and cmd.exe on Windows
+Version      : 2.231.0
+Author       : Microsoft Corporation
+Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/command-line
+==============================================================================
+Generating script.
+========================== Starting Command Output ===========================
+/usr/bin/bash --noprofile --norc /home/azagent/_work/_temp/6a499fea-214b-4d97-8ba1-3aa14c778a0a.sh
+DeployFlag : 
+CacheFlag : 
+Finishing: DIsplay values
