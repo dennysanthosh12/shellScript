@@ -1,20 +1,5 @@
 
 
-/pipeline-template.yml@shared (Line: 2, Col: 3): A mapping was not expected
-/pipeline-template.yml@shared (Line: 5, Col: 1): Unexpected value 'pool'
-/pipeline-template.yml@shared (Line: 16, Col: 7): Unexpected value 'env'
-/pipeline-template.yml@shared (Line: 82, Col: 7): Unexpected value 'env'
-/pipeline-template.yml@shared (Line: 146, Col: 7): Unexpected value 'env'
-/pipeline-template.yml@shared (Line: 201, Col: 7): Unexpected value 'env'
-
-
-resources:
-  repositories:
-    - repository: shared
-      type: git
-      name: test-template
-      ref: refs/heads/main
-
 trigger:
   branches:
     include:
@@ -25,36 +10,24 @@ trigger:
     - refs/heads/main
 
 
-extends:
-  template: pipeline-template.yml@shared
-  parameters:
-    defaultPool:
-      name: TFS-RH-1
-
-
-parameters:
-  defaultPool:
-    name: TFS-RH-1
-
-pool:
-  name: TFS-RH-1
 
 stages:
 # ============== Validation and Initilization ============
 - stage: Validation_Stage
   displayName: Validation and Intialization
-  pool: ${{ parameters.defaultPool }}
+  pool:
+    name: TFS-RH-1
   jobs:
     - job: Validation_Job
       displayName: Validation
-      env:
-            BRANCH: $(Build.SourceBranchName)
       steps:
 
         - checkout: self
 
         - task: CmdLine@2
           name: val_task
+          env:
+            BRANCH: $(Build.SourceBranchName)
           displayName: Validating repository
           inputs:
             script: |
@@ -100,8 +73,9 @@ stages:
 # ================= BUILD STAGE =================
 - stage: Build
   displayName: Build Stage
-  pool: ${{ parameters.defaultPool }}
   dependsOn: Validation_Stage
+  pool:
+    name: TFS-RH-1
   condition: |
     and(
       succeeded('Validation_Stage'),
@@ -113,14 +87,14 @@ stages:
   jobs:
     - job: Build_Job
       displayName: Agent Build job 
-      env:
-            BRANCH: $(Build.SourceBranchName)
       steps:
 
         - checkout: self
 
         - task: CmdLine@2
           displayName: Building Bar file
+          env:
+            BRANCH: $(Build.SourceBranchName)
           inputs:
             script: |
               set -e
@@ -163,7 +137,8 @@ stages:
 # ================= RELEASE STAGE =================
 - stage: Release
   displayName: Deploy Stage
-  pool: ${{ parameters.defaultPool }}
+  pool:
+    name: TFS-RH-1
   dependsOn: Build
   condition: |
     and(
@@ -177,8 +152,6 @@ stages:
     - deployment: DeployApp
       displayName: Deployment Job
       environment: $(Build.SourceBranchName)
-      env:
-            BRANCH: $(Build.SourceBranchName)
       strategy:
         runOnce:
           deploy:
@@ -189,6 +162,8 @@ stages:
 
               - task: CmdLine@2
                 displayName: Deploying Bar File
+                env:
+                  BRANCH: $(Build.SourceBranchName)
                 inputs:
                   workingDirectory: $(Pipeline.Workspace)/drop
                   script: |
@@ -210,7 +185,8 @@ stages:
 # ================= CACHE STAGE =================
 - stage: Cache
   displayName: CACHE
-  pool: ${{ parameters.defaultPool }}
+  pool:
+    name: TFS-RH-1
   dependsOn: 
     - Validation_Stage
     - Build
@@ -232,8 +208,6 @@ stages:
   jobs:
     - job: Cache_Job
       displayName: Agent Build job 
-      env:
-            BRANCH: $(Build.SourceBranchName)
       steps:
         
         - download: current
@@ -241,6 +215,8 @@ stages:
 
         - task: CmdLine@2
           displayName: Update cache in Database
+          env:
+            BRANCH: $(Build.SourceBranchName)
           inputs:
             workingDirectory: $(Pipeline.Workspace)/drop/
             script: |
@@ -265,6 +241,8 @@ stages:
 
         - task: CmdLine@2
           displayName: Update Cache in Server
+          env:
+            BRANCH: $(Build.SourceBranchName)
           inputs:
             workingDirectory: $(Pipeline.Workspace)/drop/
             script: |
@@ -285,3 +263,22 @@ stages:
                   echo "$(yq -o=json ".$BRANCH.Cache | map({\"FIELD_NAME\": .FIELD_NAME, \"FIELD_VALUE\": .FIELD_VALUE})" config.yml)"
                 fi
               done
+
+
+
+
+Starting: Validating repository
+==============================================================================
+Task         : Command line
+Description  : Run a command line script using Bash on Linux and macOS and cmd.exe on Windows
+Version      : 2.231.0
+Author       : Microsoft Corporation
+Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/command-line
+==============================================================================
+Generating script.
+========================== Starting Command Output ===========================
+/usr/bin/bash --noprofile --norc /home/azagent/_work/_temp/6b324685-90ae-49cf-9f22-e0a3ddd453c7.sh
+Error: ',' expects 2 args but there is 1
+ ERROR: ApplicationName, is missing or empty for branch DEV in config.yml
+##[error]Bash exited with code '1'.
+Finishing: Validating repository
