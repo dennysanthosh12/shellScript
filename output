@@ -40,9 +40,9 @@ stages:
               fi
 
               REQUIRED_FIELDS=(
-                "ApplicationName",
-                "IntegrationNode",
-                "IntegrationServer"
+                ApplicationName
+                IntegrationNode
+                IntegrationServer
               )
               for field in "${REQUIRED_FIELDS[@]}"; do
                 value=$(yq e ".$BRANCH.$field // \"\"" "$config_path" | tr -d '[:space:]')
@@ -54,7 +54,7 @@ stages:
 
               DEPLOY=$(yq e ".$BRANCH.Deploy // true" "$config_path" | tr -d '[:space:]')
               CACHE_PRESENT=$(yq e ".$BRANCH.Cache // [] | length > 0" "$config_path")
-
+              echo "CACHE: $CACHE_PRESENT DEPLOY: $DEPLOY"
               if [ "$DEPLOY" != true ] && [ "$DEPLOY" != false ]; then
                 echo "Invalid Deploy flag in config.yml"
                 exit 1
@@ -263,22 +263,3 @@ stages:
                   echo "$(yq -o=json ".$BRANCH.Cache | map({\"FIELD_NAME\": .FIELD_NAME, \"FIELD_VALUE\": .FIELD_VALUE})" config.yml)"
                 fi
               done
-
-
-
-
-Starting: Validating repository
-==============================================================================
-Task         : Command line
-Description  : Run a command line script using Bash on Linux and macOS and cmd.exe on Windows
-Version      : 2.231.0
-Author       : Microsoft Corporation
-Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/command-line
-==============================================================================
-Generating script.
-========================== Starting Command Output ===========================
-/usr/bin/bash --noprofile --norc /home/azagent/_work/_temp/6b324685-90ae-49cf-9f22-e0a3ddd453c7.sh
-Error: ',' expects 2 args but there is 1
- ERROR: ApplicationName, is missing or empty for branch DEV in config.yml
-##[error]Bash exited with code '1'.
-Finishing: Validating repository
