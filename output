@@ -74,12 +74,6 @@ stages:
               echo "##vso[task.setvariable variable=DeployFlag;isOutput=true]$DEPLOY"
               echo "##vso[task.setvariable variable=CacheFlag;isOutput=true]$CACHE_PRESENT"
 
-        - task: CmdLine@2
-          displayName: DIsplay values
-          inputs:
-            script: |
-              echo "DeployFlag : $DeployFlag"
-              echo "CacheFlag : $CacheFlag"
 
         - task: PublishBuildArtifacts@1
           condition: eq(variables['val_task.DeployFlag'], false)
@@ -96,12 +90,12 @@ stages:
     name: TFS-RH-1
   condition: |
     and(
-      succeeded('Validation_Stage'),
-      eq(
-        stageDependencies.Validation_Stage.Validation_Job.outputs['val_task.DeployFlag'],
-        'true'
+        succeeded('Validation_Stage'),
+        eq(
+          dependencies.Validation_Stage.outputs['Validation_Job.val_task.DeployFlag'],
+          'true'
+        )
       )
-    )
   jobs:
     - job: Build_Job
       displayName: Agent Build job 
@@ -117,7 +111,7 @@ stages:
             script: |
               set -e
               . /opt/IBM/ace/server/bin/mqsiprofile
-
+              
               config_path=$(Build.SourcesDirectory)/Config/config.yml
               applicationName=$(yq e ".$BRANCH.ApplicationName" "$config_path")
               override_path=$(find . -iname "override.properties")
@@ -162,9 +156,9 @@ stages:
     and(
       succeeded('Build'),
       eq(
-        stageDependencies.Validation_Stage.Validation_Job.outputs['val_task.DeployFlag'],
-        'true' 
-      )
+          dependencies.Validation_Stage.outputs['Validation_Job.val_task.DeployFlag'],
+          'true'
+        )
     )
   jobs:
     - deployment: DeployApp
@@ -212,13 +206,13 @@ stages:
     and(
       succeeded('Validation_Stage'),
       eq(
-        stageDependencies.Validation_Stage.Validation_Job.outputs['val_task.CacheFlag'],
-         'true'
-      ),
+          dependencies.Validation_Stage.outputs['Validation_Job.val_task.CacheFlag'],
+          'true'
+        ),
       or(
         eq(
-          stageDependencies.Validation_Stage.Validation_Job.outputs['val_task.DeployFlag'],
-          'false'
+          dependencies.Validation_Stage.outputs['Validation_Job.val_task.DeployFlag'],
+          'true'
         ),
         succeeded('Build')
       )
@@ -286,6 +280,9 @@ stages:
 
 
 
+
+
+
 Validating repository
 
 View raw log
@@ -300,27 +297,45 @@ Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/c
 ==============================================================================
 Generating script.
 ========================== Starting Command Output ===========================
-/usr/bin/bash --noprofile --norc /home/azagent/_work/_temp/bbbe03f0-e5b1-489d-b68f-6a83a0296a09.sh
+/usr/bin/bash --noprofile --norc /home/azagent/_work/_temp/0328fe3e-e0d9-4ccf-89ec-c2b5ab134276.sh
 CACHE: true DEPLOY: true
 Finishing: Validating repository
 
 
 
-DIsplay values
 
-View raw log
+UAT:
+  ApplicationName: thirdPartyAAMAZE_sys
+  IntegrationNode: 
+  IntegrationServer:  
+  Overrides:
+    additionalInstances: 3
 
-Starting: DIsplay values
-==============================================================================
-Task         : Command line
-Description  : Run a command line script using Bash on Linux and macOS and cmd.exe on Windows
-Version      : 2.231.0
-Author       : Microsoft Corporation
-Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/command-line
-==============================================================================
-Generating script.
-========================== Starting Command Output ===========================
-/usr/bin/bash --noprofile --norc /home/azagent/_work/_temp/6a499fea-214b-4d97-8ba1-3aa14c778a0a.sh
-DeployFlag : 
-CacheFlag : 
-Finishing: DIsplay values
+SIT: 
+  ApplicationName: thirdPartyAAMAZE_sys
+  IntegrationNode: 
+  IntegrationServer: 
+  Overrides:
+    additionalInstances: 3
+
+DEV: 
+  ApplicationName: thirdPartyAAMAZE_sys
+  IntegrationNode: PAYMENT_SYS
+  IntegrationServer: Payment_S_03
+  Deploy: false
+  Overrides:
+    additionalInstances: 4
+
+  Cache:
+    - Query: "INSERT into EISDEV.cache_details (FIELD_NAME, FIELD_VALUE, REQUEST_ACTION, PROCESSING_ACTION, RESPONSE_ACTION, SOURCE_ID, BACKEND_TYPE, BACKEND_SUB_TYPE, TRAN_CODE, SERVICE_NAME,CREATION_TIME) VALUES('IT_JVP_THINK360_SA_DOWNLOAD_REPORT_CONTENT_CHECK_CCSID_TEST01','Y','CONTENT_CHECK','SOURCE ID CONFIGURATION','NULL','MULTIPLE','THINK360','SA_DOWNLOAD_REPORT','IT_JVP','thirdPartyAAMAZE_sys',TRUNC(SYSDATE))"
+      FIELD_NAME: "IT_JVP_THINK360_SA_DOWNLOAD_REPORT_CONTENT_CHECK_CCSID_TEST01"
+      FIELD_VALUE: "Y"
+    - Query: "INSERT into EISDEV.cache_details (FIELD_NAME, FIELD_VALUE, REQUEST_ACTION, PROCESSING_ACTION, RESPONSE_ACTION, SOURCE_ID, BACKEND_TYPE, BACKEND_SUB_TYPE, TRAN_CODE, SERVICE_NAME,CREATION_TIME) VALUES('IT_JVP_THINK360_SA_DOWNLOAD_REPORT_CCSID_TEST02','ST|Y2','SOURCE_ID','SOURCE ID CONFIGURATION','NULL','MULTIPLE','THINK360','SA_DOWNLOAD_REPORT','IT_JVP','thirdPartyAAMAZE_sys',TRUNC(SYSDATE))"
+      FIELD_NAME: "IT_JVP_THINK360_SA_DOWNLOAD_REPORT_CCSID_TEST02"
+      FIELD_VALUE: "ST|Y2"
+PROD:
+  ApplicationName:
+  IntegrationNode:
+  IntegrationServer:
+  Overrides:
+    additionalInstances: 3
