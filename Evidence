@@ -15,9 +15,8 @@ Next
 ' Get current date & time
 dateTime = Now
 
-' Show Windows Script Host popup
-MsgBox "Windows Script Host" & vbCrLf & vbCrLf & _
-       "Hostname: " & hostname & vbCrLf & _
+' Message box (no icon, no extra text)
+MsgBox "Hostname: " & hostname & vbCrLf & _
        "Serial Number: " & serialNumber & vbCrLf & _
        "Date & Time: " & dateTime, _
-       vbInformation, "Windows Script Host"
+       0, "Windows Script Host"
