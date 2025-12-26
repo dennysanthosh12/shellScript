@@ -1,0 +1,23 @@
+Dim objWMIService, colItems, objItem
+Dim hostname, serialNumber, dateTime
+
+' Get hostname
+hostname = CreateObject("WScript.Network").ComputerName
+
+' Get serial number from BIOS
+Set objWMIService = GetObject("winmgmts:\\.\root\cimv2")
+Set colItems = objWMIService.ExecQuery("Select SerialNumber from Win32_BIOS")
+
+For Each objItem In colItems
+    serialNumber = objItem.SerialNumber
+Next
+
+' Get current date & time
+dateTime = Now
+
+' Show Windows Script Host popup
+MsgBox "Windows Script Host" & vbCrLf & vbCrLf & _
+       "Hostname: " & hostname & vbCrLf & _
+       "Serial Number: " & serialNumber & vbCrLf & _
+       "Date & Time: " & dateTime, _
+       vbInformation, "Windows Script Host"
