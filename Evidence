@@ -1,22 +1,31 @@
-Dim objWMIService, colItems, objItem
-Dim hostname, serialNumber, dateTime
+Once system joined to the domain with proper naming convention, reboot the system. After system 
+reboots, update the group policy using ‘gpupdate /force’ command. Once command executed 
+successfully, reboot the system once again. After reboot, follow the below procedure. 
+For the completion of bitlocker encryption for System Drive (C Drive) 
+Please follow below steps. Execute all commands in the steps using Run as Admin command prompt. 
+Step 1. 
+Create recovery key for C Drive: 
+manage-bde.exe -protectors -add C: -recoverypassword 
+Step 2. 
+Add TPM key for C Drive: 
+manage-bde.exe -protectors -add C: -tpm 
+Step 3. 
+Enable Bitlocker encryption 
+manage-bde.exe -on C: -em aes256  
+After completion of above command, restart the system.  
+Step 4. 
+After system restart, first verify the C drive bitlocker encryption status. 
+Run below command to check status of bitlocker encryption: 
+manage-bde -status C: 
+Check for the Percentage Encrypted. Wait for the Percentage Encrypted to be 100% 
+Step 5. 
+Run below command to fetch numerical password id and backup recovery password to AD 
+manage-bde -protectors -get C: 
+After that copy ID (along with paranthesis) under numerical password. Use the ID in the following 
+command 
+manage-bde -protectors -adbackup C: -id <ID> 
+It will provide the output message “Recovery information was successfully backed up to Active Directory”
 
-' Get hostname
-hostname = CreateObject("WScript.Network").ComputerName
 
-' Get serial number from BIOS
-Set objWMIService = GetObject("winmgmts:\\.\root\cimv2")
-Set colItems = objWMIService.ExecQuery("Select SerialNumber from Win32_BIOS")
 
-For Each objItem In colItems
-    serialNumber = objItem.SerialNumber
-Next
-
-' Get current date & time
-dateTime = Now
-
-' Message box (no icon, no extra text)
-MsgBox "Hostname: " & hostname & vbCrLf & _
-       "Serial Number: " & serialNumber & vbCrLf & _
-       "Date & Time: " & dateTime, _
-       0, "Windows Script Host"
+C:\Windows\System32>manage-bde -status C:                                                                               BitLocker Drive Encryption: Configuration Tool version 10.0.26100                                                       Copyright (C) 2013 Microsoft Corporation. All rights reserved.                                                                                                                                                                                  Volume C: []                                                                                                            [OS Volume]                                                                                                                                                                                                                                         Size:                 237.58 GB                                                                                         BitLocker Version:    2.0                                                                                               Conversion Status:    Fully Encrypted                                                                                   Percentage Encrypted: 100.0%                                                                                            Encryption Method:    AES 256                                                                                           Protection Status:    Protection On                                                                                     Lock Status:          Unlocked                                                                                          Identification Field: Unknown                                                                                           Key Protectors:                                                                                                             Numerical Password                                                                                                      TPM                                                                                                                                                                                                                                                                                                                                                             C:\Windows\System32>
