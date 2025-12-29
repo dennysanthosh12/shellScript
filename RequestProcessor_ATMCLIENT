@@ -1,0 +1,157 @@
+/* Decompiler 124ms, total 787ms, lines 157 */
+package com.tcs.sbi;
+
+import com.ibm.broker.javacompute.MbJavaComputeNode;
+import com.ibm.broker.plugin.MbElement;
+import com.ibm.broker.plugin.MbException;
+import com.ibm.broker.plugin.MbMessage;
+import com.ibm.broker.plugin.MbMessageAssembly;
+import com.ibm.broker.plugin.MbOutputTerminal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class RequestProcessor_ATMCLIENT extends MbJavaComputeNode {
+   private static final Lock LoggerSynchronization = new ReentrantLock(true);
+
+   public void evaluate(MbMessageAssembly inAssembly) throws MbException {
+      MbOutputTerminal out = this.getOutputTerminal("out");
+      MbOutputTerminal alt = this.getOutputTerminal("alternate");
+      MbMessage inMessage = inAssembly.getMessage();
+      MbMessageAssembly outAssembly = null;
+      String Logon = "1";
+      String error = null;
+      String isoresponse = null;
+      MbMessage environment = inAssembly.getGlobalEnvironment();
+
+      try {
+         MbMessage outMessage = new MbMessage(inMessage);
+         outAssembly = new MbMessageAssembly(inAssembly, outMessage);
+         outMessage.getRootElement().getLastChild().delete();
+         MbElement outRoot = outMessage.getRootElement();
+         MbElement outJsonRoot = outRoot.createElementAsLastChild("JSON");
+         MbElement outJsonData = outJsonRoot.createElementAsLastChild(16777216, "Data", (Object)null);
+         String message1 = environment.getRootElement().getFirstElementByPath("/REQUEST").getValueAsString();
+         System.out.println("Request from IIB:" + message1);
+         String message2 = environment.getRootElement().getFirstElementByPath("/CORRELID").getValueAsString();
+         System.out.println("CORREL_ID:" + message2);
+         if (ATMSocketFactory.socket != null && ATMSocketFactory.socket.isConnected() && !ATMSocketFactory.socket.isClosed()) {
+            System.out.println("SOCKET NOT NULL" + message1);
+            isoresponse = ATMSocketFactory.writesocket(message1.toString(), "");
+         } else {
+            System.out.println("SOCKET NULL");
+            if (LoggerSynchronization.tryLock((long)ATMSocketFactory.WRITETIMEOUT, TimeUnit.NANOSECONDS)) {
+               try {
+                  if (ATMSocketFactory.readerOn) {
+                     System.out.println("Readon TRUE");
+                     ATMSocketFactory.app = environment.getRootElement().getFirstElementByPath("/AppId").getValueAsString();
+                     ATMSocketFactory.properyFilePath = environment.getRootElement().getFirstElementByPath("/PropertyFilePath").getValueAsString();
+                     if (ATMSocketFactory.socket != null && ATMSocketFactory.socket.isConnected() && !ATMSocketFactory.socket.isClosed()) {
+                        System.out.println("SOCKET ALREADY PRESENT");
+                        isoresponse = ATMSocketFactory.writesocket(message1.toString(), "");
+                     } else {
+                        System.out.println("NO SOCKET");
+                        SimpleDateFormat formattedDate = new SimpleDateFormat("MMddHHmmss");
+                        Date date1 = new Date();
+                        String timestamp = formattedDate.format(date1);
+                        String timestamp1 = timestamp.substring(4);
+                        String logon = null;
+                        if (ATMSocketFactory.encFlag.equalsIgnoreCase("Y")) {
+                           logon = "ISO006000040080082200000000000000400000000000000" + timestamp + timestamp1 + "001";
+                        } else {
+                           logon = "ISO006000040080082200000000000000400000000000000" + timestamp + timestamp1 + "001";
+                        }
+
+                        environment.getRootElement().createElementAsLastChild(50331648, "LOGON_STAN", timestamp1);
+                        Logon = "0";
+                        String logonresponse = ATMSocketFactory.getATMSocket(logon);
+                        System.out.println(logonresponse);
+                        environment.getRootElement().createElementAsLastChild(50331648, "LOGON_RESPONSE", logonresponse);
+                        environment.getRootElement().createElementAsLastChild(50331648, "LOGON_REQUEST", logon);
+                        environment.getRootElement().createElementAsLastChild(50331648, "DESTINATION_ADDRESS", ATMSocketFactory.IP + " " + ATMSocketFactory.PORT);
+                        JSONObject json;
+                        if (logonresponse != null) {
+                           System.out.println("GOT LOGON RESP");
+                           if (logonresponse.substring(0, 5).equalsIgnoreCase("ERROR")) {
+                              System.out.println("LOGON RESP ERROR");
+                              ATMSocketFactory.socket.close();
+                              error = logonresponse + " Socket is being closed";
+                              json = new JSONObject();
+                              json.put("ATM_SOCKET ", ATMSocketFactory.socket);
+                              json.put("Exception ", "Unable to logon!!! for request " + message1.toString());
+                              json.put("SocketException ", error);
+                              json.put("REQUEST_TIMESTAMP ", ATMSocketFactory.getTimeStamp());
+                              isoresponse = json.toString();
+                           } else {
+                              isoresponse = ATMSocketFactory.writesocket(message1.toString(), "");
+                              System.out.println("LOGON RESP SUCCESS");
+                           }
+                        } else {
+                           error = "logonresponse is null";
+                           json = new JSONObject();
+                           json.put("ATM_SOCKET ", ATMSocketFactory.socket);
+                           json.put("Exception ", "Unable to logon!!! for request " + message1.toString());
+                           json.put("SocketException ", error);
+                           json.put("REQUEST_TIMESTAMP ", ATMSocketFactory.getTimeStamp());
+                           isoresponse = json.toString();
+                           ATMSocketFactory.socket.close();
+                           System.out.println("GOT LOGON NULL");
+                        }
+                     }
+                  } else {
+                     System.out.println("Readon FALSE");
+                     isoresponse = ATMSocketFactory.writesocket(message1.toString(), "");
+                  }
+               } catch (Exception var29) {
+                  System.out.println("catch2");
+                  error = var29.getMessage();
+                  var29.printStackTrace();
+                  JSONObject json = new JSONObject();
+                  json.put("REQUEST_TO_ATM ", message1.toString());
+                  json.put("DESTINATION_ADDRESS ", ATMSocketFactory.IP + " " + ATMSocketFactory.PORT);
+                  json.put("Exception ", "Exception " + var29.toString());
+                  json.put("REQUEST_TIMESTAMP ", ATMSocketFactory.getTimeStamp());
+                  isoresponse = json.toString();
+               } finally {
+                  LoggerSynchronization.unlock();
+               }
+            } else {
+               JSONObject json = new JSONObject();
+               json.put("REQUEST_TO_ATM ", message1.toString());
+               json.put("DESTINATION_ADDRESS ", ATMSocketFactory.IP + " " + ATMSocketFactory.PORT);
+               json.put("Exception ", "TimeOut while waiting for logon request to succeed " + message1.toString());
+               json.put("REQUEST_TIMESTAMP ", ATMSocketFactory.getTimeStamp());
+               isoresponse = json.toString();
+            }
+         }
+
+         outJsonData.createElementAsLastChild(50331648, "Message", isoresponse);
+      } catch (Exception var31) {
+         Exception e = var31;
+         System.out.println("catch1");
+         JSONObject json = new JSONObject();
+
+         try {
+            json.put("REQUEST_TO_ATM ", environment.getRootElement().getFirstElementByPath("/REQUEST").getValueAsString().toString());
+            json.put("DESTINATION_ADDRESS ", ATMSocketFactory.IP + " " + ATMSocketFactory.PORT);
+            json.put("Exception ", "Unable to process the request " + e.toString());
+            json.put("REQUEST_TIMESTAMP ", ATMSocketFactory.getTimeStamp());
+            isoresponse = json.toString();
+            environment.getRootElement().createElementAsLastChild(50331648, "Message", isoresponse);
+         } catch (JSONException var28) {
+            var28.printStackTrace();
+         }
+      }
+
+      if (Logon.equalsIgnoreCase("0")) {
+         alt.propagate(outAssembly);
+      } else {
+         out.propagate(outAssembly);
+      }
+
+   }
+}
