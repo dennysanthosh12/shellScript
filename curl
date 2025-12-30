@@ -1,27 +1,11 @@
-- task: CmdLine@2
-            displayName: Update Cache in Server
-            condition: eq(variables['CacheFlag'], 'true')
-            inputs:
-              workingDirectory: $(Pipeline.Workspace)/drop/
-              script: |
-                set -e
-                config_path=$(find . -name "config.yml")
-                if [ -n "$config_path" ] && [ -f "$config_path" ];
-                then BRANCH=$(yq '.BRANCH' "$config_path") ;
-                else echo "config.yml file was not found !!"; exit 1;
-                fi
-
-                IntegrationNode=$(yq ".$BRANCH.IntegrationNode" "$config_path")
-
-                for broker_file in /home/devops/broker/$BRANCH/$IntegrationNode*; do
-                host=$(cat "$broker_file" | grep host | cut -d"\"" -f4)
-                if yq -e ".$BRANCH.Cache' "$config_path" >/dev/null 2>&1; then
-                  response=$(curl -s -k -X POST http://"$host":8002/cache/v1/loadCache \
-                  -H "Content-Type: application/json" \
-                  -d "$(yq -o=json ".$BRANCH.Cache | map({"FIELD_NAME": .FIELD_NAME, "FIELD_VALUE": .FIELD_VALUE})" "$config_path")")
-                  if [[ "$response" != *'"Response":"success"'* ]]; then
-                    echo "Cache load failed: $response"
-                    exit 1
-                  fi
-                  echo "Cache load successful"
-                fi
+2025-12-30 19:47:41.820    112 Request from IIB:ISO0060000400800822000000000000004000000000000001230194741194741301
+2025-12-30 19:47:41.820    112 CORREL_ID:194741
+2025-12-30 19:47:41.820    112 SOCKET NULL
+2025-12-30 19:47:41.820    112 Readon TRUE
+2025-12-30 19:47:41.820    112 NO SOCKET
+2025-12-30 19:47:41.820    112 QMGR_NAME:QM_ATM_OUTBOUND_SYS
+2025-12-30 19:47:41.820    112 RESPONSE_QUEUE_NAME: ATM_PIN_VALIDATION_RESPONSE_TLS_8524_PP2
+2025-12-30 19:47:41.821    112 LOGGER_QUEUE_NAME: ATM_PIN_VALIDATION_RESPONSE_TLS_8524_LOGGER
+2025-12-30 19:47:41.866    112 ERROR:javax.net.ssl.SSLHandshakeException: Remote host terminated the handshake
+2025-12-30 19:47:41.866    112 GOT LOGON RESP
+2025-12-30 19:47:41.866    112 LOGON RESP ERROR
