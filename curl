@@ -46,3 +46,8 @@ SSL-Session:
     Extended master secret: no
 ---
 
+
+nc -v 10.0.54.36 8524
+Ncat: Version 7.92 ( https://nmap.org/ncat )
+Ncat: Connected to 10.0.54.36:8524.
+ISO0060000400800822000000000000004000000000000001230194741194741301
