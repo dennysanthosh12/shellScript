@@ -51,3 +51,22 @@ nc -v 10.0.54.36 8524
 Ncat: Version 7.92 ( https://nmap.org/ncat )
 Ncat: Connected to 10.0.54.36:8524.
 ISO0060000400800822000000000000004000000000000001230194741194741301
+
+
+
+/opt/IBM/ace/common/jdk/bin/javac ~/IsoTcpDebugClient.java
+[eisuser@EISUATSYS09 ~]$ /opt/IBM/ace/common/jdk/bin/java -cp . IsoTcpDebugClient.class
+Error: Could not find or load main class IsoTcpDebugClient.class
+[eisuser@EISUATSYS09 ~]$ /opt/IBM/ace/common/jdk/bin/java ~/IsoTcpDebugClient.class
+Error: Could not find or load main class .home.eisuser.IsoTcpDebugClient.class
+[eisuser@EISUATSYS09 ~]$ ls -lrth
+-rw-r-----  1 eisuser eisuser 2.7K Dec 30 20:14  IsoTcpDebugClient.java
+-rw-r-----  1 eisuser eisuser 2.9K Dec 30 20:20  IsoTcpDebugClient.class
+[eisuser@EISUATSYS09 ~]$ /opt/IBM/ace/common/jdk/bin/java -version
+java version "1.8.0_441"
+Java(TM) SE Runtime Environment (build 8.0.8.40 - pxa6480sr8fp40-20250123_01(SR8 FP40))
+IBM J9 VM (build 2.9, JRE 1.8.0 Linux amd64-64-Bit Compressed References 20241212_83587 (JIT enabled, AOT enabled)
+OpenJ9   - 32d7c6c9a17
+OMR      - ab5c961de
+IBM      - dd9cff8)
+JCL - 20250122_01 based on Oracle jdk8u441-b07
