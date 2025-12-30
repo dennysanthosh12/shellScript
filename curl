@@ -78,3 +78,11 @@ TCP CONNECTED ✅
 Sending ISO LOGON @ 2025-12-30T20:23:35.125
 TX HEX: 00 43 49 53 4F 30 30 36 30 30 30 30 34 30 30 38 30 30 38 32 32 30 30 30 30 30 30 30 30 30 30 30 30 30 30 34 30 30 30 30 30 30 30 30 30 30 30 30 30 30 31 32 33 30 31 39 34 37 34 31 31 39 34 37 34 31 33 30 31
 ❌ No length header received
+
+
+
+socket.setEnabledProtocols(new String[] { "TLSv1.2" });
+socket.setEnabledCipherSuites(new String[] {
+    "TLS_RSA_WITH_AES_128_CBC_SHA"
+});
+socket.startHandshake();
