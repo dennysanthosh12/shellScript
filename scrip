@@ -32,19 +32,19 @@ WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
 [INFO] Not compiling test sources
 [INFO] 
 [INFO] [1m--- [0;32msurefire:3.5.4:test[m [1m(default-test)[m @ [36mapiadmin[0;1m ---[m
-[WARNING] The POM for org.apache.maven.surefire:surefire-api:jar:3.5.4 is missing, no dependency information available
-[WARNING] The POM for org.apache.maven.surefire:surefire-extensions-api:jar:3.5.4 is missing, no dependency information available
-[WARNING] The POM for org.apache.maven.surefire:maven-surefire-common:jar:3.5.4 is missing, no dependency information available
+[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-api/3.5.4/surefire-api-3.5.4.pom
+[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-extensions-api/3.5.4/surefire-extensions-api-3.5.4.pom
+[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/maven-surefire-common/3.5.4/maven-surefire-common-3.5.4.pom
 [INFO] [1m------------------------------------------------------------------------[m
 [INFO] [1;31mBUILD FAILURE[m
 [INFO] [1m------------------------------------------------------------------------[m
-[INFO] Total time:  6.372 s
-[INFO] Finished at: 2026-01-03T14:51:23+05:30
+[INFO] Total time:  7.217 s
+[INFO] Finished at: 2026-01-03T14:53:37+05:30
 [INFO] [1m------------------------------------------------------------------------[m
 [ERROR] Failed to execute goal [32morg.apache.maven.plugins:maven-surefire-plugin:3.5.4:test[m [1m(default-test)[m on project [36mapiadmin[m: [1;31mExecution default-test of goal org.apache.maven.plugins:maven-surefire-plugin:3.5.4:test failed: Plugin org.apache.maven.plugins:maven-surefire-plugin:3.5.4 or one of its dependencies could not be resolved:[m
-[ERROR] [1;31m	Cannot access central (https://repo.maven.apache.org/maven2) in offline mode and the artifact org.apache.maven.surefire:surefire-api:jar:3.5.4 has not been downloaded from it before.[m
-[ERROR] [1;31m	Cannot access central (https://repo.maven.apache.org/maven2) in offline mode and the artifact org.apache.maven.surefire:surefire-extensions-api:jar:3.5.4 has not been downloaded from it before.[m
-[ERROR] [1;31m	Cannot access central (https://repo.maven.apache.org/maven2) in offline mode and the artifact org.apache.maven.surefire:maven-surefire-common:jar:3.5.4 has not been downloaded from it before.[m
+[ERROR] [1;31m	Failed to read artifact descriptor for org.apache.maven.surefire:surefire-api:jar:3.5.4[m
+[ERROR] [1;31m	Failed to read artifact descriptor for org.apache.maven.surefire:surefire-extensions-api:jar:3.5.4[m
+[ERROR] [1;31m	Failed to read artifact descriptor for org.apache.maven.surefire:maven-surefire-common:jar:3.5.4[m
 [ERROR] [1;31m[m
 [ERROR] -> [1m[Help 1][m
 [ERROR] 
