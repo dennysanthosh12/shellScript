@@ -1,1 +1,24 @@
-/opt/mqm/bin/amqzlaa0 -mQM_ATM_OUTBOUND_SYS -fip142
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.fusesource.jansi.internal.JansiLoader in an unnamed module (file:/D:/eclipse-java-2025-03-R-win32-x86_64/eclipse/plugins/org.eclipse.m2e.maven.runtime_3.9.900.20250220-2013/jars/jansi-2.4.1.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper (file:/D:/eclipse-java-2025-03-R-win32-x86_64/eclipse/plugins/com.google.guava_33.4.0.jre.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] [1m------------------------< [0;36mcom.EIS.TCS:apiadmin[0;1m >------------------------[m
+[INFO] [1mBuilding apiadmin 0.0.1-SNAPSHOT[m
+[INFO]   from pom.xml
+[INFO] [1m--------------------------------[ jar ]---------------------------------[m
+[INFO] 
+[INFO] [1m--- [0;32mclean:3.5.0:clean[m [1m(default-clean)[m @ [36mapiadmin[0;1m ---[m
+[INFO] Deleting E:\Denny\apiadmin\apiadmin\target
+[INFO] [1m------------------------------------------------------------------------[m
+[INFO] [1;32mBUILD SUCCESS[m
+[INFO] [1m------------------------------------------------------------------------[m
+[INFO] Total time:  0.939 s
+[INFO] Finished at: 2026-01-03T14:44:32+05:30
+[INFO] [1m------------------------------------------------------------------------[m
