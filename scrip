@@ -1,29 +1,61 @@
-Microsoft Windows [Version 10.0.26200.7462]                                                                             (c) Microsoft Corporation. All rights reserved.                                                                                                                                                                                                 C:\Windows\System32>C:\Users\v1021531\Downloads\FramePkg_5.8.2_DO.exe                                                                                                                                                                           C:\Windows\System32>C:\Softwares\4. Trellix\                                                                            'C:\Softwares\4.' is not recognized as an internal or external command,                                                 operable program or batch file.                                                                                                                                                                                                                 C:\Windows\System32>C:\Softwares\4. Trellix\DLP Updated\FramePkg_5.8.2_DO.exe                                           'C:\Softwares\4.' is not recognized as an internal or external command,                                                 operable program or batch file.                                                                                                                                                                                                                 C:\Windows\System32>"C:\Softwares\4. Trellix\DLP Updated\FramePkg_5.8.2_DO.exe"                                                                                                                                                                 C:\Windows\System32>"C:\Softwares\4. Trellix\Trellix Package\FramePkg_5.7.9.exe"                                                                                                                                                                C:\Windows\System32>"C:\Softwares\4. Trellix\DLP Updated\HDLP_Agent_Package_11.11.2.1172\DLPAgentInstaller.x64.exe"                                                                                                                             C:\Windows\System32>manage-bde -status C:                                                                               BitLocker Drive Encryption: Configuration Tool version 10.0.26100                                                       Copyright (C) 2013 Microsoft Corporation. All rights reserved.                                                                                                                                                                                  Volume C: []                                                                                                            [OS Volume]                                                                                                                                                                                                                                         Size:                 476.05 GB                                                                                         BitLocker Version:    2.0                                                                                               Conversion Status:    Fully Encrypted                                                                                   Percentage Encrypted: 100.0%                                                                                            Encryption Method:    XTS-AES 128                                                                                       Protection Status:    Protection On                                                                                     Lock Status:          Unlocked                                                                                          Identification Field: Unknown                                                                                           Key Protectors:                                                                                                             TPM                                                                                                                                                                                                                                                                                                                                                             C:\Windows\System32>manage-bde -protectors -get C:                                                                      BitLocker Drive Encryption: Configuration Tool version 10.0.26100                                                       Copyright (C) 2013 Microsoft Corporation. All rights reserved.                                                                                                                                                                                  Volume C: []                                                                                                            All Key Protectors                                                                                                                                                                                                                                  TPM:                                                                                                                      ID: {A60A6F07-FDFD-46FA-BF3C-DCB07FB65CED}                                                                              PCR Validation Profile:                                                                                                   7, 11                                                                                                                   (Uses Secure Boot for integrity validation)                                                                                                                                                                                                                                                                                                                     C:\Windows\System32>manage-bde.exe -on C: -em aes256                                                                    BitLocker Drive Encryption: Configuration Tool version 10.0.26100                                                       Copyright (C) 2013 Microsoft Corporation. All rights reserved.                                                                                                                                                                                  Volume C: []                                                                                                            [OS Volume]                                                                                                             ERROR: An error occurred (code 0x80070057):                                                                             The parameter is incorrect.                                                                                                                                                                                                                     C:\Windows\System32>manage-bde -protectors -get C:                                                                      BitLocker Drive Encryption: Configuration Tool version 10.0.26100                                                       Copyright (C) 2013 Microsoft Corporation. All rights reserved.                                                                                                                                                                                  Volume C: []                                                                                                            All Key Protectors                                                                                                                                                                                                                                  TPM:                                                                                                                      ID: {A60A6F07-FDFD-46FA-BF3C-DCB07FB65CED}                                                                              PCR Validation Profile:                                                                                                   7, 11                                                                                                                   (Uses Secure Boot for integrity validation)                                                                                                                                                                                                                                                                                                                     C:\Windows\System32>                                                                                                    C:\Windows\System32>                                                                                                    C:\Windows\System32>
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.fusesource.jansi.internal.JansiLoader in an unnamed module (file:/D:/eclipse-java-2025-03-R-win32-x86_64/eclipse/plugins/org.eclipse.m2e.maven.runtime_3.9.900.20250220-2013/jars/jansi-2.4.1.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
 
-Once system joined to the domain with proper naming convention, reboot the system. After system 
-reboots, update the group policy using ‘gpupdate /force’ command. Once command executed 
-successfully, reboot the system once again. After reboot, follow the below procedure.
-For the completion of bitlocker encryption for System Drive (C Drive)
-Please follow below steps. Execute all commands in the steps using Run as Admin command prompt.
-Step 1.
-Create recovery key for C Drive:
-manage-bde.exe -protectors -add C: -recoverypassword
-Step 2.
-Add TPM key for C Drive:
-manage-bde.exe -protectors -add C: -tpm
-Step 3.
-Enable Bitlocker encryption
-manage-bde.exe -on C: -em aes256
-After completion of above command, restart the system.
-Step 4.
-After system restart, first verify the C drive bitlocker encryption status.
-Run below command to check status of bitlocker encryption:
-manage-bde -status C:
-Check for the Percentage Encrypted. Wait for the Percentage Encrypted to be 100%
-Step 5.
-Run below command to fetch numerical password id and backup recovery password to AD
-manage-bde -protectors -get C:
-After that copy ID (along with paranthesis) under numerical password. Use the ID in the following 
-command
-manage-bde -protectors -adbackup C: -id <ID>
-It will provide the output message “Recovery information was successfully backed up to Active Directory”
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper (file:/D:/eclipse-java-2025-03-R-win32-x86_64/eclipse/plugins/com.google.guava_33.4.0.jre.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] [1m------------------------< [0;36mcom.EIS.TCS:apiadmin[0;1m >------------------------[m
+[INFO] [1mBuilding apiadmin 0.0.1-SNAPSHOT[m
+[INFO]   from pom.xml
+[INFO] [1m--------------------------------[ jar ]---------------------------------[m
+[INFO] 
+[INFO] [1m--- [0;32mclean:3.5.0:clean[m [1m(default-clean)[m @ [36mapiadmin[0;1m ---[m
+[INFO] Deleting E:\Denny\apiadmin\apiadmin\target
+[INFO] 
+[INFO] [1m--- [0;32mresources:3.3.1:resources[m [1m(default-resources)[m @ [36mapiadmin[0;1m ---[m
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] [1m--- [0;32mcompiler:3.14.1:compile[m [1m(default-compile)[m @ [36mapiadmin[0;1m ---[m
+[INFO] Recompiling the module because of [1mchanged source code[m.
+[INFO] Compiling 14 source files with javac [debug parameters release 25] to target\classes
+[INFO] 
+[INFO] [1m--- [0;32mresources:3.3.1:testResources[m [1m(default-testResources)[m @ [36mapiadmin[0;1m ---[m
+[INFO] Not copying test resources
+[INFO] 
+[INFO] [1m--- [0;32mcompiler:3.14.1:testCompile[m [1m(default-testCompile)[m @ [36mapiadmin[0;1m ---[m
+[INFO] Not compiling test sources
+[INFO] 
+[INFO] [1m--- [0;32msurefire:3.5.4:test[m [1m(default-test)[m @ [36mapiadmin[0;1m ---[m
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] [1m--- [0;32mjar:3.4.2:jar[m [1m(default-jar)[m @ [36mapiadmin[0;1m ---[m
+[INFO] Building jar: E:\Denny\apiadmin\apiadmin\target\apiadmin-0.0.1-SNAPSHOT.jar
+[INFO] 
+[INFO] [1m--- [0;32mspring-boot:4.0.1:repackage[m [1m(repackage)[m @ [36mapiadmin[0;1m ---[m
+[WARNING] The POM for org.springframework.boot:spring-boot-buildpack-platform:jar:4.0.1 is missing, no dependency information available
+[WARNING] The POM for org.springframework.boot:spring-boot-loader-tools:jar:4.0.1 is missing, no dependency information available
+[WARNING] The POM for org.apache.maven.plugins:maven-shade-plugin:jar:3.6.0 is missing, no dependency information available
+[INFO] [1m------------------------------------------------------------------------[m
+[INFO] [1;31mBUILD FAILURE[m
+[INFO] [1m------------------------------------------------------------------------[m
+[INFO] Total time:  8.510 s
+[INFO] Finished at: 2026-01-03T18:06:11+05:30
+[INFO] [1m------------------------------------------------------------------------[m
+[ERROR] Failed to execute goal [32morg.springframework.boot:spring-boot-maven-plugin:4.0.1:repackage[m [1m(repackage)[m on project [36mapiadmin[m: [1;31mExecution repackage of goal org.springframework.boot:spring-boot-maven-plugin:4.0.1:repackage failed: Plugin org.springframework.boot:spring-boot-maven-plugin:4.0.1 or one of its dependencies could not be resolved:[m
+[ERROR] [1;31m	Cannot access central (https://repo.maven.apache.org/maven2) in offline mode and the artifact org.springframework.boot:spring-boot-buildpack-platform:jar:4.0.1 has not been downloaded from it before.[m
+[ERROR] [1;31m	Cannot access central (https://repo.maven.apache.org/maven2) in offline mode and the artifact org.springframework.boot:spring-boot-loader-tools:jar:4.0.1 has not been downloaded from it before.[m
+[ERROR] [1;31m	Cannot access central (https://repo.maven.apache.org/maven2) in offline mode and the artifact org.apache.maven.plugins:maven-shade-plugin:jar:3.6.0 has not been downloaded from it before.[m
+[ERROR] [1;31m[m
+[ERROR] -> [1m[Help 1][m
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the [1m-e[m switch.
+[ERROR] Re-run Maven using the [1m-X[m switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [1m[Help 1][m http://cwiki.apache.org/confluence/display/MAVEN/PluginResolutionException
