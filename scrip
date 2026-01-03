@@ -16,9 +16,40 @@ WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
 [INFO] 
 [INFO] [1m--- [0;32mclean:3.5.0:clean[m [1m(default-clean)[m @ [36mapiadmin[0;1m ---[m
 [INFO] Deleting E:\Denny\apiadmin\apiadmin\target
+[INFO] 
+[INFO] [1m--- [0;32mresources:3.3.1:resources[m [1m(default-resources)[m @ [36mapiadmin[0;1m ---[m
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] [1m--- [0;32mcompiler:3.14.1:compile[m [1m(default-compile)[m @ [36mapiadmin[0;1m ---[m
+[INFO] Recompiling the module because of [1mchanged source code[m.
+[INFO] Compiling 14 source files with javac [debug parameters release 25] to target\classes
+[INFO] 
+[INFO] [1m--- [0;32mresources:3.3.1:testResources[m [1m(default-testResources)[m @ [36mapiadmin[0;1m ---[m
+[INFO] Not copying test resources
+[INFO] 
+[INFO] [1m--- [0;32mcompiler:3.14.1:testCompile[m [1m(default-testCompile)[m @ [36mapiadmin[0;1m ---[m
+[INFO] Not compiling test sources
+[INFO] 
+[INFO] [1m--- [0;32msurefire:3.5.4:test[m [1m(default-test)[m @ [36mapiadmin[0;1m ---[m
+[WARNING] The POM for org.apache.maven.surefire:surefire-api:jar:3.5.4 is missing, no dependency information available
+[WARNING] The POM for org.apache.maven.surefire:surefire-extensions-api:jar:3.5.4 is missing, no dependency information available
+[WARNING] The POM for org.apache.maven.surefire:maven-surefire-common:jar:3.5.4 is missing, no dependency information available
 [INFO] [1m------------------------------------------------------------------------[m
-[INFO] [1;32mBUILD SUCCESS[m
+[INFO] [1;31mBUILD FAILURE[m
 [INFO] [1m------------------------------------------------------------------------[m
-[INFO] Total time:  0.939 s
-[INFO] Finished at: 2026-01-03T14:44:32+05:30
+[INFO] Total time:  6.372 s
+[INFO] Finished at: 2026-01-03T14:51:23+05:30
 [INFO] [1m------------------------------------------------------------------------[m
+[ERROR] Failed to execute goal [32morg.apache.maven.plugins:maven-surefire-plugin:3.5.4:test[m [1m(default-test)[m on project [36mapiadmin[m: [1;31mExecution default-test of goal org.apache.maven.plugins:maven-surefire-plugin:3.5.4:test failed: Plugin org.apache.maven.plugins:maven-surefire-plugin:3.5.4 or one of its dependencies could not be resolved:[m
+[ERROR] [1;31m	Cannot access central (https://repo.maven.apache.org/maven2) in offline mode and the artifact org.apache.maven.surefire:surefire-api:jar:3.5.4 has not been downloaded from it before.[m
+[ERROR] [1;31m	Cannot access central (https://repo.maven.apache.org/maven2) in offline mode and the artifact org.apache.maven.surefire:surefire-extensions-api:jar:3.5.4 has not been downloaded from it before.[m
+[ERROR] [1;31m	Cannot access central (https://repo.maven.apache.org/maven2) in offline mode and the artifact org.apache.maven.surefire:maven-surefire-common:jar:3.5.4 has not been downloaded from it before.[m
+[ERROR] [1;31m[m
+[ERROR] -> [1m[Help 1][m
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the [1m-e[m switch.
+[ERROR] Re-run Maven using the [1m-X[m switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [1m[Help 1][m http://cwiki.apache.org/confluence/display/MAVEN/PluginResolutionException
