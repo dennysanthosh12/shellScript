@@ -1,12 +1,7 @@
- podman run -d appv1:1.1
-WARN[0000] Failed to mount subscriptions, skipping entry in /usr/share/containers/mounts.conf: getting host subscription data: failed to read subscriptions from "/usr/share/rhel/secrets": open /usr/share/rhel/secrets/redhat.repo: permission denied
-Error: crun: executable file `java` not found in $PATH: No such file or directory: OCI runtime attempted to invoke a command that was not found
+ sudo dnf --installroot=~/rhel9-minimal \
+    --releasever=9 \
+    --disablerepo='*' \
+    --enablerepo='file:///path/to/local/rpms' \
+    groupinstall "Minimal Install" -y
 
-
-
-Containerfile
-FROM rhel:9.6
-COPY ./jre25 /opt
-COPY ./apiadmin-0.0.1-SNAPSHOT.jar /var
-ENV JAVA_HOME /opt/jre
-ENTRYPOINT ["java","-jar","/var/apiadmin-0.0.1-SNAPSHOT.jar"]
+tar -C rhel9-minimal -c . | podman import - rhel9-minimal:latest
