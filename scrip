@@ -1,49 +1,25 @@
-[eisuser@eisuatsftp01 Denny]$ podman ps -a
-CONTAINER ID  IMAGE               COMMAND     CREATED         STATUS        PORTS       NAMES
-a60fc54d84cd  localhost/rhel:9.6  /bin/bash   6 minutes ago   Up 6 minutes              funny_ptolemy
-405c80104792  localhost/api:v1.1  /bin/bash   43 seconds ago  Created       8080/tcp    exciting_agnesi
-[eisuser@eisuatsftp01 Denny]$ podman rm 405c80104792 a60fc54d84cd
-405c80104792
-Error: cannot remove container a60fc54d84cd3b990b3978f46f10d1d1d9d9bbb0f814bf8fe736ac8feab3ebaa as it is running - running or paused containers cannot be removed without force: container state improper
-[eisuser@eisuatsftp01 Denny]$ podman exec a60fc54d84cd
-Error: must provide a non-empty command to start an exec session: invalid argument
-[eisuser@eisuatsftp01 Denny]$ podman exec a60fc54d84cd /bin/bash
-[eisuser@eisuatsftp01 Denny]$ podman exec -it a60fc54d84cd /bin/bash
-bash-5.1# java
+
+podman run -it --entrypoint /bin/bash localhost/app:v1.1
+WARN[0000] Failed to mount subscriptions, skipping entry in /usr/share/containers/mounts.conf: getting host subscription data: failed to read subscriptions from "/usr/share/rhel/secrets": open /usr/share/rhel/secrets/redhat.repo: permission denied
+bash-5.1# java -version
 bash: java: command not found
-bash-5.1# df -hT
-Filesystem     Type      Size  Used Avail Use% Mounted on
-overlay        overlay    30G   27G  3.5G  89% /
-tmpfs          tmpfs      64M     0   64M   0% /dev
-tmpfs          tmpfs     6.3G  104K  6.3G   1% /etc/hosts
-shm            tmpfs      63M     0   63M   0% /dev/shm
-devtmpfs       devtmpfs  4.0M     0  4.0M   0% /dev/tty
-bash-5.1# free -h
-               total        used        free      shared  buff/cache   available
-Mem:            62Gi       5.5Gi        29Gi       426Mi        28Gi        56Gi
-Swap:            9Gi          0B         9Gi
-bash-5.1# ls -la
-total 4
-dr-xr-xr-x   1 root   root     28 Jan  5 16:01 .
-dr-xr-xr-x   1 root   root     28 Jan  5 16:01 ..
-drwxrwxrwx   2 root   root      6 Jun 25  2024 afs
-lrwxrwxrwx   1 root   root      7 Jun 25  2024 bin -> usr/bin
-drwxrwxrwx   4 root   root     30 Jan  5 15:29 boot
-drwxr-xr-x   5 root   root    360 Jan  5 16:01 dev
-drwxrwxrwx   1 root   root     41 Jan  5 16:01 etc
-drwxrwxrwx   2 root   root      6 Jun 25  2024 home
-lrwxrwxrwx   1 root   root      7 Jun 25  2024 lib -> usr/lib
-lrwxrwxrwx   1 root   root      9 Jun 25  2024 lib64 -> usr/lib64
-drwxrwxrwx   2 root   root      6 Jun 25  2024 media
-drwxrwxrwx   2 root   root      6 Jun 25  2024 mnt
-drwxrwxrwx   2 root   root      6 Jun 25  2024 opt
-dr-xr-xr-x 365 nobody nobody    0 Jan  5 16:01 proc
-drwxrwxrwx   2 root   root      6 Jun 25  2024 root
-drwxrwxrwx   1 root   root     27 Jan  5 16:01 run
-lrwxrwxrwx   1 root   root      8 Jun 25  2024 sbin -> usr/sbin
-drwxrwxrwx   2 root   root      6 Jun 25  2024 srv
-dr-xr-xr-x  13 nobody nobody    0 Jan  5 16:01 sys
-drwxrwxrwx   2 root   root     24 Jan  5 15:29 tmp
-drwxrwxrwx  12 root   root    144 Jan  5 15:28 usr
-drwxrwxrwx  19 root   root   4096 Jan  5 15:29 var
 bash-5.1#
+bash-5.1#
+bash-5.1# cd /opt/
+bash-5.1# ls
+bin  conf  legal  lib  release
+bash-5.1# pwd
+/opt
+bash-5.1#
+
+
+
+
+[eisuser@eisuatsftp01 Denny]$ cat Containerfile
+FROM rhel:9.6
+COPY ./jre25 /opt
+COPY ./apiadmin-0.0.1-SNAPSHOT.jar /var
+ENV JAVA_HOME="/opt/jre25"
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
+EXPOSE 8080
+CMD ["java","-jar","/var/apiadmin-0.0.1-SNAPSHOT.jar"]
