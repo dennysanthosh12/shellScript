@@ -1,2 +1,6 @@
-ldapsearch
--bash: ldapsearch: command not found
+
+sudo dnf --installroot=~/rhel9-minimal \
+    --releasever=9 \
+    --disablerepo='*' \
+    --enablerepo='file:///path/to/local/rpms' \
+    groupinstall "Minimal Install" -y
