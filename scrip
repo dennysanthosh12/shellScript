@@ -1,7 +1,58 @@
- sudo dnf --installroot=~/rhel9-minimal \
-    --releasever=9 \
-    --disablerepo='*' \
-    --enablerepo='file:///path/to/local/rpms' \
-    groupinstall "Minimal Install" -y
-
-tar -C rhel9-minimal -c . | podman import - rhel9-minimal:latest
+tar -C rhel9-minimal -c . | podman import - rhel:9.6
+Getting image source signatures
+Copying blob 9f3886585dc5 done   |
+Copying config c17949d600 done   |
+Writing manifest to image destination
+sha256:c17949d600f822acc0d784942c065dcfe2ce08baad6be47c832989a8fdab4aa1
+[eisuser@eisuatsftp01 home]$ cd rhel9-minimal
+[eisuser@eisuatsftp01 rhel9-minimal]$ ll
+total 12
+drwxrwxrwx  2 root root    6 Jun 25  2024 afs
+lrwxrwxrwx  1 root root    7 Jun 25  2024 bin -> usr/bin
+drwxrwxrwx  4 root root   30 Jan  5 20:59 boot
+drwxrwxrwx  2 root root   30 Jan  5 20:59 dev
+drwxrwxrwx 80 root root 4096 Jan  5 20:59 etc
+drwxrwxrwx  2 root root    6 Jun 25  2024 home
+lrwxrwxrwx  1 root root    7 Jun 25  2024 lib -> usr/lib
+lrwxrwxrwx  1 root root    9 Jun 25  2024 lib64 -> usr/lib64
+drwxrwxrwx  2 root root    6 Jun 25  2024 media
+drwxrwxrwx  2 root root    6 Jun 25  2024 mnt
+drwxrwxrwx  2 root root    6 Jun 25  2024 opt
+drwxrwxrwx  2 root root    6 Jan  5 20:58 proc
+drwxrwxrwx  2 root root    6 Jun 25  2024 root
+drwxrwxrwx  8 root root  107 Jan  5 20:59 run
+lrwxrwxrwx  1 root root    8 Jun 25  2024 sbin -> usr/sbin
+drwxrwxrwx  2 root root    6 Jun 25  2024 srv
+drwxrwxrwx  2 root root    6 Jan  5 20:58 sys
+drwxrwxrwx  2 root root   24 Jan  5 20:59 tmp
+drwxrwxrwx 12 root root  144 Jan  5 20:58 usr
+drwxrwxrwx 19 root root 4096 Jan  5 20:59 var
+[eisuser@eisuatsftp01 rhel9-minimal]$ cd ..
+[eisuser@eisuatsftp01 home]$
+[eisuser@eisuatsftp01 home]$
+[eisuser@eisuatsftp01 home]$ podman images
+REPOSITORY      TAG         IMAGE ID      CREATED         SIZE
+localhost/rhel  9.6         c17949d600f8  50 seconds ago  1.18 GB
+[eisuser@eisuatsftp01 home]$ cd ~/Denny/
+[eisuser@eisuatsftp01 Denny]$ vi Containerfile
+[eisuser@eisuatsftp01 Denny]$ podman build -t app:v1.1 .
+STEP 1/6: FROM rhel:9.6
+STEP 2/6: COPY ./jre25 /opt
+--> 749ff5153bec
+STEP 3/6: COPY ./apiadmin-0.0.1-SNAPSHOT.jar /var
+--> af55ae57a489
+STEP 4/6: ENV JAVA_HOME="/opt/jre25"
+--> 25e37740bbb8
+STEP 5/6: ENV PATH="${JAVA_HOME}/bin:${PATH}"
+--> ad360f602d34
+STEP 6/6: ENTRYPOINT ["java","-jar","/var/apiadmin-0.0.1-SNAPSHOT.jar"]
+COMMIT app:v1.1
+--> a0a5e9f1894e
+Successfully tagged localhost/app:v1.1
+a0a5e9f1894ebab3994a176b5db79fe4cb4a6e145ddb930318af0295f098d433
+[eisuser@eisuatsftp01 Denny]$
+[eisuser@eisuatsftp01 Denny]$
+[eisuser@eisuatsftp01 Denny]$ podman run -d app:v1.1
+WARN[0000] Failed to mount subscriptions, skipping entry in /usr/share/containers/mounts.conf: getting host subscription data: failed to read subscriptions from "/usr/share/rhel/secrets": open /usr/share/rhel/secrets/redhat.repo: permission denied
+Error: crun: executable file `java` not found in $PATH: No such file or directory: OCI runtime attempted to invoke a command that was not found
+[eisuser@eisuatsftp01 Denny]$
