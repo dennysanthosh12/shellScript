@@ -1,58 +1,49 @@
-tar -C rhel9-minimal -c . | podman import - rhel:9.6
-Getting image source signatures
-Copying blob 9f3886585dc5 done   |
-Copying config c17949d600 done   |
-Writing manifest to image destination
-sha256:c17949d600f822acc0d784942c065dcfe2ce08baad6be47c832989a8fdab4aa1
-[eisuser@eisuatsftp01 home]$ cd rhel9-minimal
-[eisuser@eisuatsftp01 rhel9-minimal]$ ll
-total 12
-drwxrwxrwx  2 root root    6 Jun 25  2024 afs
-lrwxrwxrwx  1 root root    7 Jun 25  2024 bin -> usr/bin
-drwxrwxrwx  4 root root   30 Jan  5 20:59 boot
-drwxrwxrwx  2 root root   30 Jan  5 20:59 dev
-drwxrwxrwx 80 root root 4096 Jan  5 20:59 etc
-drwxrwxrwx  2 root root    6 Jun 25  2024 home
-lrwxrwxrwx  1 root root    7 Jun 25  2024 lib -> usr/lib
-lrwxrwxrwx  1 root root    9 Jun 25  2024 lib64 -> usr/lib64
-drwxrwxrwx  2 root root    6 Jun 25  2024 media
-drwxrwxrwx  2 root root    6 Jun 25  2024 mnt
-drwxrwxrwx  2 root root    6 Jun 25  2024 opt
-drwxrwxrwx  2 root root    6 Jan  5 20:58 proc
-drwxrwxrwx  2 root root    6 Jun 25  2024 root
-drwxrwxrwx  8 root root  107 Jan  5 20:59 run
-lrwxrwxrwx  1 root root    8 Jun 25  2024 sbin -> usr/sbin
-drwxrwxrwx  2 root root    6 Jun 25  2024 srv
-drwxrwxrwx  2 root root    6 Jan  5 20:58 sys
-drwxrwxrwx  2 root root   24 Jan  5 20:59 tmp
-drwxrwxrwx 12 root root  144 Jan  5 20:58 usr
-drwxrwxrwx 19 root root 4096 Jan  5 20:59 var
-[eisuser@eisuatsftp01 rhel9-minimal]$ cd ..
-[eisuser@eisuatsftp01 home]$
-[eisuser@eisuatsftp01 home]$
-[eisuser@eisuatsftp01 home]$ podman images
-REPOSITORY      TAG         IMAGE ID      CREATED         SIZE
-localhost/rhel  9.6         c17949d600f8  50 seconds ago  1.18 GB
-[eisuser@eisuatsftp01 home]$ cd ~/Denny/
-[eisuser@eisuatsftp01 Denny]$ vi Containerfile
-[eisuser@eisuatsftp01 Denny]$ podman build -t app:v1.1 .
-STEP 1/6: FROM rhel:9.6
-STEP 2/6: COPY ./jre25 /opt
---> 749ff5153bec
-STEP 3/6: COPY ./apiadmin-0.0.1-SNAPSHOT.jar /var
---> af55ae57a489
-STEP 4/6: ENV JAVA_HOME="/opt/jre25"
---> 25e37740bbb8
-STEP 5/6: ENV PATH="${JAVA_HOME}/bin:${PATH}"
---> ad360f602d34
-STEP 6/6: ENTRYPOINT ["java","-jar","/var/apiadmin-0.0.1-SNAPSHOT.jar"]
-COMMIT app:v1.1
---> a0a5e9f1894e
-Successfully tagged localhost/app:v1.1
-a0a5e9f1894ebab3994a176b5db79fe4cb4a6e145ddb930318af0295f098d433
-[eisuser@eisuatsftp01 Denny]$
-[eisuser@eisuatsftp01 Denny]$
-[eisuser@eisuatsftp01 Denny]$ podman run -d app:v1.1
-WARN[0000] Failed to mount subscriptions, skipping entry in /usr/share/containers/mounts.conf: getting host subscription data: failed to read subscriptions from "/usr/share/rhel/secrets": open /usr/share/rhel/secrets/redhat.repo: permission denied
-Error: crun: executable file `java` not found in $PATH: No such file or directory: OCI runtime attempted to invoke a command that was not found
-[eisuser@eisuatsftp01 Denny]$
+[eisuser@eisuatsftp01 Denny]$ podman ps -a
+CONTAINER ID  IMAGE               COMMAND     CREATED         STATUS        PORTS       NAMES
+a60fc54d84cd  localhost/rhel:9.6  /bin/bash   6 minutes ago   Up 6 minutes              funny_ptolemy
+405c80104792  localhost/api:v1.1  /bin/bash   43 seconds ago  Created       8080/tcp    exciting_agnesi
+[eisuser@eisuatsftp01 Denny]$ podman rm 405c80104792 a60fc54d84cd
+405c80104792
+Error: cannot remove container a60fc54d84cd3b990b3978f46f10d1d1d9d9bbb0f814bf8fe736ac8feab3ebaa as it is running - running or paused containers cannot be removed without force: container state improper
+[eisuser@eisuatsftp01 Denny]$ podman exec a60fc54d84cd
+Error: must provide a non-empty command to start an exec session: invalid argument
+[eisuser@eisuatsftp01 Denny]$ podman exec a60fc54d84cd /bin/bash
+[eisuser@eisuatsftp01 Denny]$ podman exec -it a60fc54d84cd /bin/bash
+bash-5.1# java
+bash: java: command not found
+bash-5.1# df -hT
+Filesystem     Type      Size  Used Avail Use% Mounted on
+overlay        overlay    30G   27G  3.5G  89% /
+tmpfs          tmpfs      64M     0   64M   0% /dev
+tmpfs          tmpfs     6.3G  104K  6.3G   1% /etc/hosts
+shm            tmpfs      63M     0   63M   0% /dev/shm
+devtmpfs       devtmpfs  4.0M     0  4.0M   0% /dev/tty
+bash-5.1# free -h
+               total        used        free      shared  buff/cache   available
+Mem:            62Gi       5.5Gi        29Gi       426Mi        28Gi        56Gi
+Swap:            9Gi          0B         9Gi
+bash-5.1# ls -la
+total 4
+dr-xr-xr-x   1 root   root     28 Jan  5 16:01 .
+dr-xr-xr-x   1 root   root     28 Jan  5 16:01 ..
+drwxrwxrwx   2 root   root      6 Jun 25  2024 afs
+lrwxrwxrwx   1 root   root      7 Jun 25  2024 bin -> usr/bin
+drwxrwxrwx   4 root   root     30 Jan  5 15:29 boot
+drwxr-xr-x   5 root   root    360 Jan  5 16:01 dev
+drwxrwxrwx   1 root   root     41 Jan  5 16:01 etc
+drwxrwxrwx   2 root   root      6 Jun 25  2024 home
+lrwxrwxrwx   1 root   root      7 Jun 25  2024 lib -> usr/lib
+lrwxrwxrwx   1 root   root      9 Jun 25  2024 lib64 -> usr/lib64
+drwxrwxrwx   2 root   root      6 Jun 25  2024 media
+drwxrwxrwx   2 root   root      6 Jun 25  2024 mnt
+drwxrwxrwx   2 root   root      6 Jun 25  2024 opt
+dr-xr-xr-x 365 nobody nobody    0 Jan  5 16:01 proc
+drwxrwxrwx   2 root   root      6 Jun 25  2024 root
+drwxrwxrwx   1 root   root     27 Jan  5 16:01 run
+lrwxrwxrwx   1 root   root      8 Jun 25  2024 sbin -> usr/sbin
+drwxrwxrwx   2 root   root      6 Jun 25  2024 srv
+dr-xr-xr-x  13 nobody nobody    0 Jan  5 16:01 sys
+drwxrwxrwx   2 root   root     24 Jan  5 15:29 tmp
+drwxrwxrwx  12 root   root    144 Jan  5 15:28 usr
+drwxrwxrwx  19 root   root   4096 Jan  5 15:29 var
+bash-5.1#
