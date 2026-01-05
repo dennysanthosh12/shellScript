@@ -1,8 +1,3 @@
-
-sudo dnf --installroot=~/rhel9-minimal \
-    --releasever=9 \
-    --disablerepo='*' \
-    --enablerepo='file:///path/to/local/rpms' \
-    groupinstall "Minimal Install" -y
-
-tar -C rhel9-minimal -c . | podman import - rhel9-minimal:latest
+podman run -d -it   localhost/rhel:9.6
+WARN[0000] Failed to mount subscriptions, skipping entry in /usr/share/containers/mounts.conf: getting host subscription data: failed to read subscriptions from "/usr/share/rhel/secrets": open /usr/share/rhel/secrets/redhat.repo: permission denied
+Error: crun: open executable: Operation not permitted: OCI permission denied
