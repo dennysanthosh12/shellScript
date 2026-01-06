@@ -1,25 +1,25 @@
-
-podman run -it --entrypoint /bin/bash localhost/app:v1.1
-WARN[0000] Failed to mount subscriptions, skipping entry in /usr/share/containers/mounts.conf: getting host subscription data: failed to read subscriptions from "/usr/share/rhel/secrets": open /usr/share/rhel/secrets/redhat.repo: permission denied
-bash-5.1# java -version
-bash: java: command not found
-bash-5.1#
-bash-5.1#
-bash-5.1# cd /opt/
-bash-5.1# ls
-bin  conf  legal  lib  release
-bash-5.1# pwd
-/opt
-bash-5.1#
-
-
-
-
-[eisuser@eisuatsftp01 Denny]$ cat Containerfile
-FROM rhel:9.6
-COPY ./jre25 /opt
-COPY ./apiadmin-0.0.1-SNAPSHOT.jar /var
-ENV JAVA_HOME="/opt/jre25"
-ENV PATH="${JAVA_HOME}/bin:${PATH}"
-EXPOSE 8080
-CMD ["java","-jar","/var/apiadmin-0.0.1-SNAPSHOT.jar"]
+[eisuser@ansiblecontrolnode~]$ podman ps -a
+CONTAINER ID  IMAGE                                                                             COMMAND               CREATED      STATUS      PORTS       NAMES
+685f26e9eb76  registry.redhat.io/rhel8/postgresql-15:latest                                     run-postgresql        8 weeks ago  Up 8 weeks              postgresql
+12658b843b80  registry.redhat.io/rhel8/redis-6:latest                                           run-redis             8 weeks ago  Up 8 weeks              redis-unix
+d8ede1bd8d8e  registry.redhat.io/rhel8/redis-6:latest                                           run-redis             8 weeks ago  Up 8 weeks              redis-tcp
+35248fef095a  registry.redhat.io/ansible-automation-platform-25/gateway-proxy-rhel8:latest      /usr/bin/envoy --...  8 weeks ago  Up 8 weeks              automation-gateway-proxy
+cb149953728d  registry.redhat.io/ansible-automation-platform-25/gateway-rhel8:latest            /usr/bin/supervis...  8 weeks ago  Up 8 weeks              automation-gateway
+f51790716b22  registry.redhat.io/ansible-automation-platform-25/receptor-rhel8:latest           /usr/bin/receptor...  8 weeks ago  Up 8 weeks              receptor
+1bd6c09997e1  registry.redhat.io/ansible-automation-platform-25/controller-rhel8:latest         /usr/bin/launch_a...  8 weeks ago  Up 8 weeks              automation-controller-rsyslog
+b8df0759c81b  registry.redhat.io/ansible-automation-platform-25/controller-rhel8:latest         /usr/bin/launch_a...  8 weeks ago  Up 8 weeks              automation-controller-task
+faf3ed5c1f0a  registry.redhat.io/ansible-automation-platform-25/controller-rhel8:latest         /usr/bin/launch_a...  8 weeks ago  Up 8 weeks              automation-controller-web
+df4be4de35b4  registry.redhat.io/ansible-automation-platform-25/eda-controller-rhel8:latest     gunicorn --bind 1...  8 weeks ago  Up 8 weeks              automation-eda-api
+46b39423cb80  registry.redhat.io/ansible-automation-platform-25/eda-controller-rhel8:latest     daphne --bind 127...  8 weeks ago  Up 8 weeks              automation-eda-daphne
+99a14be66a36  registry.redhat.io/ansible-automation-platform-25/eda-controller-ui-rhel8:latest  /bin/sh -c nginx ...  8 weeks ago  Up 8 weeks              automation-eda-web
+7fa1a159a28c  registry.redhat.io/ansible-automation-platform-25/eda-controller-rhel8:latest     aap-eda-manage rq...  8 weeks ago  Up 8 weeks              automation-eda-worker-1
+1f869b692aac  registry.redhat.io/ansible-automation-platform-25/eda-controller-rhel8:latest     aap-eda-manage rq...  8 weeks ago  Up 8 weeks              automation-eda-worker-2
+ebb45df3b219  registry.redhat.io/ansible-automation-platform-25/eda-controller-rhel8:latest     aap-eda-manage rq...  8 weeks ago  Up 8 weeks              automation-eda-activation-worker-1
+143e45103dfb  registry.redhat.io/ansible-automation-platform-25/eda-controller-rhel8:latest     aap-eda-manage rq...  8 weeks ago  Up 8 weeks              automation-eda-activation-worker-2
+0bc03a8dafb4  registry.redhat.io/ansible-automation-platform-25/eda-controller-rhel8:latest     aap-eda-manage sc...  8 weeks ago  Up 8 weeks              automation-eda-scheduler
+83a7e0b18bfa  registry.redhat.io/ansible-automation-platform-25/hub-rhel8:latest                pulpcore-api --na...  8 weeks ago  Up 8 weeks              automation-hub-api
+18069bf07cb6  registry.redhat.io/ansible-automation-platform-25/hub-rhel8:latest                pulpcore-content ...  8 weeks ago  Up 8 weeks              automation-hub-content
+e51328a43018  registry.redhat.io/ansible-automation-platform-25/hub-web-rhel8:latest            /bin/sh -c nginx ...  8 weeks ago  Up 8 weeks              automation-hub-web
+7975acdeea6c  registry.redhat.io/ansible-automation-platform-25/hub-rhel8:latest                pulpcore-worker       8 weeks ago  Up 8 weeks              automation-hub-worker-1
+8a0bdc83c458  registry.redhat.io/ansible-automation-platform-25/hub-rhel8:latest                pulpcore-worker       8 weeks ago  Up 8 weeks              automation-hub-worker-2
+[eisuser@ansiblecontrolnode~]$
