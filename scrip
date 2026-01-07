@@ -31,3 +31,10 @@ false[eisuser@az-rh-uat-01 ~]$
 [eisuser@az-rh-uat-01 ~]$ yq e '.UAT.Deploy // true' config.yml | tr -d '[:space:]'
 true[eisuser@az-rh-uat-01 ~]$ yq e '.UAT.Deploy' config.yml | tr -d '[:space:]'
 null[eisuser@az-rh-uat-01 ~]$
+
+
+[eisuser@az-rh-uat-01 ~]$ yq e 'if .DEV.Deploy == null then true else .DEV.Deploy end' config.yml
+Error: 1:1: lexer: invalid input text "if .DEV.Deploy =..."
+[eisuser@az-rh-uat-01 ~]$ yq e "if .DEV.Deploy == null then true else .DEV.Deploy end" config.yml
+Error: 1:1: lexer: invalid input text "if .DEV.Deploy =..."
+[eisuser@az-rh-uat-01 ~]$
