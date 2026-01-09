@@ -1,49 +1,318 @@
-[eisuser@az-rh-uat-01 ~]$ vi config.yml
-UAT:
-  ApplicationName: thirdPartyAAMAZE_sys
-  IntegrationNode:
-  IntegrationServer:
-  Overrides:
-    additionalInstances: 3
+https://10.177.44.50:4418/apiv2?depth=2
 
-SIT:
-  ApplicationName: thirdPartyAAMAZE_sys
-  IntegrationNode:
-  IntegrationServer:
-  Overrides:
-    additionalInstances: 3
-
-DEV:
-  ApplicationName: thirdPartyAAMAZE_sys
-  IntegrationNode: PAYMENT_SYS
-  IntegrationServer: Payment_S_03
-  Deploy: false
-  Overrides:
-    additionalInstances: 4
-
-
-
-[eisuser@az-rh-uat-01 ~]$ yq e '.DEV.Deploy // true' config.yml | tr -d '[:space:]'
-true[eisuser@az-rh-uat-01 ~]$
-[eisuser@az-rh-uat-01 ~]$ yq e '.DEV.Deploy' config.yml | tr -d '[:space:]'
-false[eisuser@az-rh-uat-01 ~]$
-[eisuser@az-rh-uat-01 ~]$
-[eisuser@az-rh-uat-01 ~]$ yq e '.UAT.Deploy // true' config.yml | tr -d '[:space:]'
-true[eisuser@az-rh-uat-01 ~]$ yq e '.UAT.Deploy' config.yml | tr -d '[:space:]'
-null[eisuser@az-rh-uat-01 ~]$
-
-
-[eisuser@az-rh-uat-01 ~]$ yq e 'if .DEV.Deploy == null then true else .DEV.Deploy end' config.yml
-Error: 1:1: lexer: invalid input text "if .DEV.Deploy =..."
-[eisuser@az-rh-uat-01 ~]$ yq e "if .DEV.Deploy == null then true else .DEV.Deploy end" config.yml
-Error: 1:1: lexer: invalid input text "if .DEV.Deploy =..."
-[eisuser@az-rh-uat-01 ~]$
-
-
-DEPLOY=$(yq e '.UAT.Deploy' config.yml | tr -d '[:space:]')
-if [ "$DEPLOY" = true ] || [ "$DEPLOY" = "true" ]; then
-                DEPLOY="true"
-              else
-                DEPLOY="false"
-              fi
-echo "$DEPLOY"
+{
+  "hasChildren": true,
+  "name": "ACCOUNT_EXP",
+  "type": "integrationNode",
+  "uri": "/apiv2",
+  "properties": {
+    "defaultQueueManagerName": "QM_ACCOUNT_EXP",
+    "httpConnectorPort": 4001,
+    "httpsConnectorPort": 7083,
+    "restAdminListenerPort": 4418,
+    "restAdminListenerIPCSocket": "/var/mqsi/ACCOUNT_EXP.uds"
+  },
+  "descriptiveProperties": {
+    "productName": "IBM App Connect Enterprise",
+    "version": "13.0.3.0",
+    "buildLevel": "ib000-L250327.4763 (S000-L250327.14116)",
+    "platformName": "Linux",
+    "platformArchitecture": "x86_64",
+    "platformVersion": "5.14.0-611.13.1.el9_7.x86_64"
+  },
+  "active": {
+    "processId": "1710497"
+  },
+  "trace": {
+    "agent": {
+      "name": "agentTrace",
+      "type": "trace",
+      "children": {
+        "serviceTrace": {
+          "name": "serviceTrace",
+          "type": "serviceTrace",
+          "properties": {
+            "traceLevel": "none",
+            "traceMode": "safe",
+            "traceSizeKb": 1048576
+          },
+          "active": {
+            "traceLevel": "none",
+            "traceMode": "safe",
+            "traceSizeKb": 1048576
+          }
+        }
+      }
+    },
+    "name": "trace",
+    "type": "trace"
+  },
+  "children": {
+    "servers": {
+      "name": "servers",
+      "type": "integrationServers",
+      "uri": "/apiv2/servers",
+      "hasChildren": true,
+      "children": [
+        {
+          "name": "Account_E_01",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_01",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1710530,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        },
+        {
+          "name": "Account_E_02",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_02",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1710531,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        },
+        {
+          "name": "Account_E_03",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_03",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1710532,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        },
+        {
+          "name": "Account_E_04",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_04",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1710533,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        },
+        {
+          "name": "Account_E_05",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_05",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1710534,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        },
+        {
+          "name": "Account_E_06",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_06",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1710535,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        },
+        {
+          "name": "Account_E_07",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_07",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1710536,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        },
+        {
+          "name": "Account_E_08",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_08",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1710537,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        },
+        {
+          "name": "Account_E_09",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_09",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1714541,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        },
+        {
+          "name": "Account_E_10",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_10",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1710539,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        },
+        {
+          "name": "Account_E_11",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_11",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1710564,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        },
+        {
+          "name": "Account_E_12",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_12",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1710575,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        },
+        {
+          "name": "Account_E_13",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_13",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1710576,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        },
+        {
+          "name": "Account_E_14",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_14",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1710577,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        },
+        {
+          "name": "Account_E_15",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_15",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1710609,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        },
+        {
+          "name": "Account_E_16",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_16",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1710617,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        },
+        {
+          "name": "Account_E_17",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_17",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1710618,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        },
+        {
+          "name": "Account_E_18",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_18",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1710684,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        },
+        {
+          "name": "Account_E_19",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_19",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1710732,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        },
+        {
+          "name": "Account_E_20",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_20",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1710795,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        },
+        {
+          "name": "Account_E_N",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_N",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1710871,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        }
+      ]
+    },
+    "logs": {
+      "hasChildren": false,
+      "name": "logs",
+      "type": "logs",
+      "uri": "/apiv2/logs"
+    }
+  }
+}
