@@ -1,318 +1,150 @@
-https://10.177.44.50:4418/apiv2?depth=2
+ openssl s_client -connect 10.177.44.50:4418 -showcerts
+Connecting to 10.177.44.50
+CONNECTED(00000003)
+Can't use SSL_get_servername
+depth=1 DC=SBI, DC=AD, CN=SBI-PROD-RCA
+verify error:num=19:self-signed certificate in certificate chain
+verify return:1
+depth=1 DC=SBI, DC=AD, CN=SBI-PROD-RCA
+verify return:1
+depth=0 CN=IBM ACE SSL Certificate
+verify return:1
+---
+Certificate chain
+ 0 s:CN=IBM ACE SSL Certificate
+   i:DC=SBI, DC=AD, CN=SBI-PROD-RCA
+   a:PKEY: RSA, 2048 (bit); sigalg: sha256WithRSAEncryption
+   v:NotBefore: Nov  7 08:01:49 2025 GMT; NotAfter: Nov  7 08:01:49 2027 GMT
+-----BEGIN CERTIFICATE-----
+MIIKLTCCCRWgAwIBAgITGgAequWhDhS3QreLCgAAAB6q5TANBgkqhkiG9w0BAQsF
+ADBAMRMwEQYKCZImiZPyLGQBGRYDU0JJMRIwEAYKCZImiZPyLGQBGRYCQUQxFTAT
+BgNVBAMTDFNCSS1QUk9ELVJDQTAeFw0yNTExMDcwODAxNDlaFw0yNzExMDcwODAx
+NDlaMCIxIDAeBgNVBAMTF0lCTSBBQ0UgU1NMIENlcnRpZmljYXRlMIIBIjANBgkq
+hkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwDfu08K0OfQq/qWjH+y8I4yoDTYBdOpl
+OiZoJhxJGZ5QJwQjZFTFpaTh31ajogq56U/itJb81x6ripto99dJrboX+N/I78et
+BwqKcJuQtnevoi6NRDYIedyDzPA+dtDAmKNmeCZxdpsfJC3iy1OHqUt2P6rCXEQW
+2cLl3JUBmnRpvw6FFrYXVgasSakf0zkgGNu7vi6HjybbrU5USyxTLOikCuccRZGp
+bqi1lcIyTDcVCi2PbyhFhOZFzxUQ0fQTeS7F7zCNx4MvAsWK/apt55r60s4AGJAO
+D3208Z29hmKK98R/kYySyvHhSf3ryBfkcDt1XUZCXmAFiTFsw8dShQIDAQABo4IH
+PDCCBzgwDgYDVR0PAQH/BAQDAgWgMBMGA1UdJQQMMAoGCCsGAQUFBwMBMBsGCSsG
+AQQBgjcVCgQOMAwwCgYIKwYBBQUHAwEwHQYDVR0OBBYEFDmo3D3DkU9molNwRmRn
+i8VeLQ8ZMIIE6gYDVR0RBIIE4TCCBN2CCWRldi1leHAtMYIIZGV2ZXhwMDKCCWRl
+di1leHAtM4IJZGV2LWV4cC00gghkZXYtc3lzMYIIZGV2LXN5czKCCGRldi1zeXMz
+gghkZXYtc3lzNIIHZGV2bXEwMYILRUlTVUFURVhQMDGCC0VJU1VBVEVYUDAyggtF
+SVNVQVRFWFAwM4ILRUlTVUFURVhQMDSCC0VJU1VBVEVYUDA1ggtFSVNVQVRFWFAw
+NoILRUlTVUFURVhQMDeCC0VJU1VBVEVYUDA4ggtFSVNVQVRFWFAwOYILRUlTVUFU
+U1lTMDGCC0VJU1VBVFNZUzAyggtFSVNVQVRTWVMwM4ILRUlTVUFUU1lTMDSCC0VJ
+U1VBVFNZUzA1ggtFSVNVQVRTWVMwNoILRUlTVUFUU1lTMDeCC0VJU1VBVFNZUzA4
+ggtFSVNVQVRTWVMwOYIMRUlTVUFUU1lTMDEwggpFSVNVQVRNUTAxggpFSVNVQVRN
+UTAygg1wcmUtcHJvZC1leHAxgg1wcmUtcHJvZC1leHAygg1wcmUtcHJvZC1leHAz
+gg1wcmUtcHJvZC1leHA0gg1wcmUtcHJvZC1leHA1gg1wcmUtcHJvZC1leHA2gg1w
+cmUtcHJvZC1leHA3gg1wcmUtcHJvZC1leHA4gg1wcmUtcHJvZC1leHA5gg5wcmUt
+cHJvZC1leHAxMIINcHJlLXByb2Qtc3lzMYINcHJlLXByb2Qtc3lzMoINcHJlLXBy
+b2Qtc3lzM4INcHJlLXByb2Qtc3lzNIINcHJlLXByb2Qtc3lzNYINcHJlLXByb2Qt
+c3lzNoINcHJlLXByb2Qtc3lzN4INcHJlLXByb2Qtc3lzOIINcHJlLXByb2Qtc3lz
+OYIOcHJlLXByb2Qtc3lzMTCCDnByZS1wcm9kLXN5czExgg5wcmUtcHJvZC1zeXMx
+MoIOcHJlLXByb2Qtc3lzMTOCDnByZS1wcm9kLXN5czE0gg5wcmUtcHJvZC1zeXMx
+NYIPcHJlLXByb2Qtc3R1YjAxgg9wcmUtcHJvZC1zdHViMDKCD3ByZS1wcm9kLXN0
+dWIwM4IPcHJlLXByb2Qtc3R1YjA0gg9wcmUtcHJvZC1zdHViMDWHBAqxLBSHBAqx
+LBWHBAqxLBaHBAqxLBeHBAqxLBiHBAqxLBmHBAqxLBqHBAqxLBuHBAqxLByHBAqx
+LDKHBAqxLDOHBAqxLDSHBAqxLDWHBAqxLDaHBAqxLDeHBAqxLDiHBAqxLDmHBAqx
+LDqHBAqxLDuHBAqxLDyHBAqxLD2HBAqxLD6HBAqxLD+HBAqxLECHBAqxLEGHBAqx
+LEKHBAqxLEOHBAqxLESHBAqxLEWHBAqxLEaHBAqxLEeHBAqxLEiHBAqxLEmHBAqx
+LEqHBAqxLEuHBAqxLEyHBAqxLE2HBAqxLE6HBAqxLE+HBAqxLFCHBAqxLFGHBAqx
+LFKHBAqxLFOHBAqxLFSHBAqxLFWHBAqxLFaHBAqxLFeHBAqxLFiHBAqxLFmHBAqx
+LFqHBAqxLFuHBAqxLFyHBAqxLF2HBAqxLF6HBAqxLF+HBAqxLGCHBAqxLGGHBAqx
+LGKHBAqxLGOHBAqxLGSHBAqxLGWHBAqxLGaHBAqxLGeHBAqxLGiHBAqxLGmHBAqx
+LGqHBAqxLGuHBAqxLGyHBAqxLG0wHwYDVR0jBBgwFoAUN5ogdDBeJP0f5b+u/wD0
+axV1n7AwgcsGA1UdHwSBwzCBwDCBvaCBuqCBt4aBtGxkYXA6Ly8vQ049U0JJLVBS
+T0QtUkNBLENOPVNCSVJPT1RDQVBST0QsQ049Q0RQLENOPVB1YmxpYyUyMEtleSUy
+MFNlcnZpY2VzLENOPVNlcnZpY2VzLENOPUNvbmZpZ3VyYXRpb24sREM9QUQsREM9
+U0JJP2NlcnRpZmljYXRlUmV2b2NhdGlvbkxpc3Q/YmFzZT9vYmplY3RDbGFzcz1j
+UkxEaXN0cmlidXRpb25Qb2ludDCBuQYIKwYBBQUHAQEEgawwgakwgaYGCCsGAQUF
+BzAChoGZbGRhcDovLy9DTj1TQkktUFJPRC1SQ0EsQ049QUlBLENOPVB1YmxpYyUy
+MEtleSUyMFNlcnZpY2VzLENOPVNlcnZpY2VzLENOPUNvbmZpZ3VyYXRpb24sREM9
+QUQsREM9U0JJP2NBQ2VydGlmaWNhdGU/YmFzZT9vYmplY3RDbGFzcz1jZXJ0aWZp
+Y2F0aW9uQXV0aG9yaXR5MDwGCSsGAQQBgjcVBwQvMC0GJSsGAQQBgjcVCIaBnFyD
+x4Bbg/WRN4TggWaz6mRqhbCVN4ObgBcCAWUCARQwDQYJKoZIhvcNAQELBQADggEB
+AC+8bcR6VI5w2QX2RF/n82LFmLev5k8mENwHAdQaWGymCOilswViYW0Wvi3Q9Rcp
+qMu/QmU7DL1QndQ/DOYrDH31TI4YdumwJ6I/OMKkA1bz0MwSaDqzAfqmHGWd/KdQ
+U2NWRDm7O6x5VVxAvhYzkoZ4IQUakE2LMRo4xTfwUDK8liSB8bnX38Sot+ppHrzP
+P5o5eupYSzrX1iuLtGqorRVpBvuAuA50XxYMKxDtnZMftlWsmzBLutC95iAnE9mm
+T1lfIq7mSQcvoT/Cm9HXC5DshHJsEH7zs5cX3Vh4oTwF20PSCgH+AOy4QltaUI7l
+4Yzixrli+X62x3Npnf3ev3o=
+-----END CERTIFICATE-----
+ 1 s:DC=SBI, DC=AD, CN=SBI-PROD-RCA
+   i:DC=SBI, DC=AD, CN=SBI-PROD-RCA
+   a:PKEY: RSA, 2048 (bit); sigalg: sha256WithRSAEncryption
+   v:NotBefore: Feb  8 06:55:49 2017 GMT; NotAfter: Feb  8 07:05:47 2057 GMT
+-----BEGIN CERTIFICATE-----
+MIIDdTCCAl2gAwIBAgIQTAMTWJxIVapEJZNyGFj6DjANBgkqhkiG9w0BAQsFADBA
+MRMwEQYKCZImiZPyLGQBGRYDU0JJMRIwEAYKCZImiZPyLGQBGRYCQUQxFTATBgNV
+BAMTDFNCSS1QUk9ELVJDQTAgFw0xNzAyMDgwNjU1NDlaGA8yMDU3MDIwODA3MDU0
+N1owQDETMBEGCgmSJomT8ixkARkWA1NCSTESMBAGCgmSJomT8ixkARkWAkFEMRUw
+EwYDVQQDEwxTQkktUFJPRC1SQ0EwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK
+AoIBAQDNDSwbN72EKzOcH+xZhOue8ik8kAztotq76DielYz6yZHi9rHavJx3Ic0e
+KTtgr72jHXra3KZG2GgQpvxfLZd/vD+fZRBXQJJJMvcG0gJYKQLXH6nA3AB/g+UI
+Q0ulxGtgajg2ue0SDBWA2b6EEIYf8bf0zaDy2LnyGkyrv02dehwlMhv6RzXIpta/
+JCAWd2l1k70DX6VQTrb1yAh9C0emIBjoC5HcD7nLtid2lyHjNCXyC3ZWQYjO+a0G
+aaGhloJsjyIfazHSi8JPhzldR15kQcxkeLYVF8LiLfs9lmE7IZxcW/NaCpBY6tBV
+nxOsZ3In0x0ZxQgQ2NoZXjjlJPWtAgMBAAGjaTBnMBMGCSsGAQQBgjcUAgQGHgQA
+QwBBMA4GA1UdDwEB/wQEAwIBhjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBQ3
+miB0MF4k/R/lv67/APRrFXWfsDAQBgkrBgEEAYI3FQEEAwIBADANBgkqhkiG9w0B
+AQsFAAOCAQEAT5jkCD8DR7q73+eiFQrN1gUr8t4I6ShelY1IqbcsBGGmb6fQqN82
+g5QTPLAPT9+6/nv5cAxFZ+nAlE3Xdw3O2ATlf1F/YikXQQ3gGi7aTsKQsQIehPqx
+LLuLPKpavGmY+Wr38Le34Ydw34Fryxqx31xLbkWJohFfcNF0o/asfk4ibGowQNaK
+ZEaW4CORKjEBdyez9l+lfA1N7KLaMx+B2hyU2TgJgzwCf/7Yv/RxB3/E0QyfbehY
+/aTCUqKNgRUnx5njSjZp/LKgNeMQehyfCIGm0rWg0GuD2WrJadrteJOlAH8/tjlI
+yfL49Y51TPqrT+VOXwWlEIrDBvmaAYgIwQ==
+-----END CERTIFICATE-----
+---
+Server certificate
+subject=CN=IBM ACE SSL Certificate
+issuer=DC=SBI, DC=AD, CN=SBI-PROD-RCA
+---
+No client certificate CA names sent
+Peer signing digest: SHA256
+Peer signature type: rsa_pss_rsae_sha256
+Peer Temp Key: X25519, 253 bits
+---
+SSL handshake has read 4158 bytes and written 398 bytes
+Verification error: self-signed certificate in certificate chain
+---
+New, TLSv1.2, Cipher is ECDHE-RSA-AES128-GCM-SHA256
+Protocol: TLSv1.2
+Server public key is 2048 bit
+Secure Renegotiation IS supported
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+SSL-Session:
+    Protocol  : TLSv1.2
+    Cipher    : ECDHE-RSA-AES128-GCM-SHA256
+    Session-ID: C3C8AB7AAA1E66E920A2F1A6DC441366CC6BF99154C58596B3D95110A2B3690F
+    Session-ID-ctx:
+    Master-Key: FE5D2E99CF8D14AB30EC862033A927ABB8D9A381585FA8B1E13F9193E2BC7B850D79030AD2F00302E9972BC36F97A8BD
+    PSK identity: None
+    PSK identity hint: None
+    SRP username: None
+    TLS session ticket lifetime hint: 7200 (seconds)
+    TLS session ticket:
+    0000 - ad 9a 2b 2d 90 3d 1b a6-73 88 38 ee f9 18 1b cc   ..+-.=..s.8.....
+    0010 - 7e c8 60 5c 90 4b 85 76-e7 d8 ad 37 49 97 a0 67   ~.`\.K.v...7I..g
+    0020 - 79 73 c6 9a b5 b5 8d 19-91 55 90 f2 e4 a8 b0 9f   ys.......U......
+    0030 - a3 2b d5 3d e2 62 ba 4f-c8 0f c0 ac f7 48 8e 76   .+.=.b.O.....H.v
+    0040 - 21 fb ea 7d 2f 5b 72 1d-f7 b5 43 5e 09 1e f5 75   !..}/[r...C^...u
+    0050 - 8b 60 18 ad b7 ff f0 c5-c5 b9 23 08 c2 85 98 ca   .`........#.....
+    0060 - 34 c8 c5 43 b9 99 6e e8-81 d4 df 38 3f a7 a0 9f   4..C..n....8?...
+    0070 - 0a 36 d3 9a 7d 92 75 c2-60 d8 2f d8 f3 22 c8 a7   .6..}.u.`./.."..
+    0080 - a2 2f 50 4b da c9 68 49-8b 94 0b 12 b0 9f 95 2a   ./PK..hI.......*
+    0090 - cc 0f 4a 09 b8 7f 39 a5-ae a1 f8 e8 1f 75 97 f1   ..J...9......u..
+    00a0 - 8c 50 97 8e 1b d8 b0 3f-08 ac 26 98 47 79 7e 62   .P.....?..&.Gy~b
+    00b0 - 6f a6 ca 6e ab 19 52 a3-a1 9a 05 2e 43 3e 6e 28   o..n..R.....C>n(
 
-{
-  "hasChildren": true,
-  "name": "ACCOUNT_EXP",
-  "type": "integrationNode",
-  "uri": "/apiv2",
-  "properties": {
-    "defaultQueueManagerName": "QM_ACCOUNT_EXP",
-    "httpConnectorPort": 4001,
-    "httpsConnectorPort": 7083,
-    "restAdminListenerPort": 4418,
-    "restAdminListenerIPCSocket": "/var/mqsi/ACCOUNT_EXP.uds"
-  },
-  "descriptiveProperties": {
-    "productName": "IBM App Connect Enterprise",
-    "version": "13.0.3.0",
-    "buildLevel": "ib000-L250327.4763 (S000-L250327.14116)",
-    "platformName": "Linux",
-    "platformArchitecture": "x86_64",
-    "platformVersion": "5.14.0-611.13.1.el9_7.x86_64"
-  },
-  "active": {
-    "processId": "1710497"
-  },
-  "trace": {
-    "agent": {
-      "name": "agentTrace",
-      "type": "trace",
-      "children": {
-        "serviceTrace": {
-          "name": "serviceTrace",
-          "type": "serviceTrace",
-          "properties": {
-            "traceLevel": "none",
-            "traceMode": "safe",
-            "traceSizeKb": 1048576
-          },
-          "active": {
-            "traceLevel": "none",
-            "traceMode": "safe",
-            "traceSizeKb": 1048576
-          }
-        }
-      }
-    },
-    "name": "trace",
-    "type": "trace"
-  },
-  "children": {
-    "servers": {
-      "name": "servers",
-      "type": "integrationServers",
-      "uri": "/apiv2/servers",
-      "hasChildren": true,
-      "children": [
-        {
-          "name": "Account_E_01",
-          "hasChildren": true,
-          "uri": "/apiv2/servers/Account_E_01",
-          "type": "integrationServer",
-          "active": {
-            "processId": 1710530,
-            "isRunning": true,
-            "state": "started"
-          },
-          "apiResponseCode": 200
-        },
-        {
-          "name": "Account_E_02",
-          "hasChildren": true,
-          "uri": "/apiv2/servers/Account_E_02",
-          "type": "integrationServer",
-          "active": {
-            "processId": 1710531,
-            "isRunning": true,
-            "state": "started"
-          },
-          "apiResponseCode": 200
-        },
-        {
-          "name": "Account_E_03",
-          "hasChildren": true,
-          "uri": "/apiv2/servers/Account_E_03",
-          "type": "integrationServer",
-          "active": {
-            "processId": 1710532,
-            "isRunning": true,
-            "state": "started"
-          },
-          "apiResponseCode": 200
-        },
-        {
-          "name": "Account_E_04",
-          "hasChildren": true,
-          "uri": "/apiv2/servers/Account_E_04",
-          "type": "integrationServer",
-          "active": {
-            "processId": 1710533,
-            "isRunning": true,
-            "state": "started"
-          },
-          "apiResponseCode": 200
-        },
-        {
-          "name": "Account_E_05",
-          "hasChildren": true,
-          "uri": "/apiv2/servers/Account_E_05",
-          "type": "integrationServer",
-          "active": {
-            "processId": 1710534,
-            "isRunning": true,
-            "state": "started"
-          },
-          "apiResponseCode": 200
-        },
-        {
-          "name": "Account_E_06",
-          "hasChildren": true,
-          "uri": "/apiv2/servers/Account_E_06",
-          "type": "integrationServer",
-          "active": {
-            "processId": 1710535,
-            "isRunning": true,
-            "state": "started"
-          },
-          "apiResponseCode": 200
-        },
-        {
-          "name": "Account_E_07",
-          "hasChildren": true,
-          "uri": "/apiv2/servers/Account_E_07",
-          "type": "integrationServer",
-          "active": {
-            "processId": 1710536,
-            "isRunning": true,
-            "state": "started"
-          },
-          "apiResponseCode": 200
-        },
-        {
-          "name": "Account_E_08",
-          "hasChildren": true,
-          "uri": "/apiv2/servers/Account_E_08",
-          "type": "integrationServer",
-          "active": {
-            "processId": 1710537,
-            "isRunning": true,
-            "state": "started"
-          },
-          "apiResponseCode": 200
-        },
-        {
-          "name": "Account_E_09",
-          "hasChildren": true,
-          "uri": "/apiv2/servers/Account_E_09",
-          "type": "integrationServer",
-          "active": {
-            "processId": 1714541,
-            "isRunning": true,
-            "state": "started"
-          },
-          "apiResponseCode": 200
-        },
-        {
-          "name": "Account_E_10",
-          "hasChildren": true,
-          "uri": "/apiv2/servers/Account_E_10",
-          "type": "integrationServer",
-          "active": {
-            "processId": 1710539,
-            "isRunning": true,
-            "state": "started"
-          },
-          "apiResponseCode": 200
-        },
-        {
-          "name": "Account_E_11",
-          "hasChildren": true,
-          "uri": "/apiv2/servers/Account_E_11",
-          "type": "integrationServer",
-          "active": {
-            "processId": 1710564,
-            "isRunning": true,
-            "state": "started"
-          },
-          "apiResponseCode": 200
-        },
-        {
-          "name": "Account_E_12",
-          "hasChildren": true,
-          "uri": "/apiv2/servers/Account_E_12",
-          "type": "integrationServer",
-          "active": {
-            "processId": 1710575,
-            "isRunning": true,
-            "state": "started"
-          },
-          "apiResponseCode": 200
-        },
-        {
-          "name": "Account_E_13",
-          "hasChildren": true,
-          "uri": "/apiv2/servers/Account_E_13",
-          "type": "integrationServer",
-          "active": {
-            "processId": 1710576,
-            "isRunning": true,
-            "state": "started"
-          },
-          "apiResponseCode": 200
-        },
-        {
-          "name": "Account_E_14",
-          "hasChildren": true,
-          "uri": "/apiv2/servers/Account_E_14",
-          "type": "integrationServer",
-          "active": {
-            "processId": 1710577,
-            "isRunning": true,
-            "state": "started"
-          },
-          "apiResponseCode": 200
-        },
-        {
-          "name": "Account_E_15",
-          "hasChildren": true,
-          "uri": "/apiv2/servers/Account_E_15",
-          "type": "integrationServer",
-          "active": {
-            "processId": 1710609,
-            "isRunning": true,
-            "state": "started"
-          },
-          "apiResponseCode": 200
-        },
-        {
-          "name": "Account_E_16",
-          "hasChildren": true,
-          "uri": "/apiv2/servers/Account_E_16",
-          "type": "integrationServer",
-          "active": {
-            "processId": 1710617,
-            "isRunning": true,
-            "state": "started"
-          },
-          "apiResponseCode": 200
-        },
-        {
-          "name": "Account_E_17",
-          "hasChildren": true,
-          "uri": "/apiv2/servers/Account_E_17",
-          "type": "integrationServer",
-          "active": {
-            "processId": 1710618,
-            "isRunning": true,
-            "state": "started"
-          },
-          "apiResponseCode": 200
-        },
-        {
-          "name": "Account_E_18",
-          "hasChildren": true,
-          "uri": "/apiv2/servers/Account_E_18",
-          "type": "integrationServer",
-          "active": {
-            "processId": 1710684,
-            "isRunning": true,
-            "state": "started"
-          },
-          "apiResponseCode": 200
-        },
-        {
-          "name": "Account_E_19",
-          "hasChildren": true,
-          "uri": "/apiv2/servers/Account_E_19",
-          "type": "integrationServer",
-          "active": {
-            "processId": 1710732,
-            "isRunning": true,
-            "state": "started"
-          },
-          "apiResponseCode": 200
-        },
-        {
-          "name": "Account_E_20",
-          "hasChildren": true,
-          "uri": "/apiv2/servers/Account_E_20",
-          "type": "integrationServer",
-          "active": {
-            "processId": 1710795,
-            "isRunning": true,
-            "state": "started"
-          },
-          "apiResponseCode": 200
-        },
-        {
-          "name": "Account_E_N",
-          "hasChildren": true,
-          "uri": "/apiv2/servers/Account_E_N",
-          "type": "integrationServer",
-          "active": {
-            "processId": 1710871,
-            "isRunning": true,
-            "state": "started"
-          },
-          "apiResponseCode": 200
-        }
-      ]
-    },
-    "logs": {
-      "hasChildren": false,
-      "name": "logs",
-      "type": "logs",
-      "uri": "/apiv2/logs"
-    }
-  }
-}
+    Start Time: 1767969176
+    Timeout   : 7200 (sec)
+    Verify return code: 19 (self-signed certificate in certificate chain)
+    Extended master secret: yes
+---
+^C
+[eisuser@eisuatsftp01 Denny]$
