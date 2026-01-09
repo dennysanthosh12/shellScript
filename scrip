@@ -1,78 +1,31 @@
-package com.EIS.TCS.apiadmin.Configurations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import com.EIS.TCS.apiadmin.Utility.JwtAuthenticationFilter;
-
-@Configuration
-@EnableWebSecurity
-@EnableMethodSecurity
-public class SecurityConfig {
-
-	@Autowired
-    private AuthenticationProvider authenticationProvider;
-	
-	@Autowired
-	private JwtAuthenticationFilter jwtAuthFilter;
-	
-	@Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(AbstractHttpConfigurer::disable) // Disable for REST APIs
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/Auth/**").permitAll() // Public endpoints
-                .requestMatchers("/apiv1/admin/**").hasRole("ADMIN") // RBAC
-                .requestMatchers("/apiv1/**").hasAnyRole("USER", "ADMIN")
-                .anyRequest().authenticated()
-            )
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // No session cookies
-            )
-            .authenticationProvider(authenticationProvider)
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
-    }
-}
-
-
-
-package com.EIS.TCS.apiadmin.Controller;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.EIS.TCS.apiadmin.Services.ApiadminServices;
-
-@RestController
-@RequestMapping("apiv1")
-public class ApiadminController {
-
-	@Autowired
-	private ApiadminServices apiService;
-	
-	@GetMapping("/node")
-	public ResponseEntity<?> getNodeDetails(){
-		try {
-			
-			return new ResponseEntity<>(apiService.getNodeDetails(),HttpStatus.ACCEPTED);
-			
-		} catch (Exception e) {
-			return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-}
-
+[eisuser@eisuatsftp01 Denny]$ TOKEN='eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiZ2F1dGFtIiwiaWF0IjoxNzY3OTc1MDQ4LCJleHAiOjE3Njc5NzY0ODh9.oTHNAeB3WbGTArrUEUah01NnaOQyRfWruTgxMDSiLbFUqTTppFVkm4B_3b7KNBFMzMnb7NSQHAd0gEVzBFLqwAXA3NgSa-RQV6ncWr9Njre5zxvEfFbc0ziWvIW1FVfrp35cuYjqLUFa2-TO641-gHh5bI-9cgELN75CsV4QvkmXUfzVwGEe6c4AMmlhJ8C_Zl8Cowa0QtQj32-Oe_ywvunt7ePps8lx9WDC19-NZiquun7AP-T6Wg9FG-RmrxsVvy-VgilxXgB_62hCogNhvi_-NQeYqqaoeOGmze1dt0ifg_JA9e52A8t6yWz-3xlyJCz--VcQx_B4426WWdw1yQ'
+[eisuser@eisuatsftp01 Denny]$
+[eisuser@eisuatsftp01 Denny]$
+[eisuser@eisuatsftp01 Denny]$ exho $TOKEN
+-bash: exho: command not found
+[eisuser@eisuatsftp01 Denny]$ echo $TOKEN
+eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiZ2F1dGFtIiwiaWF0IjoxNzY3OTc1MDQ4LCJleHAiOjE3Njc5NzY0ODh9.oTHNAeB3WbGTArrUEUah01NnaOQyRfWruTgxMDSiLbFUqTTppFVkm4B_3b7KNBFMzMnb7NSQHAd0gEVzBFLqwAXA3NgSa-RQV6ncWr9Njre5zxvEfFbc0ziWvIW1FVfrp35cuYjqLUFa2-TO641-gHh5bI-9cgELN75CsV4QvkmXUfzVwGEe6c4AMmlhJ8C_Zl8Cowa0QtQj32-Oe_ywvunt7ePps8lx9WDC19-NZiquun7AP-T6Wg9FG-RmrxsVvy-VgilxXgB_62hCogNhvi_-NQeYqqaoeOGmze1dt0ifg_JA9e52A8t6yWz-3xlyJCz--VcQx_B4426WWdw1yQ
+[eisuser@eisuatsftp01 Denny]$
+[eisuser@eisuatsftp01 Denny]$
+[eisuser@eisuatsftp01 Denny]$  curl -k -v -H"Authorization: Bearer $TOKEN" http://10.177.44.180:50032/apiv1/node
+*   Trying 10.177.44.180:50032...
+* Connected to 10.177.44.180 (10.177.44.180) port 50032 (#0)
+> GET /apiv1/node HTTP/1.1
+> Host: 10.177.44.180:50032
+> User-Agent: curl/7.76.1
+> Accept: */*
+> Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiZ2F1dGFtIiwiaWF0IjoxNzY3OTc1MDQ4LCJleHAiOjE3Njc5NzY0ODh9.oTHNAeB3WbGTArrUEUah01NnaOQyRfWruTgxMDSiLbFUqTTppFVkm4B_3b7KNBFMzMnb7NSQHAd0gEVzBFLqwAXA3NgSa-RQV6ncWr9Njre5zxvEfFbc0ziWvIW1FVfrp35cuYjqLUFa2-TO641-gHh5bI-9cgELN75CsV4QvkmXUfzVwGEe6c4AMmlhJ8C_Zl8Cowa0QtQj32-Oe_ywvunt7ePps8lx9WDC19-NZiquun7AP-T6Wg9FG-RmrxsVvy-VgilxXgB_62hCogNhvi_-NQeYqqaoeOGmze1dt0ifg_JA9e52A8t6yWz-3xlyJCz--VcQx_B4426WWdw1yQ
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 403
+< X-Content-Type-Options: nosniff
+< X-XSS-Protection: 0
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: 0
+< X-Frame-Options: DENY
+< Content-Length: 0
+< Date: Fri, 09 Jan 2026 16:34:51 GMT
+<
+* Connection #0 to host 10.177.44.180 left intact
+[eisuser@eisuatsftp01 Denny]$
