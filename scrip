@@ -1,38 +1,25 @@
-@Override
-protected void doFilterInternal(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        FilterChain filterChain) throws ServletException, IOException {
-
-    final String authHeader = request.getHeader("Authorization");
-
-    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-        filterChain.doFilter(request, response);
-        return;
-    }
-
-    String token = authHeader.substring(7);
-    String username = jwtService.extractUsername(token);
-
-    if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
-        Claims claims = jwtService.extractAllClaims(token);
-
-        List<String> roles = claims.get("roles", List.class);
-
-        List<GrantedAuthority> authorities = roles.stream()
-                .map(SimpleGrantedAuthority::new) // ROLE_USER
-                .toList();
-
-        UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(
-                        username,
-                        null,
-                        authorities
-                );
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
-
-    filterChain.doFilter(request, response);
-}
+ curl -k -v -H"Authorization: Bearer $TOKEN" http://10.177.44.180:50032/apiv1/node
+*   Trying 10.177.44.180:50032...
+* Connected to 10.177.44.180 (10.177.44.180) port 50032 (#0)
+> GET /apiv1/node HTTP/1.1
+> Host: 10.177.44.180:50032
+> User-Agent: curl/7.76.1
+> Accept: */*
+> Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiZ2F1dGFtIiwiaWF0IjoxNzY3OTc3MzMwLCJleHAiOjE3Njc5Nzg3NzB9.q9g5SC9E_U7aQqGzAGsqtIQQcybav13xUxnC6pMI4ir2nVMwwUpHk4gwBOKJNz36nwrbwR3W0dPq2OLfFzf8NBv-al_3rhWOAzsEZuGPZRjsZhpSfO8TJhZKnp5PaVMq4CQvdAnp-qSUy8zRth9Mx0e1056joMZ9CNMXgvXiN2wgrW1bvVud78saEXQxi1E4r44FjTnXgT8LUFizkwhf2gNcav_NsjMTfzOI18mTSKH8OEJExdTqqRHBnTMlrf5zvCQF9Ll9dBpeV7AWXheSLHfUrGyqVHH1asW0qryilEF_gheekY8GjaSbwat_1b7-B2zZBmQBOHnrCSYXU0BO5g
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 500
+< X-Content-Type-Options: nosniff
+< X-XSS-Protection: 0
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: 0
+< X-Frame-Options: DENY
+< Content-Type: text/plain;charset=UTF-8
+< Content-Length: 21
+< Date: Fri, 09 Jan 2026 16:51:58 GMT
+< Connection: close
+<
+* Closing connection 0
+Host is not specified[eisuser@eisuatsftp01 Denny]$
+[eisuser@eisuatsftp01 Denny]$
