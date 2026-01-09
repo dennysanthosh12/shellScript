@@ -1,16 +1,14 @@
-curl -k -X POST http://10.177.44.180:50032/api/Auth/login -H"Content-Type: application/json" -d'{"username":"gautam","password":"password2"}' -v
-Note: Unnecessary use of -X or --request, POST is already inferred.
+curl -k http://10.177.44.180:50032/apiv1/node -H "Authorization: Bearer $TOKEN" -v
 *   Trying 10.177.44.180:50032...
 * Connected to 10.177.44.180 (10.177.44.180) port 50032 (#0)
-> POST /api/Auth/login HTTP/1.1
+> GET /apiv1/node HTTP/1.1
 > Host: 10.177.44.180:50032
 > User-Agent: curl/7.76.1
 > Accept: */*
-> Content-Type: application/json
-> Content-Length: 44
+> Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiZ2F1dGFtIiwiaWF0IjoxNzY3OTc1MDQ4LCJleHAiOjE3Njc5NzY0ODh9.oTHNAeB3WbGTArrUEUah01NnaOQyRfWruTgxMDSiLbFUqTTppFVkm4B_3b7KNBFMzMnb7NSQHAd0gEVzBFLqwAXA3NgSa-RQV6ncWr9Njre5zxvEfFbc0ziWvIW1FVfrp35cuYjqLUFa2-TO641-gHh5bI-9cgELN75CsV4QvkmXUfzVwGEe6c4AMmlhJ8C_Zl8Cowa0QtQj32-Oe_ywvunt7ePps8lx9WDC19-NZiquun7AP-T6Wg9FG-RmrxsVvy-VgilxXgB_62hCogNhvi_-NQeYqqaoeOGmze1dt0ifg_JA9e52A8t6yWz-3xlyJCz--VcQx_B4426WWdw1yQ
 >
 * Mark bundle as not supporting multiuse
-< HTTP/1.1 202
+< HTTP/1.1 500
 < X-Content-Type-Options: nosniff
 < X-XSS-Protection: 0
 < Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -18,11 +16,9 @@ Note: Unnecessary use of -X or --request, POST is already inferred.
 < Expires: 0
 < X-Frame-Options: DENY
 < Content-Type: text/plain;charset=UTF-8
-< Content-Length: 460
-< Date: Fri, 09 Jan 2026 16:10:48 GMT
+< Content-Length: 21
+< Date: Fri, 09 Jan 2026 16:17:50 GMT
+< Connection: close
 <
-* Connection #0 to host 10.177.44.180 left intact
-eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiZ2F1dGFtIiwiaWF0IjoxNzY3OTc1MDQ4LCJleHAiOjE3Njc5NzY0ODh9.oTHNAeB3WbGTArrUEUah01NnaOQyRfWruTgxMDSiLbFUqTTppFVkm4B_3b7KNBFMzMnb7NSQHAd0gEVzBFLqwAXA3NgSa-RQV6ncWr9Njre5zxvEfFbc0ziWvIW1FVfrp35cuYjqLUFa2-TO641-gHh5bI-9cgELN75CsV4QvkmXUfzVwGEe6c4AMmlhJ8C_Zl8Cowa0QtQj32-Oe_ywvunt7ePps8lx9WDC19-NZiquun7AP-T6Wg9FG-RmrxsVvy-VgilxXgB_62hCogNhvi_-NQeYqqaoeOGmze1dt0ifg_JA9e52A8t6yWz-3xlyJCz--VcQx_B4426WWdw1yQ[eisuser@eisuatsftp01 Denny]$
-[eisuser@eisuatsftp01 Denny]$
-[eisuser@eisuatsftp01 Denny]$ curl -k -X GET http://10.177.44.180:50032/apiv1/node -H "Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiZ2F1dGFtIiwiaWF0IjoxNzY3OTc1MDQ4LCJleHAiOjE3Njc5NzY0ODh9.oTHNAeB3WbGTArrUEUah01NnaOQyRfWruTgxMDSiLbFUqTTppFVkm4B_3b7KNBFMzMnb7NSQHAd0gEVzBFLqwAXA3NgSa-RQV6ncWr9Njre5zxvEfFbc0ziWvIW1FVfrp35cuYjqLUFa2-TO641-gHh5bI-9cgELN75CsV4QvkmXUfzVwGEe6c4AMmlhJ8C_Zl8Cowa0QtQj32-Oe_ywvunt7ePps8lx9WDC19-NZiquun7AP-T6Wg9FG-RmrxsVvy-VgilxXgB_62hCogNhvi_-NQeYqqaoeOGmze1dt0ifg_JA9e52A8t6yWz-3xlyJCz--VcQx_B4426WWdw1yQ"
+* Closing connection 0
 Host is not specified
