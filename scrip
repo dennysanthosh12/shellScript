@@ -1,11 +1,52 @@
- curl -k -v -H"Authorization: Bearer $TOKEN" http://10.177.44.180:50032/apiv1/node
+Official documentation from ACE
+OkHttpClient client = new OkHttpClient();
+
+Request request = new Request.Builder()
+  .url("https://10.177.44.50:4418/apiv2?depth=REPLACE_THIS_VALUE")
+  .get()
+  .addHeader("Authorization", "Basic REPLACE_BASIC_AUTH")
+  .addHeader("accept", "application/json")
+  .build();
+
+Response response = client.newCall(request).execute();
+
+
+[eisuser@eisuatsftp01 ~]$ curl -k -X POST http://10.177.44.180:50032/api/Auth/login -H"Content-Type: application/json" -d'{"username":"gautam","password":"password2"}' -v
+Note: Unnecessary use of -X or --request, POST is already inferred.
 *   Trying 10.177.44.180:50032...
+* Connected to 10.177.44.180 (10.177.44.180) port 50032 (#0)
+> POST /api/Auth/login HTTP/1.1
+> Host: 10.177.44.180:50032
+> User-Agent: curl/7.76.1
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 44
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 202
+< X-Content-Type-Options: nosniff
+< X-XSS-Protection: 0
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: 0
+< X-Frame-Options: DENY
+< Content-Type: text/plain;charset=UTF-8
+< Content-Length: 460
+< Date: Sat, 10 Jan 2026 07:00:38 GMT
+<
+* Connection #0 to host 10.177.44.180 left intact
+eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiZ2F1dGFtIiwiaWF0IjoxNzY4MDI4NDM4LCJleHAiOjE3NjgwMjk4Nzh9.qanDt_BvXu4FcuIUtViq00Ma_6VXnBa4BBeqOPdEIktm557JG1iDnu3q-J6uayuppdFEAqholqn4o4c4nh6xiU_vumZKyJZL0p_qKNNfK4EL-UEAzf4BzqFUOAAD81CJbTZUqLU0Fys3vUziaAnHQ587ELaTAjoqgjiqbVfLHaSMwq0uWg9852W1RJNLSKCLnVRa0Jk7lMwmZ1r4fQ91zwDIyr0CFd6K5auSBdkVlxj2FYIj9uUc9rKBNryhMjR0Di4YhpIelRNQ_V6NwwmcDzuuaXIaBSUzMsYquCgnG6hFls4RnoZgTqTFbkh3-RKqtrgJ0QEPMGBoYBou-KIEJQ[eisuser@eisuatsftp01 ~]$
+[eisuser@eisuatsftp01 ~]$
+[eisuser@eisuatsftp01 ~]$ TOKEN='eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiZ2F1dGFtIiwiaWF0IjoxNzY4MDI4NDM4LCJleHAiOjE3NjgwMjk4Nzh9.qanDt_BvXu4FcuIUtViq00Ma_6VXnBa4BBeqOPdEIktm557JG1iDnu3q-J6uayuppdFEAqholqn4o4c4nh6xiU_vumZKyJZL0p_qKNNfK4EL-UEAzf4BzqFUOAAD81CJbTZUqLU0Fys3vUziaAnHQ587ELaTAjoqgjiqbVfLHaSMwq0uWg9852W1RJNLSKCLnVRa0Jk7lMwmZ1r4fQ91zwDIyr0CFd6K5auSBdkVlxj2FYIj9uUc9rKBNryhMjR0Di4YhpIelRNQ_V6NwwmcDzuuaXIaBSUzMsYquCgnG6hFls4RnoZgTqTFbkh3-RKqtrgJ0QEPMGBoYBou-KIEJQ'
+[eisuser@eisuatsftp01 ~]$
+[eisuser@eisuatsftp01 ~]$
+[eisuser@eisuatsftp01 ~]$ curl -k -v -H"Authorization:Bearer $TOKEN" http://10.177.44.180:50032/apiv1/node                                                                                                                                   *   Trying 10.177.44.180:50032...
 * Connected to 10.177.44.180 (10.177.44.180) port 50032 (#0)
 > GET /apiv1/node HTTP/1.1
 > Host: 10.177.44.180:50032
 > User-Agent: curl/7.76.1
 > Accept: */*
-> Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiZ2F1dGFtIiwiaWF0IjoxNzY3OTc3MzMwLCJleHAiOjE3Njc5Nzg3NzB9.q9g5SC9E_U7aQqGzAGsqtIQQcybav13xUxnC6pMI4ir2nVMwwUpHk4gwBOKJNz36nwrbwR3W0dPq2OLfFzf8NBv-al_3rhWOAzsEZuGPZRjsZhpSfO8TJhZKnp5PaVMq4CQvdAnp-qSUy8zRth9Mx0e1056joMZ9CNMXgvXiN2wgrW1bvVud78saEXQxi1E4r44FjTnXgT8LUFizkwhf2gNcav_NsjMTfzOI18mTSKH8OEJExdTqqRHBnTMlrf5zvCQF9Ll9dBpeV7AWXheSLHfUrGyqVHH1asW0qryilEF_gheekY8GjaSbwat_1b7-B2zZBmQBOHnrCSYXU0BO5g
+> Authorization:Bearer eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiZ2F1dGFtIiwiaWF0IjoxNzY4MDI4NDM4LCJleHAiOjE3NjgwMjk4Nzh9.qanDt_BvXu4FcuIUtViq00Ma_6VXnBa4BBeqOPdEIktm557JG1iDnu3q-J6uayuppdFEAqholqn4o4c4nh6xiU_vumZKyJZL0p_qKNNfK4EL-UEAzf4BzqFUOAAD81CJbTZUqLU0Fys3vUziaAnHQ587ELaTAjoqgjiqbVfLHaSMwq0uWg9852W1RJNLSKCLnVRa0Jk7lMwmZ1r4fQ91zwDIyr0CFd6K5auSBdkVlxj2FYIj9uUc9rKBNryhMjR0Di4YhpIelRNQ_V6NwwmcDzuuaXIaBSUzMsYquCgnG6hFls4RnoZgTqTFbkh3-RKqtrgJ0QEPMGBoYBou-KIEJQ
 >
 * Mark bundle as not supporting multiuse
 < HTTP/1.1 500
@@ -17,9 +58,26 @@
 < X-Frame-Options: DENY
 < Content-Type: text/plain;charset=UTF-8
 < Content-Length: 21
-< Date: Fri, 09 Jan 2026 16:51:58 GMT
+< Date: Sat, 10 Jan 2026 07:02:49 GMT
 < Connection: close
 <
 * Closing connection 0
-Host is not specified[eisuser@eisuatsftp01 Denny]$
-[eisuser@eisuatsftp01 Denny]$
+Host is not specified
+
+
+
+2026-01-10T06:59:57.172Z DEBUG 1 --- [apiadmin] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2026-01-10T06:59:57.462Z  INFO 1 --- [apiadmin] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-01-10T06:59:57.471Z  INFO 1 --- [apiadmin] [           main] c.EIS.TCS.apiadmin.ApiadminApplication   : Started ApiadminApplication in 4.174 seconds (process running for 4.675)
+2026-01-10T07:00:37.863Z  INFO 1 --- [apiadmin] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-01-10T07:00:37.863Z  INFO 1 --- [apiadmin] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-01-10T07:00:37.864Z  INFO 1 --- [apiadmin] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-01-10T07:00:37.872Z DEBUG 1 --- [apiadmin] [nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing POST /api/Auth/login
+2026-01-10T07:00:37.877Z DEBUG 1 --- [apiadmin] [nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-01-10T07:00:37.878Z DEBUG 1 --- [apiadmin] [nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured POST /api/Auth/login
+2026-01-10T07:00:38.141Z DEBUG 1 --- [apiadmin] [nio-8080-exec-1] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2026-01-10T07:02:49.747Z DEBUG 1 --- [apiadmin] [nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /apiv1/node
+2026-01-10T07:02:49.799Z DEBUG 1 --- [apiadmin] [nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /apiv1/node
+2026-01-10T07:03:13.173Z DEBUG 1 --- [apiadmin] [nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /apiv1/node
+2026-01-10T07:03:13.176Z DEBUG 1 --- [apiadmin] [nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured GET /apiv1/node
+
