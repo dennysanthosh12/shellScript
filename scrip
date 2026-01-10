@@ -1,83 +1,378 @@
-Official documentation from ACE
-OkHttpClient client = new OkHttpClient();
+package com.EIS.TCS.apiadmin.Dto;
+import lombok.Data;
 
-Request request = new Request.Builder()
-  .url("https://10.177.44.50:4418/apiv2?depth=REPLACE_THIS_VALUE")
-  .get()
-  .addHeader("Authorization", "Basic REPLACE_BASIC_AUTH")
-  .addHeader("accept", "application/json")
-  .build();
+@Data
+public class IntegrationNodeWrapper {
 
-Response response = client.newCall(request).execute();
+	private String name;
+	private PropertiesWrapper properties;
+	private NodeChildrenWrapper children;
+	
+}
 
+package com.EIS.TCS.apiadmin.Dto;
 
-[eisuser@eisuatsftp01 ~]$ curl -k -X POST http://10.177.44.180:50032/api/Auth/login -H"Content-Type: application/json" -d'{"username":"gautam","password":"password2"}' -v
-Note: Unnecessary use of -X or --request, POST is already inferred.
-*   Trying 10.177.44.180:50032...
-* Connected to 10.177.44.180 (10.177.44.180) port 50032 (#0)
-> POST /api/Auth/login HTTP/1.1
-> Host: 10.177.44.180:50032
-> User-Agent: curl/7.76.1
-> Accept: */*
-> Content-Type: application/json
-> Content-Length: 44
->
-* Mark bundle as not supporting multiuse
-< HTTP/1.1 202
-< X-Content-Type-Options: nosniff
-< X-XSS-Protection: 0
-< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-< Pragma: no-cache
-< Expires: 0
-< X-Frame-Options: DENY
-< Content-Type: text/plain;charset=UTF-8
-< Content-Length: 460
-< Date: Sat, 10 Jan 2026 07:00:38 GMT
-<
-* Connection #0 to host 10.177.44.180 left intact
-eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiZ2F1dGFtIiwiaWF0IjoxNzY4MDI4NDM4LCJleHAiOjE3NjgwMjk4Nzh9.qanDt_BvXu4FcuIUtViq00Ma_6VXnBa4BBeqOPdEIktm557JG1iDnu3q-J6uayuppdFEAqholqn4o4c4nh6xiU_vumZKyJZL0p_qKNNfK4EL-UEAzf4BzqFUOAAD81CJbTZUqLU0Fys3vUziaAnHQ587ELaTAjoqgjiqbVfLHaSMwq0uWg9852W1RJNLSKCLnVRa0Jk7lMwmZ1r4fQ91zwDIyr0CFd6K5auSBdkVlxj2FYIj9uUc9rKBNryhMjR0Di4YhpIelRNQ_V6NwwmcDzuuaXIaBSUzMsYquCgnG6hFls4RnoZgTqTFbkh3-RKqtrgJ0QEPMGBoYBou-KIEJQ[eisuser@eisuatsftp01 ~]$
-[eisuser@eisuatsftp01 ~]$
-[eisuser@eisuatsftp01 ~]$ TOKEN='eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiZ2F1dGFtIiwiaWF0IjoxNzY4MDI4NDM4LCJleHAiOjE3NjgwMjk4Nzh9.qanDt_BvXu4FcuIUtViq00Ma_6VXnBa4BBeqOPdEIktm557JG1iDnu3q-J6uayuppdFEAqholqn4o4c4nh6xiU_vumZKyJZL0p_qKNNfK4EL-UEAzf4BzqFUOAAD81CJbTZUqLU0Fys3vUziaAnHQ587ELaTAjoqgjiqbVfLHaSMwq0uWg9852W1RJNLSKCLnVRa0Jk7lMwmZ1r4fQ91zwDIyr0CFd6K5auSBdkVlxj2FYIj9uUc9rKBNryhMjR0Di4YhpIelRNQ_V6NwwmcDzuuaXIaBSUzMsYquCgnG6hFls4RnoZgTqTFbkh3-RKqtrgJ0QEPMGBoYBou-KIEJQ'
-[eisuser@eisuatsftp01 ~]$
-[eisuser@eisuatsftp01 ~]$
-[eisuser@eisuatsftp01 ~]$ curl -k -v -H"Authorization:Bearer $TOKEN" http://10.177.44.180:50032/apiv1/node                                                                                                                                   *   Trying 10.177.44.180:50032...
-* Connected to 10.177.44.180 (10.177.44.180) port 50032 (#0)
-> GET /apiv1/node HTTP/1.1
-> Host: 10.177.44.180:50032
-> User-Agent: curl/7.76.1
-> Accept: */*
-> Authorization:Bearer eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiZ2F1dGFtIiwiaWF0IjoxNzY4MDI4NDM4LCJleHAiOjE3NjgwMjk4Nzh9.qanDt_BvXu4FcuIUtViq00Ma_6VXnBa4BBeqOPdEIktm557JG1iDnu3q-J6uayuppdFEAqholqn4o4c4nh6xiU_vumZKyJZL0p_qKNNfK4EL-UEAzf4BzqFUOAAD81CJbTZUqLU0Fys3vUziaAnHQ587ELaTAjoqgjiqbVfLHaSMwq0uWg9852W1RJNLSKCLnVRa0Jk7lMwmZ1r4fQ91zwDIyr0CFd6K5auSBdkVlxj2FYIj9uUc9rKBNryhMjR0Di4YhpIelRNQ_V6NwwmcDzuuaXIaBSUzMsYquCgnG6hFls4RnoZgTqTFbkh3-RKqtrgJ0QEPMGBoYBou-KIEJQ
->
-* Mark bundle as not supporting multiuse
-< HTTP/1.1 500
-< X-Content-Type-Options: nosniff
-< X-XSS-Protection: 0
-< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-< Pragma: no-cache
-< Expires: 0
-< X-Frame-Options: DENY
-< Content-Type: text/plain;charset=UTF-8
-< Content-Length: 21
-< Date: Sat, 10 Jan 2026 07:02:49 GMT
-< Connection: close
-<
-* Closing connection 0
-Host is not specified
+import lombok.Data;
+
+@Data
+public class PropertiesWrapper {
+
+	private String defaultQueueManagerName;
+	private String httpConnectorPort;
+	private String restAdminListenerPort;
+	
+}
 
 
+package com.EIS.TCS.apiadmin.Dto;
+import lombok.Data;
 
-2026-01-10T06:59:57.172Z DEBUG 1 --- [apiadmin] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
-2026-01-10T06:59:57.462Z  INFO 1 --- [apiadmin] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
-2026-01-10T06:59:57.471Z  INFO 1 --- [apiadmin] [           main] c.EIS.TCS.apiadmin.ApiadminApplication   : Started ApiadminApplication in 4.174 seconds (process running for 4.675)
-2026-01-10T07:00:37.863Z  INFO 1 --- [apiadmin] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-01-10T07:00:37.863Z  INFO 1 --- [apiadmin] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-01-10T07:00:37.864Z  INFO 1 --- [apiadmin] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
-2026-01-10T07:00:37.872Z DEBUG 1 --- [apiadmin] [nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing POST /api/Auth/login
-2026-01-10T07:00:37.877Z DEBUG 1 --- [apiadmin] [nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
-2026-01-10T07:00:37.878Z DEBUG 1 --- [apiadmin] [nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured POST /api/Auth/login
-2026-01-10T07:00:38.141Z DEBUG 1 --- [apiadmin] [nio-8080-exec-1] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
-2026-01-10T07:02:49.747Z DEBUG 1 --- [apiadmin] [nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /apiv1/node
-2026-01-10T07:02:49.799Z DEBUG 1 --- [apiadmin] [nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /apiv1/node
-2026-01-10T07:03:13.173Z DEBUG 1 --- [apiadmin] [nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /apiv1/node
-2026-01-10T07:03:13.176Z DEBUG 1 --- [apiadmin] [nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured GET /apiv1/node
+@Data
+public class NodeChildrenWrapper {
+
+	private ServerWrapper servers;
+	
+}
+
+
+package com.EIS.TCS.apiadmin.Dto;
+
+import java.util.ArrayList;
+
+import lombok.Data;
+
+@Data
+public class ServerWrapper {
+
+	private boolean hasChildren;
+	private ArrayList<ChildrenWrapper> children;
+}
+
+package com.EIS.TCS.apiadmin.Dto;
+import lombok.Data;
+
+@Data
+public class ChildrenWrapper {
+
+	private String name;
+	private boolean hasChildren;
+	private ChildActivewrapper active;
+}
+
+package com.EIS.TCS.apiadmin.Dto;
+
+import lombok.Data;
+
+@Data
+public class ChildActivewrapper {
+
+	private boolean isRunning;
+	private String state; 
+}
+
+
+curl -k  -H"Authorization:Bearer $TOKEN" http://10.177.44.180:50032/apiv1/node | jq                                                                                                                                  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  2042    0  2042    0     0  63812      0 --:--:-- --:--:-- --:--:-- 63812
+{
+  "children": {
+    "servers": {
+      "children": [
+        {
+          "active": {
+            "running": false,
+            "state": "started"
+          },
+          "hasChildren": true,
+          "name": "Account_E_01"
+        },
+        {
+          "active": {
+            "running": false,
+            "state": "started"
+          },
+          "hasChildren": true,
+          "name": "Account_E_02"
+        },
+        {
+          "active": {
+            "running": false,
+            "state": "started"
+          },
+          "hasChildren": true,
+          "name": "Account_E_03"
+        },
+        {
+          "active": {
+            "running": false,
+            "state": "started"
+          },
+          "hasChildren": true,
+          "name": "Account_E_04"
+        },
+        {
+          "active": {
+            "running": false,
+            "state": "started"
+          },
+          "hasChildren": true,
+          "name": "Account_E_05"
+        },
+        {
+          "active": {
+            "running": false,
+            "state": "started"
+          },
+          "hasChildren": true,
+          "name": "Account_E_06"
+        },
+        {
+          "active": {
+            "running": false,
+            "state": "started"
+          },
+          "hasChildren": true,
+          "name": "Account_E_07"
+        },
+        {
+          "active": {
+            "running": false,
+            "state": "started"
+          },
+          "hasChildren": true,
+          "name": "Account_E_08"
+        },
+        {
+          "active": {
+            "running": false,
+            "state": "started"
+          },
+          "hasChildren": true,
+          "name": "Account_E_09"
+        },
+        {
+          "active": {
+            "running": false,
+            "state": "started"
+          },
+          "hasChildren": true,
+          "name": "Account_E_10"
+        },
+        {
+          "active": {
+            "running": false,
+            "state": "started"
+          },
+          "hasChildren": true,
+          "name": "Account_E_11"
+        },
+        {
+          "active": {
+            "running": false,
+            "state": "started"
+          },
+          "hasChildren": true,
+          "name": "Account_E_12"
+        },
+        {
+          "active": {
+            "running": false,
+            "state": "started"
+          },
+          "hasChildren": true,
+          "name": "Account_E_13"
+        },
+        {
+          "active": {
+            "running": false,
+            "state": "started"
+          },
+          "hasChildren": true,
+          "name": "Account_E_14"
+        },
+        {
+          "active": {
+            "running": false,
+            "state": "started"
+          },
+          "hasChildren": true,
+          "name": "Account_E_15"
+        },
+        {
+          "active": {
+            "running": false,
+            "state": "started"
+          },
+          "hasChildren": true,
+          "name": "Account_E_16"
+        },
+        {
+          "active": {
+            "running": false,
+            "state": "started"
+          },
+          "hasChildren": true,
+          "name": "Account_E_17"
+        },
+        {
+          "active": {
+            "running": false,
+            "state": "started"
+          },
+          "hasChildren": true,
+          "name": "Account_E_18"
+        },
+        {
+          "active": {
+            "running": false,
+            "state": "started"
+          },
+          "hasChildren": true,
+          "name": "Account_E_19"
+        },
+        {
+          "active": {
+            "running": false,
+            "state": "started"
+          },
+          "hasChildren": true,
+          "name": "Account_E_20"
+        },
+        {
+          "active": {
+            "running": false,
+            "state": "started"
+          },
+          "hasChildren": true,
+          "name": "Account_E_N"
+        }
+      ],
+      "hasChildren": true
+    }
+  },
+  "name": "ACCOUNT_EXP",
+  "properties": {
+    "defaultQueueManagerName": "QM_ACCOUNT_EXP",
+    "httpConnectorPort": "4001",
+    "restAdminListenerPort": "4418"
+  }
+}
+
+
+But actual
+{
+  "hasChildren": true,
+  "name": "ACCOUNT_EXP",
+  "type": "integrationNode",
+  "uri": "/apiv2",
+  "properties": {
+    "defaultQueueManagerName": "QM_ACCOUNT_EXP",
+    "httpConnectorPort": 4001,
+    "httpsConnectorPort": 7083,
+    "restAdminListenerPort": 4418,
+    "restAdminListenerIPCSocket": "/var/mqsi/ACCOUNT_EXP.uds"
+  },
+  "descriptiveProperties": {
+    "productName": "IBM App Connect Enterprise",
+    "version": "13.0.3.0",
+    "buildLevel": "ib000-L250327.4763 (S000-L250327.14116)",
+    "platformName": "Linux",
+    "platformArchitecture": "x86_64",
+    "platformVersion": "5.14.0-611.13.1.el9_7.x86_64"
+  },
+  "active": {
+    "processId": "1710497"
+  },
+  "trace": {
+    "agent": {
+      "name": "agentTrace",
+      "type": "trace",
+      "children": {
+        "serviceTrace": {
+          "name": "serviceTrace",
+          "type": "serviceTrace",
+          "properties": {
+            "traceLevel": "none",
+            "traceMode": "safe",
+            "traceSizeKb": 1048576
+          },
+          "active": {
+            "traceLevel": "none",
+            "traceMode": "safe",
+            "traceSizeKb": 1048576
+          }
+        }
+      }
+    },
+    "name": "trace",
+    "type": "trace"
+  },
+  "children": {
+    "servers": {
+      "name": "servers",
+      "type": "integrationServers",
+      "uri": "/apiv2/servers",
+      "hasChildren": true,
+      "children": [
+        {
+          "name": "Account_E_01",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_01",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1710530,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        },
+        {
+          "name": "Account_E_02",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_02",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1710531,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        },
+        {
+          "name": "Account_E_03",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_03",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1710532,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        },
+        {
+          "name": "Account_E_04",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_04",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1710533,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        },
+        {
+          "name": "Account_E_05",
+          "hasChildren": true,
+          "uri": "/apiv2/servers/Account_E_05",
+          "type": "integrationServer",
+          "active": {
+            "processId": 1710534,
+            "isRunning": true,
+            "state": "started"
+          },
+          "apiResponseCode": 200
+        },
+        {.......
 
