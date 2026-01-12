@@ -1,27 +1,17 @@
- ll
-total 86304
--rw-r--r-- 1 eisuser eisuser      350 Jan  9 21:31 Containerfile
--rwxrwxrwx 1 eisuser eisuser 88356041 Jan 10 18:19 apiadmin-0.0.1-SNAPSHOT.jar
--rw-r--r-- 1 eisuser eisuser      347 Jan 12 20:52 app-deplyoyment.yaml
--rw-r--r-- 1 eisuser eisuser      206 Jan 12 21:03 app-service.yaml
-drwxr-xr-x 6 eisuser eisuser       68 Jan  3 21:28 jre25
--rw-r--r-- 1 eisuser eisuser     1261 Jan  9 21:23 sbi-prod.rca.crt
-[eisuser@eisuatsftp01 Denny]$ podman kube
-Play containers, pods or volumes from a structured file
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-service
+spec:
+  type: NodePort
+  selector:
+    app: application
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+      nodePort: 30052
 
-Description:
-  Play structured data (e.g., Kubernetes YAML) based on containers, pods or volumes.
 
-Usage:
-  podman kube [command]
-
-Available Commands:
-  apply       Deploy a podman container, pod, volume, or Kubernetes yaml to a Kubernetes cluster
-  down        Remove pods based on Kubernetes YAML
-  generate    Generate Kubernetes YAML from containers, pods or volumes.
-  play        Play a pod or volume based on Kubernetes YAML
-
-Error: missing command 'podman kube COMMAND'
-[eisuser@eisuatsftp01 Denny]$ podman kube apply app-deplyoyment.yaml
-Error: kubeconfig not given, unable to connect to cluster
-[eisuser@eisuatsftp01 Denny]$
+podman kube play app-service.yaml
+Error: YAML document does not contain any supported kube kind
