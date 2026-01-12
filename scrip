@@ -1,5 +1,19 @@
-[eisuser@eisuatsftp01 Denny]$ cat app-deplyoyment.yaml
-apiVersion: apps/v1
+ cat app-deplyoyment.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-service
+spec:
+  type: NodePort
+  selector:
+    app: application
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 50032
+---
+apiVersion: v1
 kind: Deployment
 metadata:
   name: app-deployment
@@ -18,35 +32,11 @@ spec:
       - name: application
         image: app:v1.1
         ports:
-        - containerPort: 8081
+        - containerPort: 8080
 
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: app-service
-spec:
-  type: NodePort
-  selector:
-    app: application
-  ports:
-    - protocol: TCP
-      port: 8081
-      targetPort: 8081
-      nodePort: 30052
-[eisuser@eisuatsftp01 Denny]$
-[eisuser@eisuatsftp01 Denny]$ podman kube play app-deplyoyment.yaml
-Pod:
-758545bb81cd82c2803773293335b50647723336a804c0ed74816ee5bdad662b
-Container:
-f9d73303660d5d07c077c1c80aa7376c28eec5843b8fca75966158e8b18d85cf
 
-[eisuser@eisuatsftp01 Denny]$
-[eisuser@eisuatsftp01 Denny]$
-[eisuser@eisuatsftp01 Denny]$ podman ps
+podman ps
 CONTAINER ID  IMAGE                                    COMMAND     CREATED        STATUS        PORTS       NAMES
 41a0b527a4c6  localhost/rhel:9.6                       /bin/bash   2 days ago     Up 2 days                 confident_euler
-50c603bdf011  localhost/podman-pause:5.4.0-1739375653              5 seconds ago  Up 5 seconds              758545bb81cd-infra
-f9d73303660d  localhost/app:v1.1                                   5 seconds ago  Up 5 seconds  8080/tcp    app-deployment-pod-application
-[eisuser@eisuatsftp01 Denny]$ netstat -antpl | grep 30052
-[eisuser@eisuatsftp01 Denny]$
+bf4ff951330b  localhost/podman-pause:5.4.0-1739375653              4 seconds ago  Up 4 seconds              e74db5ff34ea-infra
+ff80b40ec76f  localhost/app:v1.1                                   4 seconds ago  Up 4 seconds  8080/tcp    app-deployment-pod-application
