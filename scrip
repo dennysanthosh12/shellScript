@@ -1,28 +1,27 @@
-cat app-deplyoyment.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: app-deployment
-  labels:
-    app: application
-spec:
-  selector:
-    matchLabels:
-      app: application
-  template:
-    metadata:
-      labels:
-        app: application
-    spec:
-      containers:
-      - name: application
-        image: app:v1.1
-        ports:
-        - containerPort: 8081
+ ll
+total 86304
+-rw-r--r-- 1 eisuser eisuser      350 Jan  9 21:31 Containerfile
+-rwxrwxrwx 1 eisuser eisuser 88356041 Jan 10 18:19 apiadmin-0.0.1-SNAPSHOT.jar
+-rw-r--r-- 1 eisuser eisuser      347 Jan 12 20:52 app-deplyoyment.yaml
+-rw-r--r-- 1 eisuser eisuser      206 Jan 12 21:03 app-service.yaml
+drwxr-xr-x 6 eisuser eisuser       68 Jan  3 21:28 jre25
+-rw-r--r-- 1 eisuser eisuser     1261 Jan  9 21:23 sbi-prod.rca.crt
+[eisuser@eisuatsftp01 Denny]$ podman kube
+Play containers, pods or volumes from a structured file
+
+Description:
+  Play structured data (e.g., Kubernetes YAML) based on containers, pods or volumes.
+
+Usage:
+  podman kube [command]
+
+Available Commands:
+  apply       Deploy a podman container, pod, volume, or Kubernetes yaml to a Kubernetes cluster
+  down        Remove pods based on Kubernetes YAML
+  generate    Generate Kubernetes YAML from containers, pods or volumes.
+  play        Play a pod or volume based on Kubernetes YAML
+
+Error: missing command 'podman kube COMMAND'
+[eisuser@eisuatsftp01 Denny]$ podman kube apply app-deplyoyment.yaml
+Error: kubeconfig not given, unable to connect to cluster
 [eisuser@eisuatsftp01 Denny]$
-
- podman images
-REPOSITORY      TAG         IMAGE ID      CREATED     SIZE
-localhost/app   v1.1        78d294c2b576  2 days ago  1.33 GB
-localhost/rhel  9.6         c17949d600f8  7 days ago  1.18 GB
-
