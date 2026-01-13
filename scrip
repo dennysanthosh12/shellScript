@@ -1,1 +1,9 @@
-for broker_file in /home/devops/broker/$BRANCH/$IntegrationNode*; do
+[azagent@az-rh-uat-01 PRE-PROD]$ for file in /home/devops/broker/PRE-PROD/MISC_EXP_[0-9]*.broker
+> do
+> echo $file
+> done
+/home/devops/broker/PRE-PROD/MISC_EXP_02_88.broker
+/home/devops/broker/PRE-PROD/MISC_EXP_02_89.broker
+/home/devops/broker/PRE-PROD/MISC_EXP_88.broker
+/home/devops/broker/PRE-PROD/MISC_EXP_89.broker
+[azagent@az-rh-uat-01 PRE-PROD]$
