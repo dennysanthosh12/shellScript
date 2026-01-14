@@ -1,1 +1,8 @@
-for file in /home/devops/broker/PRE-PROD/MISC_EXP*; do fname=$(basename "$file"); if [[ $fname =~ ^${MISC_EXP}_([0-9]+)\.broker$  ]]; then echo $file; fi; done
+Personal Development
+To improve your interaction with client and professional confidence
+
+Continuous Improvement and Innovation
+Continuously seeks knowledge to enhance one's professional growth and performance. Makes use of opportunities for learning that the job as well as the organization provides. Learns new technologies, tools and processes relevant to one's job.
+
+Operations support
+Provide technical or functional support to ensure smooth operations.
