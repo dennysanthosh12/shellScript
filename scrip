@@ -1,41 +1,126 @@
-cd /var/mqm/web/installations/Installation1/servers/mqweb/
-[mqm@EISUATSYS01 mqweb]$ ll
-total 12
--rw-rw-r-- 1 mqm mqm 1294 Dec 25 17:12 jvm.options
-drwxrws--- 3 mqm mqm  144 Jan 15 18:48 logs
--rw-rw---- 1 mqm mqm  875 Dec 25 17:12 mqwebuser.xml
-drwxrwsr-x 3 mqm mqm   22 Jan 15 18:47 resources
--rw-r----- 1 mqm mqm  589 Dec 25 17:12 server.xml
-drwxrwsr-x 5 mqm mqm   81 Jan 15 18:48 workarea
-[mqm@EISUATSYS01 mqweb]$ vi mqwebuser.xml
-<?xml version="1.0" encoding="UTF-8"?>
-<server>
-        <!--
-                Licensed Materials - Property of IBM
+https://www.ibm.com/docs/en/ibm-mq/9.4.x?topic=api-basic-configuration-mqweb-server
+Basic configuration for the mqweb server
+Last Updated
+: 2026-01-06
+Before you can start to use the REST API or IBM® MQ Console, you must install the correct components and configure the mqweb server that hosts the REST API or IBM MQ Console.
 
-                5724-H72
+About this task
+The procedure for this task focuses on a basic configuration for the mqweb server so that you can get started quickly with the REST API and IBM MQ Console. The steps for configuring security outline how to set up a basic user registry, but other options for configuring users and roles exist. For more information about configuring security for the mqweb server, see IBM MQ Console and REST API security.
 
-                Copyright IBM Corp. 2016, 2017 All Rights Reserved.
+Note: You must have access to the mqwebuser.xml file to complete this procedure:
+[z/OS]On z/OS®, you must be a user that has write access to the mqwebuser.xml file.
+[UNIX, Linux, Windows, IBM i]On all other operating systems, you must be a privileged user to access the mqwebuser.xml file.
+[MQ 9.4.0 Jun 2024][Linux]If the mqweb server is part of a stand-alone IBM MQ Web Server installation, you must have write access to the mqwebuser.xml file in the IBM MQ Web Server data directory.
+Procedure
+Install the IBM MQ Console and REST API component:
+[AIX]On AIX®, install the mqm.web.rte fileset. For more information about installing filesets on AIX, see AIX installation tasks.
+[IBM i]On IBM i, install the WEB component. To use this feature, you must also install the 5724L26 IBM MQ Java Messaging and Web Services, and 5770JV1 Java SE 8 prerequisites. For more information about installing features on IBM i, see IBM i installation tasks.
+[Linux]On Linux®, install the MQSeriesWeb component. For more information about installing components on Linux, see Linux installation tasks.
+[MQ 9.4.0 Jun 2024]From IBM MQ 9.4.0, you can also run the mqweb server in a stand-alone IBM MQ Web Server installation on Linux. For more information, about installing the IBM MQ Web Server, see Installing the stand-alone IBM MQ Web Server.
 
-                US Government Users Restricted Rights - Use, duplication or
-                disclosure restricted by GSA ADP Schedule Contract with
-                IBM Corp.
-        -->
-        <!--
-                Sample mqwebuser.xml file, included by server.xml, to contain user
-                configuration for the mqweb server.
-        -->
+[Windows]On Windows, install the Web Administration feature. For more information about installing features on Windows, see Windows installation tasks.
+[z/OS]Install the IBM MQ for z/OS UNIX System Services Web Components feature. For more information about installing components and features on z/OS, see z/OS installation tasks.
+Create the mqweb server that hosts the IBM MQ Console and REST API.
+[z/OS]On z/OS, run the crtmqweb script.
+This script creates the WebSphere® Liberty user directory that contains the mqweb server configuration and log files. For more information about running the crtmqweb script, see crtmqweb (creating the mqweb server).
 
-    <featureManager>
-        <feature>appSecurity-2.0</feature>
-    </featureManager>
+[MQ 9.4.0 Jun 2024][Linux]In a stand-alone IBM MQ Web Server installation, follow the steps in Configuring the stand-alone IBM MQ Web Server.
+In all other environments, you do not need to complete any actions to create the mqweb server.
+[z/OS] On z/OS, create a cataloged procedure to start the mqweb server.
+For more information, see Creating a procedure for the mqweb server.
+Replace the existing configuration file, mqwebuser.xml with the basic registry sample file that is configured to offer basic security. Copy the basic_registry.xml file from the MQ_INSTALLATION_PATH/web/mq/samp/configuration directory to the appropriate directory for your system, and rename the file to mqwebuser.xml:
+In an IBM MQ installation, copy the file to the following directory:
+[AIX][Linux]On AIX and Linux: /var/mqm/web/installations/installationName/servers/mqweb
+[Windows]On Windows: MQ_DATA_PATH\web\installations\installationName\servers\mqweb
+Where MQ_DATA_PATH is the IBM MQ data path, this path is the data path that is selected during the installation of IBM MQ. By default, this path is C:\ProgramData\IBM\MQ.
 
-    <!--
-    Default MQ security configuration allows HTTPS TLS v1.2 ONLY and no user access,
-    refer to IBM Documentation on "IBM MQ Console and REST API security" for details
-    of how to configure security.
-    -->
-    <sslDefault sslRef="mqDefaultSSLConfig"/>
-    <basicRegistry id="basic" realm="defaultRealm">
-    </basicRegistry>
-</server>
+[z/OS]On z/OS: WLP_user_directory/servers/mqweb
+Where WLP_user_directory is the directory that was specified when the crtmqweb script ran to create the mqweb server definition.
+
+[MQ 9.4.0 Jun 2024][Linux]In a stand-alone IBM MQ Web Server installation: MQ_OVERRIDE_DATA_PATH/web/installations/MQWEBINST/servers/mqweb
+where MQ_OVERRIDE_DATA_PATH is the IBM MQ Web Server data directory that the MQ_OVERRIDE_DATA_PATH environment variable points to.
+
+The basic_registry.xml sample file configures four users:
+mqadmin
+An administrative user that is a member of the MQWebAdmin role.
+mqreader
+A read-only administrative user that is a member of the MQWebAdminRO role.
+mftadmin
+An administrative user that is a member of the MFTWebAdmin role.
+mftreader
+A read-only administrative user that is a member of the MFTWebAdminRO role.
+All users are also members of the MQWebUser role.
+
+For more information about the available roles, see Roles on the IBM MQ Console and REST API
+Optional: Edit the mqwebuser.xml file to add more users and groups. Assign those users and groups appropriate roles to be authorized to use the REST API or IBM MQ Console. You can also change the passwords for the users that are defined by default, and encode the new passwords. For more information, see Configuring users and roles.
+Note:
+[z/OS]On z/OS, if you add users to the MQWebUser role, you must also grant the mqweb started task user ID alternate user access to the user IDs with the MQWebUser role. For example:
+RDEFINE MQADMIN hlq.ALTERNATE.USER.userId UACC(NONE)
+PERMIT hlq.ALTERNATE.USER.userId CLASS(MQADMIN) ACCESS(UPDATE) ID(mqwebUserId)
+
+[z/OS][UNIX, Linux, Windows, IBM i]To complete the steps for getting started with the messaging REST API, you must add a user to the mqwebuser.xml file. This user must have the same name as an existing IBM MQ user on your system. Following the same format as the other users in the XML file, add the user ID and a password after the following line in the XML file: <user name="mftreader" password="mftreader"/>.
+Set your environment to point to the mqweb server configuration.
+[z/OS]On z/OS, set the WLP_USER_DIR environment variable so that the variable points to your mqweb server configuration, by entering the following command:
+export WLP_USER_DIR=WLP_user_directory
+
+Where WLP_user_directory is the name of the directory that is passed to the crtmqweb command. For example:
+export WLP_USER_DIR=/var/mqm/web/installation1
+
+For more information, see crtmqweb (creating the mqweb server).
+
+[MQ 9.4.0 Jun 2024][Linux]In a stand-alone IBM MQ Web Server installation, set the MQ_OVERRIDE_DATA_PATH environment variable to the IBM MQ Web Server data directory.
+For example, if you chose to use /var/mqweb as your IBM MQ Web Server data directory, issue the following command:
+export MQ_OVERRIDE_DATA_PATH=/var/mqweb
+
+In all other environments, you do not need to complete any actions to set your environment.
+By default, REST API and IBM MQ Console are available only from the same host as the mqweb server. Enable remote connections to the mqweb server by entering the following command:
+setmqweb properties -k httpHost -v hostname
+
+Where hostname specifies the IP address, domain name server (DNS) host name with domain name suffix, or the DNS host name of the server where IBM MQ is installed. Use an asterisk, *, in double quotation marks, to specify all available network interfaces, as shown in the following example:
+setmqweb properties -k httpHost -v "*"
+
+Optional: By default, the administrative REST API for MFT is not enabled. If you want to use this feature, you must enable it and configure a co-ordination queue manager:
+Enable the administrative REST API for MFT by entering the following command:
+setmqweb properties -k mqRestMftEnabled -v true
+
+Configure which queue manager is the co-ordination queue manager by entering the following command:
+setmqweb properties -k mqRestMftCoordinationQmgr -v qmgrName
+
+Where qmgrName is the name of the coordination queue manager.
+
+To enable POST calls, configure which queue manager is the command queue manager by entering the following command :
+setmqweb properties -k mqRestMftCommandQmgr -v qmgrName
+
+Where qmgrName is the name of the command queue manager.
+
+Start the mqweb server that supports the REST API and IBM MQ Console:
+[AIX, Linux, Windows]On AIX, Linux, and Windows, as a privileged user, enter the following command:
+strmqweb
+
+[IBM i]On IBM i, as a privileged user, enter the following command in Qshell:
+/QIBM/ProdData/mqm/bin/strmqweb
+
+[z/OS]On z/OS, start the procedure that you created in Creating a procedure for the mqweb server.
+The following messages are issued to the STDOUT DD to indicate that the mqweb server has started successfully.
+[AUDIT   ] MQWB2019I: MQ Console level: 9.2.4 - V924-CD924-L211028
+[AUDIT   ] MQWB0023I: MQ REST API level: 9.2.4 - V924-CD924-L211028
+[AUDIT   ] CWWKZ0001I: Application com.ibm.mq.rest started in 1.763 seconds.
+[AUDIT   ] CWWKZ0001I: Application com.ibm.mq.console started in 2.615 seconds.
+[AUDIT   ] CWWKF0011I: The mqweb server is ready to run a smarter planet. The mqweb server started in 10.016 seconds.
+
+You can stop the mqweb server at any time by stopping the mqweb server started task on z/OS, or by using the endmqweb command. However, if the mqweb server is not running, you cannot use the REST API or IBM MQ Console.
+Optional: [z/OS]On z/OS, if you want to allow system automation products to trap the MQWB2019I and MQWB0023I messages that are issued when the IBM MQ Console and REST API start, configure the mqweb server to write these messages to the MVS console. To configure the mqweb server to write the MQWB2019I and MQWB0023I messages to the MVS console, edit the mqwebuser.xml file that you created in step 4, and add the following line to the file:
+<zosLogging enableLogToMVS="true" wtoMessage="MQWB2019I,MQWB0023I"/>
+
+For more information about configuring z/OS Logging in the mqweb server, see z/OS Logging (zosLogging).
+What to do next
+Configure mqweb server settings, including enabling HTTP connections, and changing the port number. For more information, see Configuring the IBM MQ Console and REST API.
+Optionally, configure the REST API:
+Configure Cross Origin Resource Sharing for the REST API. By default, you cannot access the REST API from web resources that are not hosted on the same domain as the REST API. That is, cross-origin requests are not enabled. You can configure Cross Origin Resource Sharing (CORS) to allow cross-origin requests from specified URLs. For more information, see Configuring CORS for the REST API.
+Configure the REST API for MFT. For more information, see Configuring the REST API for MFT.
+Use the REST API or IBM MQ Console:
+Getting started with the administrative REST API
+Getting started with the messaging REST API
+Getting started with the IBM MQ Console
+Parent topic:
+Configuring the IBM MQ Console and REST API
