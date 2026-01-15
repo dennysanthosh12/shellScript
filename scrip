@@ -1,24 +1,41 @@
-/var/mqm/web/installations/Installation1/servers/mqweb/server.xml
+cd /var/mqm/web/installations/Installation1/servers/mqweb/
+[mqm@EISUATSYS01 mqweb]$ ll
+total 12
+-rw-rw-r-- 1 mqm mqm 1294 Dec 25 17:12 jvm.options
+drwxrws--- 3 mqm mqm  144 Jan 15 18:48 logs
+-rw-rw---- 1 mqm mqm  875 Dec 25 17:12 mqwebuser.xml
+drwxrwsr-x 3 mqm mqm   22 Jan 15 18:47 resources
+-rw-r----- 1 mqm mqm  589 Dec 25 17:12 server.xml
+drwxrwsr-x 5 mqm mqm   81 Jan 15 18:48 workarea
+[mqm@EISUATSYS01 mqweb]$ vi mqwebuser.xml
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-
-Licensed Materials - Property of IBM
-
-      5724-H72
-
-Copyright IBM Corp. 2016, 2017 All Rights Reserved.
-
-US Government Users Restricted Rights - Use, duplication or
-disclosure restricted by GSA ADP Schedule Contract with
-IBM Corp.
-
--->
-<!--
-This file defines the configuration for the mqweb server. Please do not
-make changes to this file. Any changes made by users should be in the
-referenced mqwebuser.xml file.
--->
 <server>
-    <include location="${wlp.install.dir}/mq/etc/mqweb.xml"/>
-    <include location="mqwebuser.xml"/>
+        <!--
+                Licensed Materials - Property of IBM
+
+                5724-H72
+
+                Copyright IBM Corp. 2016, 2017 All Rights Reserved.
+
+                US Government Users Restricted Rights - Use, duplication or
+                disclosure restricted by GSA ADP Schedule Contract with
+                IBM Corp.
+        -->
+        <!--
+                Sample mqwebuser.xml file, included by server.xml, to contain user
+                configuration for the mqweb server.
+        -->
+
+    <featureManager>
+        <feature>appSecurity-2.0</feature>
+    </featureManager>
+
+    <!--
+    Default MQ security configuration allows HTTPS TLS v1.2 ONLY and no user access,
+    refer to IBM Documentation on "IBM MQ Console and REST API security" for details
+    of how to configure security.
+    -->
+    <sslDefault sslRef="mqDefaultSSLConfig"/>
+    <basicRegistry id="basic" realm="defaultRealm">
+    </basicRegistry>
 </server>
