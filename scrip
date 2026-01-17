@@ -1,7 +1,38 @@
-openssl s_client -showcerts 10.191.159.103:7004
+openssl s_client -connect 10.191.159.103:7004 -servername gccapp1.sbi -tls1_2
 Connecting to 10.191.159.103
 CONNECTED(00000003)
-Can't use SSL_get_servername
+C07B27BB997F0000:error:0A00042E:SSL routines:ssl3_read_bytes:tlsv1 alert protocol version:ssl/record/rec_layer_s3.c:916:SSL alert number 70
+---
+no peer certificate available
+---
+No client certificate CA names sent
+---
+SSL handshake has read 7 bytes and written 211 bytes
+Verification: OK
+---
+New, (NONE), Cipher is (NONE)
+Protocol: TLSv1.2
+Secure Renegotiation IS NOT supported
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+SSL-Session:
+    Protocol  : TLSv1.2
+    Cipher    : 0000
+    Session-ID:
+    Session-ID-ctx:
+    Master-Key:
+    PSK identity: None
+    PSK identity hint: None
+    SRP username: None
+    Start Time: 1768652992
+    Timeout   : 7200 (sec)
+    Verify return code: 0 (ok)
+    Extended master secret: no
+---
+[eisuser@EISUATSYS07 ~]$ openssl s_client -connect 10.191.159.103:7004 -servername gccapp1.sbi -tls1_3
+Connecting to 10.191.159.103
+CONNECTED(00000003)
 depth=1 DC=SBI, DC=AD, CN=SBI-PROD-RCA
 verify error:num=19:self-signed certificate in certificate chain
 verify return:1
@@ -15,6 +46,12 @@ Certificate chain
    i:DC=SBI, DC=AD, CN=SBI-PROD-RCA
    a:PKEY: RSA, 2048 (bit); sigalg: sha256WithRSAEncryption
    v:NotBefore: Apr  4 07:41:00 2025 GMT; NotAfter: Apr  4 07:41:00 2027 GMT
+ 1 s:DC=SBI, DC=AD, CN=SBI-PROD-RCA
+   i:DC=SBI, DC=AD, CN=SBI-PROD-RCA
+   a:PKEY: RSA, 2048 (bit); sigalg: sha256WithRSAEncryption
+   v:NotBefore: Feb  8 06:55:49 2017 GMT; NotAfter: Feb  8 07:05:47 2057 GMT
+---
+Server certificate
 -----BEGIN CERTIFICATE-----
 MIIF9DCCBNygAwIBAgITGgAZoA2j9SRAHWKj1QAAABmgDTANBgkqhkiG9w0BAQsF
 ADBAMRMwEQYKCZImiZPyLGQBGRYDU0JJMRIwEAYKCZImiZPyLGQBGRYCQUQxFTAT
@@ -49,33 +86,6 @@ xEdBkJeI4Mwaab81qvwFnuFAv0DIAvVH+fILaHHxX9LLkpkAiorbdIKzivYv2hQb
 uFT3yi7FQ9syaR1TwlQaHDajC+vm5IgM3K64fAEgj8bwm4MXlfiaLAemOXYD2FRm
 JniHYRB0XM4SW7XS+3deZEf2dBw/ZvDUAPAD7yRLPd6ehO7mzzAmBA==
 -----END CERTIFICATE-----
- 1 s:DC=SBI, DC=AD, CN=SBI-PROD-RCA
-   i:DC=SBI, DC=AD, CN=SBI-PROD-RCA
-   a:PKEY: RSA, 2048 (bit); sigalg: sha256WithRSAEncryption
-   v:NotBefore: Feb  8 06:55:49 2017 GMT; NotAfter: Feb  8 07:05:47 2057 GMT
------BEGIN CERTIFICATE-----
-MIIDdTCCAl2gAwIBAgIQTAMTWJxIVapEJZNyGFj6DjANBgkqhkiG9w0BAQsFADBA
-MRMwEQYKCZImiZPyLGQBGRYDU0JJMRIwEAYKCZImiZPyLGQBGRYCQUQxFTATBgNV
-BAMTDFNCSS1QUk9ELVJDQTAgFw0xNzAyMDgwNjU1NDlaGA8yMDU3MDIwODA3MDU0
-N1owQDETMBEGCgmSJomT8ixkARkWA1NCSTESMBAGCgmSJomT8ixkARkWAkFEMRUw
-EwYDVQQDEwxTQkktUFJPRC1SQ0EwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK
-AoIBAQDNDSwbN72EKzOcH+xZhOue8ik8kAztotq76DielYz6yZHi9rHavJx3Ic0e
-KTtgr72jHXra3KZG2GgQpvxfLZd/vD+fZRBXQJJJMvcG0gJYKQLXH6nA3AB/g+UI
-Q0ulxGtgajg2ue0SDBWA2b6EEIYf8bf0zaDy2LnyGkyrv02dehwlMhv6RzXIpta/
-JCAWd2l1k70DX6VQTrb1yAh9C0emIBjoC5HcD7nLtid2lyHjNCXyC3ZWQYjO+a0G
-aaGhloJsjyIfazHSi8JPhzldR15kQcxkeLYVF8LiLfs9lmE7IZxcW/NaCpBY6tBV
-nxOsZ3In0x0ZxQgQ2NoZXjjlJPWtAgMBAAGjaTBnMBMGCSsGAQQBgjcUAgQGHgQA
-QwBBMA4GA1UdDwEB/wQEAwIBhjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBQ3
-miB0MF4k/R/lv67/APRrFXWfsDAQBgkrBgEEAYI3FQEEAwIBADANBgkqhkiG9w0B
-AQsFAAOCAQEAT5jkCD8DR7q73+eiFQrN1gUr8t4I6ShelY1IqbcsBGGmb6fQqN82
-g5QTPLAPT9+6/nv5cAxFZ+nAlE3Xdw3O2ATlf1F/YikXQQ3gGi7aTsKQsQIehPqx
-LLuLPKpavGmY+Wr38Le34Ydw34Fryxqx31xLbkWJohFfcNF0o/asfk4ibGowQNaK
-ZEaW4CORKjEBdyez9l+lfA1N7KLaMx+B2hyU2TgJgzwCf/7Yv/RxB3/E0QyfbehY
-/aTCUqKNgRUnx5njSjZp/LKgNeMQehyfCIGm0rWg0GuD2WrJadrteJOlAH8/tjlI
-yfL49Y51TPqrT+VOXwWlEIrDBvmaAYgIwQ==
------END CERTIFICATE-----
----
-Server certificate
 subject=C=IN, ST=MH, L=BELAPUR, O=SBI, OU=SP2, CN=GCCPROD
 issuer=DC=SBI, DC=AD, CN=SBI-PROD-RCA
 ---
@@ -84,7 +94,7 @@ Peer signing digest: SHA256
 Peer signature type: rsa_pss_rsae_sha256
 Peer Temp Key: ECDH, prime256v1, 256 bits
 ---
-SSL handshake has read 3181 bytes and written 828 bytes
+SSL handshake has read 3181 bytes and written 722 bytes
 Verification error: self-signed certificate in certificate chain
 ---
 New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384
@@ -102,18 +112,18 @@ Post-Handshake New Session Ticket arrived:
 SSL-Session:
     Protocol  : TLSv1.3
     Cipher    : TLS_AES_256_GCM_SHA384
-    Session-ID: 2C1AF1447723FA251693B611B3F1C1A18EC9D8B54F95453493A7BAD0134F5C73
+    Session-ID: BBC74EA964932B5CCEB75C799A553A0C92530F5C986CE7A49D583A1AE5FCF6DD
     Session-ID-ctx:
-    Resumption PSK: 719A0C10CBA73EF9C51300A6C163D895D72CDB0087EE6574ED7EF64CB672B45CBEC79C5AD9F932665CC66B9637EE52B4
+    Resumption PSK: 6285204BDBE519D4B27E407058D1D70D6F83A65EF40A1B40B0634A0CE9A65550974114CC33A1E7FB0BF1A7F070A8874E
     PSK identity: None
     PSK identity hint: None
     SRP username: None
     TLS session ticket lifetime hint: 86400 (seconds)
     TLS session ticket:
-    0000 - 3b 8d 01 35 2e 07 31 ff-8f 97 4e 9b ee 68 c9 8a   ;..5..1...N..h..
-    0010 - e0 9b 2f ea 61 69 81 d2-e2 27 34 57 09 94 67 47   ../.ai...'4W..gG
+    0000 - f8 00 d9 8b 2e 9e 1a ec-78 c3 ab 04 39 cc 0e a1   ........x...9...
+    0010 - ca c8 ee 19 08 48 2e 58-89 c6 d0 13 a8 81 d0 2e   .....H.X........
 
-    Start Time: 1768652798
+    Start Time: 1768653006
     Timeout   : 7200 (sec)
     Verify return code: 19 (self-signed certificate in certificate chain)
     Extended master secret: no
