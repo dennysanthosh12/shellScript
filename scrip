@@ -1,8 +1,100 @@
-E:\GIT_REPOSITORY\azure-pipelines>git push orgin --delete feature
-fatal: 'orgin' does not appear to be a git repository
-fatal: Could not read from remote repository.
+openssl s_client -connect 10.191.159.103:7004 -servername gccapp1.sbi -CAfile GCC_SSL_CERTIFICATE.cer
+Connecting to 10.191.159.103
+CONNECTED(00000003)
+depth=1 DC=SBI, DC=AD, CN=SBI-PROD-RCA
+verify error:num=19:self-signed certificate in certificate chain
+verify return:1
+depth=1 DC=SBI, DC=AD, CN=SBI-PROD-RCA
+verify return:1
+depth=0 C=IN, ST=MH, L=BELAPUR, O=SBI, OU=SP2, CN=GCCPROD
+verify return:1
+---
+Certificate chain
+ 0 s:C=IN, ST=MH, L=BELAPUR, O=SBI, OU=SP2, CN=GCCPROD
+   i:DC=SBI, DC=AD, CN=SBI-PROD-RCA
+   a:PKEY: RSA, 2048 (bit); sigalg: sha256WithRSAEncryption
+   v:NotBefore: Apr  4 07:41:00 2025 GMT; NotAfter: Apr  4 07:41:00 2027 GMT
+ 1 s:DC=SBI, DC=AD, CN=SBI-PROD-RCA
+   i:DC=SBI, DC=AD, CN=SBI-PROD-RCA
+   a:PKEY: RSA, 2048 (bit); sigalg: sha256WithRSAEncryption
+   v:NotBefore: Feb  8 06:55:49 2017 GMT; NotAfter: Feb  8 07:05:47 2057 GMT
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIIF9DCCBNygAwIBAgITGgAZoA2j9SRAHWKj1QAAABmgDTANBgkqhkiG9w0BAQsF
+ADBAMRMwEQYKCZImiZPyLGQBGRYDU0JJMRIwEAYKCZImiZPyLGQBGRYCQUQxFTAT
+BgNVBAMTDFNCSS1QUk9ELVJDQTAeFw0yNTA0MDQwNzQxMDBaFw0yNzA0MDQwNzQx
+MDBaMFoxCzAJBgNVBAYTAklOMQswCQYDVQQIEwJNSDEQMA4GA1UEBxMHQkVMQVBV
+UjEMMAoGA1UEChMDU0JJMQwwCgYDVQQLEwNTUDIxEDAOBgNVBAMTB0dDQ1BST0Qw
+ggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC5aFeLmnxifRm1uvcMubbO
+peqkjr+PfN2rfdmupnYIXI8GH4aBBrtKZhuZ5DniSzaVW/s+Gc9BaDr1p4ebTdMk
+OpbFbhYIklWI6Rzf+esasxOe7OsMp70Y4XRwTE/vGo8naAoHIT2Z9JvqO3Uds3xZ
+MsH4P3TbH17IcLLfcZzRvpmKs/VRSVIYphuJzzKAEmCqrbn0ZD+fyA5IvMMAuMDh
+qZv/2wHotIXZT2KbdVgDCK1OFYr191A3VgQvNq2HBlSpclg0JyMtXu4ZwRUQMTn9
+VKx/UsN9u7+pc9GdcOPPIWchZSdf+SWD+amZixfQwVcffcpCg3x8yCSHKJTbci8F
+AgMBAAGjggLLMIICxzAdBgNVHQ4EFgQU9piOmIZRxlMEPZJi9WkBn4yzB0MwewYD
+VR0RBHQwcocECr9BJ4cECr9BKIcECr9BKYcECr9BKocECr9BK4cECr9BLIILZ2Nj
+YXBwMS5zYmmCC2djY2FwcDIuc2JpggtnY2NhcHAzLnNiaYILZ2NjYXBwNC5zYmmC
+C2djY2FwcDUuc2JpggtnY2NhcHA2LnNiaTAfBgNVHSMEGDAWgBQ3miB0MF4k/R/l
+v67/APRrFXWfsDCBywYDVR0fBIHDMIHAMIG9oIG6oIG3hoG0bGRhcDovLy9DTj1T
+QkktUFJPRC1SQ0EsQ049U0JJUk9PVENBUFJPRCxDTj1DRFAsQ049UHVibGljJTIw
+S2V5JTIwU2VydmljZXMsQ049U2VydmljZXMsQ049Q29uZmlndXJhdGlvbixEQz1B
+RCxEQz1TQkk/Y2VydGlmaWNhdGVSZXZvY2F0aW9uTGlzdD9iYXNlP29iamVjdENs
+YXNzPWNSTERpc3RyaWJ1dGlvblBvaW50MIG5BggrBgEFBQcBAQSBrDCBqTCBpgYI
+KwYBBQUHMAKGgZlsZGFwOi8vL0NOPVNCSS1QUk9ELVJDQSxDTj1BSUEsQ049UHVi
+bGljJTIwS2V5JTIwU2VydmljZXMsQ049U2VydmljZXMsQ049Q29uZmlndXJhdGlv
+bixEQz1BRCxEQz1TQkk/Y0FDZXJ0aWZpY2F0ZT9iYXNlP29iamVjdENsYXNzPWNl
+cnRpZmljYXRpb25BdXRob3JpdHkwDgYDVR0PAQH/BAQDAgWgMDwGCSsGAQQBgjcV
+BwQvMC0GJSsGAQQBgjcVCIaBnFyDx4Bbg/WRN4TggWaz6mRqhbCVN4ObgBcCAWUC
+ARQwEwYDVR0lBAwwCgYIKwYBBQUHAwEwGwYJKwYBBAGCNxUKBA4wDDAKBggrBgEF
+BQcDATANBgkqhkiG9w0BAQsFAAOCAQEAhmBhTGnUmE0K2W9kwxcl+5Re2C42ycnT
+k24/Dsv260ToHpNUNol3ed+5XcpYS1PuJkH0OuMHI5UILogdbxjmvw9aqvmeOQKW
+XVOKSGYObFRQrcSthqKvDJdxtUvDEACetO9b6NWiWAUUDC5OuU91Sxp/4OAHOqXf
+xEdBkJeI4Mwaab81qvwFnuFAv0DIAvVH+fILaHHxX9LLkpkAiorbdIKzivYv2hQb
+uFT3yi7FQ9syaR1TwlQaHDajC+vm5IgM3K64fAEgj8bwm4MXlfiaLAemOXYD2FRm
+JniHYRB0XM4SW7XS+3deZEf2dBw/ZvDUAPAD7yRLPd6ehO7mzzAmBA==
+-----END CERTIFICATE-----
+subject=C=IN, ST=MH, L=BELAPUR, O=SBI, OU=SP2, CN=GCCPROD
+issuer=DC=SBI, DC=AD, CN=SBI-PROD-RCA
+---
+No client certificate CA names sent
+Peer signing digest: SHA256
+Peer signature type: rsa_pss_rsae_sha256
+Peer Temp Key: ECDH, prime256v1, 256 bits
+---
+SSL handshake has read 3181 bytes and written 868 bytes
+Verification error: self-signed certificate in certificate chain
+---
+New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384
+Protocol: TLSv1.3
+Server public key is 2048 bit
+This TLS version forbids renegotiation.
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+Early data was not sent
+Verify return code: 19 (self-signed certificate in certificate chain)
+---
+---
+Post-Handshake New Session Ticket arrived:
+SSL-Session:
+    Protocol  : TLSv1.3
+    Cipher    : TLS_AES_256_GCM_SHA384
+    Session-ID: 20161F8D84F7DE117F640DCB797451DE4E881F745595BAD98A47917024DF4F53
+    Session-ID-ctx:
+    Resumption PSK: E13BFDD0C516F614655BB7EC775518E289EAFA4D10AB3B23A66385560FDD0E87E8BC53D4C5284E00F4D033E6FBD0140C
+    PSK identity: None
+    PSK identity hint: None
+    SRP username: None
+    TLS session ticket lifetime hint: 86400 (seconds)
+    TLS session ticket:
+    0000 - 80 4c 17 bc ed 75 4a fd-a9 fd 9d 62 aa 83 a6 25   .L...uJ....b...%
+    0010 - 68 b6 8a 88 aa 50 19 c3-84 24 39 9b 14 15 6f 3b   h....P...$9...o;
 
-Please make sure you have the correct access rights
-and the repository exists.
-
-E:\GIT_REPOSITORY\azure-pipelines>
+    Start Time: 1768652371
+    Timeout   : 7200 (sec)
+    Verify return code: 19 (self-signed certificate in certificate chain)
+    Extended master secret: no
+    Max Early Data: 0
+---
+read R BLOCK
