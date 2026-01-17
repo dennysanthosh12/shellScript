@@ -1,34 +1,8 @@
-Microsoft Windows [Version 10.0.26100.7462]
-(c) Microsoft Corporation. All rights reserved.
+E:\GIT_REPOSITORY\azure-pipelines>git push orgin --delete feature
+fatal: 'orgin' does not appear to be a git repository
+fatal: Could not read from remote repository.
 
-E:\GIT_REPOSITORY>git clone https://eistfsserver.sbi.co.in/tfs/SBIEIS/EISGITREPO/_git/azure-pipelines
-Cloning into 'azure-pipelines'...
-remote: Azure Repos
-remote: Found 67 objects to send. (7 ms)
-Unpacking objects: 100% (67/67), 18.48 KiB | 7.00 KiB/s, done.
-
-E:\GIT_REPOSITORY>cd azure-pipelines
-
-E:\GIT_REPOSITORY\azure-pipelines>git status
-On branch main
-Your branch is up to date with 'origin/main'.
-
-nothing to commit, working tree clean
-
-E:\GIT_REPOSITORY\azure-pipelines>git branches
-git: 'branches' is not a git command. See 'git --help'.
-
-E:\GIT_REPOSITORY\azure-pipelines>git branch
-* main
-
-E:\GIT_REPOSITORY\azure-pipelines>git branch -r
-  origin/HEAD -> origin/main
-  origin/feature
-  origin/main
-
-E:\GIT_REPOSITORY\azure-pipelines>
-E:\GIT_REPOSITORY\azure-pipelines>git switch feature
-branch 'feature' set up to track 'origin/feature'.
-Switched to a new branch 'feature'
+Please make sure you have the correct access rights
+and the repository exists.
 
 E:\GIT_REPOSITORY\azure-pipelines>
