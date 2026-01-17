@@ -1,8 +1,7 @@
-openssl s_client -connect 10.191.159.103:7004 -servername gccapp1.sbi -CAfile gcc_ssl.cer
-C02BBEDE497F0000:error:05800088:x509 certificate routines:X509_load_cert_crl_file_ex:no certificate or crl found:crypto/x509/by_file.c:274:
-[eisuser@EISUATSYS06 tmp]$ openssl s_client -connect 10.191.159.103:7004 -servername gccapp1.sbi -CAfile gcc_ssl.pem
+openssl s_client -showcerts 10.191.159.103:7004
 Connecting to 10.191.159.103
 CONNECTED(00000003)
+Can't use SSL_get_servername
 depth=1 DC=SBI, DC=AD, CN=SBI-PROD-RCA
 verify error:num=19:self-signed certificate in certificate chain
 verify return:1
@@ -16,12 +15,6 @@ Certificate chain
    i:DC=SBI, DC=AD, CN=SBI-PROD-RCA
    a:PKEY: RSA, 2048 (bit); sigalg: sha256WithRSAEncryption
    v:NotBefore: Apr  4 07:41:00 2025 GMT; NotAfter: Apr  4 07:41:00 2027 GMT
- 1 s:DC=SBI, DC=AD, CN=SBI-PROD-RCA
-   i:DC=SBI, DC=AD, CN=SBI-PROD-RCA
-   a:PKEY: RSA, 2048 (bit); sigalg: sha256WithRSAEncryption
-   v:NotBefore: Feb  8 06:55:49 2017 GMT; NotAfter: Feb  8 07:05:47 2057 GMT
----
-Server certificate
 -----BEGIN CERTIFICATE-----
 MIIF9DCCBNygAwIBAgITGgAZoA2j9SRAHWKj1QAAABmgDTANBgkqhkiG9w0BAQsF
 ADBAMRMwEQYKCZImiZPyLGQBGRYDU0JJMRIwEAYKCZImiZPyLGQBGRYCQUQxFTAT
@@ -56,6 +49,33 @@ xEdBkJeI4Mwaab81qvwFnuFAv0DIAvVH+fILaHHxX9LLkpkAiorbdIKzivYv2hQb
 uFT3yi7FQ9syaR1TwlQaHDajC+vm5IgM3K64fAEgj8bwm4MXlfiaLAemOXYD2FRm
 JniHYRB0XM4SW7XS+3deZEf2dBw/ZvDUAPAD7yRLPd6ehO7mzzAmBA==
 -----END CERTIFICATE-----
+ 1 s:DC=SBI, DC=AD, CN=SBI-PROD-RCA
+   i:DC=SBI, DC=AD, CN=SBI-PROD-RCA
+   a:PKEY: RSA, 2048 (bit); sigalg: sha256WithRSAEncryption
+   v:NotBefore: Feb  8 06:55:49 2017 GMT; NotAfter: Feb  8 07:05:47 2057 GMT
+-----BEGIN CERTIFICATE-----
+MIIDdTCCAl2gAwIBAgIQTAMTWJxIVapEJZNyGFj6DjANBgkqhkiG9w0BAQsFADBA
+MRMwEQYKCZImiZPyLGQBGRYDU0JJMRIwEAYKCZImiZPyLGQBGRYCQUQxFTATBgNV
+BAMTDFNCSS1QUk9ELVJDQTAgFw0xNzAyMDgwNjU1NDlaGA8yMDU3MDIwODA3MDU0
+N1owQDETMBEGCgmSJomT8ixkARkWA1NCSTESMBAGCgmSJomT8ixkARkWAkFEMRUw
+EwYDVQQDEwxTQkktUFJPRC1SQ0EwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK
+AoIBAQDNDSwbN72EKzOcH+xZhOue8ik8kAztotq76DielYz6yZHi9rHavJx3Ic0e
+KTtgr72jHXra3KZG2GgQpvxfLZd/vD+fZRBXQJJJMvcG0gJYKQLXH6nA3AB/g+UI
+Q0ulxGtgajg2ue0SDBWA2b6EEIYf8bf0zaDy2LnyGkyrv02dehwlMhv6RzXIpta/
+JCAWd2l1k70DX6VQTrb1yAh9C0emIBjoC5HcD7nLtid2lyHjNCXyC3ZWQYjO+a0G
+aaGhloJsjyIfazHSi8JPhzldR15kQcxkeLYVF8LiLfs9lmE7IZxcW/NaCpBY6tBV
+nxOsZ3In0x0ZxQgQ2NoZXjjlJPWtAgMBAAGjaTBnMBMGCSsGAQQBgjcUAgQGHgQA
+QwBBMA4GA1UdDwEB/wQEAwIBhjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBQ3
+miB0MF4k/R/lv67/APRrFXWfsDAQBgkrBgEEAYI3FQEEAwIBADANBgkqhkiG9w0B
+AQsFAAOCAQEAT5jkCD8DR7q73+eiFQrN1gUr8t4I6ShelY1IqbcsBGGmb6fQqN82
+g5QTPLAPT9+6/nv5cAxFZ+nAlE3Xdw3O2ATlf1F/YikXQQ3gGi7aTsKQsQIehPqx
+LLuLPKpavGmY+Wr38Le34Ydw34Fryxqx31xLbkWJohFfcNF0o/asfk4ibGowQNaK
+ZEaW4CORKjEBdyez9l+lfA1N7KLaMx+B2hyU2TgJgzwCf/7Yv/RxB3/E0QyfbehY
+/aTCUqKNgRUnx5njSjZp/LKgNeMQehyfCIGm0rWg0GuD2WrJadrteJOlAH8/tjlI
+yfL49Y51TPqrT+VOXwWlEIrDBvmaAYgIwQ==
+-----END CERTIFICATE-----
+---
+Server certificate
 subject=C=IN, ST=MH, L=BELAPUR, O=SBI, OU=SP2, CN=GCCPROD
 issuer=DC=SBI, DC=AD, CN=SBI-PROD-RCA
 ---
@@ -64,7 +84,7 @@ Peer signing digest: SHA256
 Peer signature type: rsa_pss_rsae_sha256
 Peer Temp Key: ECDH, prime256v1, 256 bits
 ---
-SSL handshake has read 3181 bytes and written 868 bytes
+SSL handshake has read 3181 bytes and written 828 bytes
 Verification error: self-signed certificate in certificate chain
 ---
 New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384
@@ -82,18 +102,18 @@ Post-Handshake New Session Ticket arrived:
 SSL-Session:
     Protocol  : TLSv1.3
     Cipher    : TLS_AES_256_GCM_SHA384
-    Session-ID: D4906F84A491427994AAB607EC202710FD2C186E04CD805DB7621134C8FD66B1
+    Session-ID: 2C1AF1447723FA251693B611B3F1C1A18EC9D8B54F95453493A7BAD0134F5C73
     Session-ID-ctx:
-    Resumption PSK: CFBD6298BADD789F940149FDB36B92B38F208108EB788FBBC379470762A878A1D9AC7745759D98965AA27F1AA719D26C
+    Resumption PSK: 719A0C10CBA73EF9C51300A6C163D895D72CDB0087EE6574ED7EF64CB672B45CBEC79C5AD9F932665CC66B9637EE52B4
     PSK identity: None
     PSK identity hint: None
     SRP username: None
     TLS session ticket lifetime hint: 86400 (seconds)
     TLS session ticket:
-    0000 - 3a de 98 83 46 08 47 51-67 03 a3 ca 81 ad 34 38   :...F.GQg.....48
-    0010 - 69 68 8c f1 a3 9e 94 0d-e8 a6 9b 92 68 cf d2 c5   ih..........h...
+    0000 - 3b 8d 01 35 2e 07 31 ff-8f 97 4e 9b ee 68 c9 8a   ;..5..1...N..h..
+    0010 - e0 9b 2f ea 61 69 81 d2-e2 27 34 57 09 94 67 47   ../.ai...'4W..gG
 
-    Start Time: 1768652633
+    Start Time: 1768652798
     Timeout   : 7200 (sec)
     Verify return code: 19 (self-signed certificate in certificate chain)
     Extended master secret: no
