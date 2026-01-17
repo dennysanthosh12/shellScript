@@ -1,4 +1,6 @@
-openssl s_client -connect 10.191.159.103:7004 -servername gccapp1.sbi -CAfile GCC_SSL_CERTIFICATE.cer
+openssl s_client -connect 10.191.159.103:7004 -servername gccapp1.sbi -CAfile gcc_ssl.cer
+C02BBEDE497F0000:error:05800088:x509 certificate routines:X509_load_cert_crl_file_ex:no certificate or crl found:crypto/x509/by_file.c:274:
+[eisuser@EISUATSYS06 tmp]$ openssl s_client -connect 10.191.159.103:7004 -servername gccapp1.sbi -CAfile gcc_ssl.pem
 Connecting to 10.191.159.103
 CONNECTED(00000003)
 depth=1 DC=SBI, DC=AD, CN=SBI-PROD-RCA
@@ -80,18 +82,18 @@ Post-Handshake New Session Ticket arrived:
 SSL-Session:
     Protocol  : TLSv1.3
     Cipher    : TLS_AES_256_GCM_SHA384
-    Session-ID: 20161F8D84F7DE117F640DCB797451DE4E881F745595BAD98A47917024DF4F53
+    Session-ID: D4906F84A491427994AAB607EC202710FD2C186E04CD805DB7621134C8FD66B1
     Session-ID-ctx:
-    Resumption PSK: E13BFDD0C516F614655BB7EC775518E289EAFA4D10AB3B23A66385560FDD0E87E8BC53D4C5284E00F4D033E6FBD0140C
+    Resumption PSK: CFBD6298BADD789F940149FDB36B92B38F208108EB788FBBC379470762A878A1D9AC7745759D98965AA27F1AA719D26C
     PSK identity: None
     PSK identity hint: None
     SRP username: None
     TLS session ticket lifetime hint: 86400 (seconds)
     TLS session ticket:
-    0000 - 80 4c 17 bc ed 75 4a fd-a9 fd 9d 62 aa 83 a6 25   .L...uJ....b...%
-    0010 - 68 b6 8a 88 aa 50 19 c3-84 24 39 9b 14 15 6f 3b   h....P...$9...o;
+    0000 - 3a de 98 83 46 08 47 51-67 03 a3 ca 81 ad 34 38   :...F.GQg.....48
+    0010 - 69 68 8c f1 a3 9e 94 0d-e8 a6 9b 92 68 cf d2 c5   ih..........h...
 
-    Start Time: 1768652371
+    Start Time: 1768652633
     Timeout   : 7200 (sec)
     Verify return code: 19 (self-signed certificate in certificate chain)
     Extended master secret: no
