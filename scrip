@@ -1,20 +1,227 @@
-Last login: Mon Jan 19 15:01:50 IST 2026 from 10.0.60.72 on pts/1
-[eisuser@eisuatsftp01 ~]$
-[eisuser@eisuatsftp01 ~]$
-[eisuser@eisuatsftp01 ~]$ cat .ssh/config
-Host jumpAZ
-  HostName 10.177.44.58
-  User eisuser
-
-Host azure-*
-  User eisuser
-  ProxyJump jumpAZ
-[eisuser@eisuatsftp01 ~]$
-[eisuser@eisuatsftp01 ~]$
-[eisuser@eisuatsftp01 ~]$ ssh azure-10.177.44.170
+ssh -vvv azure-10.177.44.170
+OpenSSH_8.7p1, OpenSSL 3.5.1 1 Jul 2025
+debug1: Reading configuration data /home/eisuser/.ssh/config
+debug1: /home/eisuser/.ssh/config line 7: Applying options for azure-*
+debug1: Reading configuration data /etc/ssh/ssh_config
+debug3: /etc/ssh/ssh_config line 55: Including file /etc/ssh/ssh_config.d/50-redhat.conf depth 0
+debug1: Reading configuration data /etc/ssh/ssh_config.d/50-redhat.conf
+debug2: checking match for 'final all' host azure-10.177.44.170 originally azure-10.177.44.170
+debug3: /etc/ssh/ssh_config.d/50-redhat.conf line 3: not matched 'final'
+debug2: match not found
+debug3: /etc/ssh/ssh_config.d/50-redhat.conf line 5: Including file /etc/crypto-policies/back-ends/openssh.config depth 1 (parse only)
+debug1: Reading configuration data /etc/crypto-policies/back-ends/openssh.config
+debug3: gss kex names ok: [gss-curve25519-sha256-,gss-nistp256-sha256-,gss-group14-sha256-,gss-group16-sha512-]
+debug3: kex names ok: [curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512]
+debug1: configuration requests final Match pass
+debug1: re-parsing configuration
+debug1: Reading configuration data /home/eisuser/.ssh/config
+debug1: /home/eisuser/.ssh/config line 7: Applying options for azure-*
+debug2: add_identity_file: ignoring duplicate key ~/.ssh/id_rsa
+debug1: Reading configuration data /etc/ssh/ssh_config
+debug3: /etc/ssh/ssh_config line 55: Including file /etc/ssh/ssh_config.d/50-redhat.conf depth 0
+debug1: Reading configuration data /etc/ssh/ssh_config.d/50-redhat.conf
+debug2: checking match for 'final all' host azure-10.177.44.170 originally azure-10.177.44.170
+debug3: /etc/ssh/ssh_config.d/50-redhat.conf line 3: matched 'final'
+debug2: match found
+debug3: /etc/ssh/ssh_config.d/50-redhat.conf line 5: Including file /etc/crypto-policies/back-ends/openssh.config depth 1
+debug1: Reading configuration data /etc/crypto-policies/back-ends/openssh.config
+debug3: gss kex names ok: [gss-curve25519-sha256-,gss-nistp256-sha256-,gss-group14-sha256-,gss-group16-sha512-]
+debug3: kex names ok: [curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512]
+debug1: Setting implicit ProxyCommand from ProxyJump: ssh -vvv -W '[%h]:%p' jumpAZ
+debug3: expanded UserKnownHostsFile '~/.ssh/known_hosts' -> '/home/eisuser/.ssh/known_hosts'
+debug3: expanded UserKnownHostsFile '~/.ssh/known_hosts2' -> '/home/eisuser/.ssh/known_hosts2'
+debug1: Executing proxy command: exec ssh -vvv -W '[azure-10.177.44.170]:22' jumpAZ
+debug1: identity file /home/eisuser/.ssh/id_rsa type 0
+debug1: identity file /home/eisuser/.ssh/id_rsa-cert type -1
+debug1: Local version string SSH-2.0-OpenSSH_8.7
+OpenSSH_8.7p1, OpenSSL 3.5.1 1 Jul 2025
+debug1: Reading configuration data /home/eisuser/.ssh/config
+debug1: /home/eisuser/.ssh/config line 1: Applying options for jumpAZ
+debug1: Reading configuration data /etc/ssh/ssh_config
+debug3: /etc/ssh/ssh_config line 55: Including file /etc/ssh/ssh_config.d/50-redhat.conf depth 0
+debug1: Reading configuration data /etc/ssh/ssh_config.d/50-redhat.conf
+debug2: checking match for 'final all' host EISUATEXP09 originally jumpAZ
+debug3: /etc/ssh/ssh_config.d/50-redhat.conf line 3: not matched 'final'
+debug2: match not found
+debug3: /etc/ssh/ssh_config.d/50-redhat.conf line 5: Including file /etc/crypto-policies/back-ends/openssh.config depth 1 (parse only)
+debug1: Reading configuration data /etc/crypto-policies/back-ends/openssh.config
+debug3: gss kex names ok: [gss-curve25519-sha256-,gss-nistp256-sha256-,gss-group14-sha256-,gss-group16-sha512-]
+debug3: kex names ok: [curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512]
+debug1: configuration requests final Match pass
+debug1: re-parsing configuration
+debug1: Reading configuration data /home/eisuser/.ssh/config
+debug1: Reading configuration data /etc/ssh/ssh_config
+debug3: /etc/ssh/ssh_config line 55: Including file /etc/ssh/ssh_config.d/50-redhat.conf depth 0
+debug1: Reading configuration data /etc/ssh/ssh_config.d/50-redhat.conf
+debug2: checking match for 'final all' host eisuatexp09 originally jumpAZ
+debug3: /etc/ssh/ssh_config.d/50-redhat.conf line 3: matched 'final'
+debug2: match found
+debug3: /etc/ssh/ssh_config.d/50-redhat.conf line 5: Including file /etc/crypto-policies/back-ends/openssh.config depth 1
+debug1: Reading configuration data /etc/crypto-policies/back-ends/openssh.config
+debug3: gss kex names ok: [gss-curve25519-sha256-,gss-nistp256-sha256-,gss-group14-sha256-,gss-group16-sha512-]
+debug3: kex names ok: [curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512]
+debug3: expanded UserKnownHostsFile '~/.ssh/known_hosts' -> '/home/eisuser/.ssh/known_hosts'
+debug3: expanded UserKnownHostsFile '~/.ssh/known_hosts2' -> '/home/eisuser/.ssh/known_hosts2'
+debug2: resolving "eisuatexp09" port 22
+debug3: ssh_connect_direct: entering
+debug1: Connecting to eisuatexp09 [10.177.44.58] port 22.
+debug3: set_sock_tos: set socket 3 IP_TOS 0x48
+debug1: Connection established.
+debug1: identity file /home/eisuser/.ssh/id_rsa type 0
+debug1: identity file /home/eisuser/.ssh/id_rsa-cert type -1
+debug1: Local version string SSH-2.0-OpenSSH_8.7
+debug1: Remote protocol version 2.0, remote software version OpenSSH_8.7
+debug1: compat_banner: match: OpenSSH_8.7 pat OpenSSH* compat 0x04000000
+debug2: fd 3 setting O_NONBLOCK
+debug1: Authenticating to eisuatexp09:22 as 'eisuser'
+debug3: record_hostkey: found key type ED25519 in file /home/eisuser/.ssh/known_hosts:225
+debug3: load_hostkeys_file: loaded 1 keys from eisuatexp09
+debug1: load_hostkeys: fopen /home/eisuser/.ssh/known_hosts2: No such file or directory
+debug1: load_hostkeys: fopen /etc/ssh/ssh_known_hosts: No such file or directory
+debug1: load_hostkeys: fopen /etc/ssh/ssh_known_hosts2: No such file or directory
+debug3: order_hostkeyalgs: have matching best-preference key type ssh-ed25519-cert-v01@openssh.com, using HostkeyAlgorithms verbatim
+debug3: send packet: type 20
+debug1: SSH2_MSG_KEXINIT sent
+debug3: receive packet: type 20
+debug1: SSH2_MSG_KEXINIT received
+debug2: local client KEXINIT proposal
+debug2: KEX algorithms: curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,ext-info-c,kex-strict-c-v00@openssh.com
+debug2: host key algorithms: ssh-ed25519-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp521-cert-v01@openssh.com,sk-ssh-ed25519-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,rsa-sha2-512-cert-v01@openssh.com,rsa-sha2-256-cert-v01@openssh.com,ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256
+debug2: ciphers ctos: aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr
+debug2: ciphers stoc: aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr
+debug2: MACs ctos: hmac-sha2-256-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha1,umac-128@openssh.com,hmac-sha2-512
+debug2: MACs stoc: hmac-sha2-256-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha1,umac-128@openssh.com,hmac-sha2-512
+debug2: compression ctos: none,zlib@openssh.com,zlib
+debug2: compression stoc: none,zlib@openssh.com,zlib
+debug2: languages ctos:
+debug2: languages stoc:
+debug2: first_kex_follows 0
+debug2: reserved 0
+debug2: peer server KEXINIT proposal
+debug2: KEX algorithms: curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,kex-strict-s-v00@openssh.com
+debug2: host key algorithms: rsa-sha2-512,rsa-sha2-256,ecdsa-sha2-nistp256,ssh-ed25519
+debug2: ciphers ctos: aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr
+debug2: ciphers stoc: aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr
+debug2: MACs ctos: hmac-sha2-256-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha1,umac-128@openssh.com,hmac-sha2-512
+debug2: MACs stoc: hmac-sha2-256-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha1,umac-128@openssh.com,hmac-sha2-512
+debug2: compression ctos: none,zlib@openssh.com
+debug2: compression stoc: none,zlib@openssh.com
+debug2: languages ctos:
+debug2: languages stoc:
+debug2: first_kex_follows 0
+debug2: reserved 0
+debug3: kex_choose_conf: will use strict KEX ordering
+debug1: kex: algorithm: curve25519-sha256
+debug1: kex: host key algorithm: ssh-ed25519
+debug1: kex: server->client cipher: aes256-gcm@openssh.com MAC: <implicit> compression: none
+debug1: kex: client->server cipher: aes256-gcm@openssh.com MAC: <implicit> compression: none
+debug1: kex: curve25519-sha256 need=32 dh_need=32
+debug1: kex: curve25519-sha256 need=32 dh_need=32
+debug3: send packet: type 30
+debug1: expecting SSH2_MSG_KEX_ECDH_REPLY
+debug3: receive packet: type 31
+debug1: SSH2_MSG_KEX_ECDH_REPLY received
+debug1: Server host key: ssh-ed25519 SHA256:G2uJEaVNdhGhw47/Kgx/f1VQLWRclJyurgjIZTRbivI
+debug3: record_hostkey: found key type ED25519 in file /home/eisuser/.ssh/known_hosts:225
+debug3: load_hostkeys_file: loaded 1 keys from eisuatexp09
+debug1: load_hostkeys: fopen /home/eisuser/.ssh/known_hosts2: No such file or directory
+debug1: load_hostkeys: fopen /etc/ssh/ssh_known_hosts: No such file or directory
+debug1: load_hostkeys: fopen /etc/ssh/ssh_known_hosts2: No such file or directory
+debug1: Host 'eisuatexp09' is known and matches the ED25519 host key.
+debug1: Found key in /home/eisuser/.ssh/known_hosts:225
+debug3: send packet: type 21
+debug1: ssh_packet_send2_wrapped: resetting send seqnr 3
+debug2: set_newkeys: mode 1
+debug1: rekey out after 4294967296 blocks
+debug1: SSH2_MSG_NEWKEYS sent
+debug1: expecting SSH2_MSG_NEWKEYS
+debug3: receive packet: type 21
+debug1: ssh_packet_read_poll2: resetting read seqnr 3
+debug1: SSH2_MSG_NEWKEYS received
+debug2: set_newkeys: mode 0
+debug1: rekey in after 4294967296 blocks
+debug1: Will attempt key: /home/eisuser/.ssh/id_rsa RSA SHA256:AdS+i+9IlFHZhRvStJqZaU0LKPsRuJHwm7FgwNQVEEQ explicit
+debug2: pubkey_prepare: done
+debug3: send packet: type 5
+debug3: receive packet: type 7
+debug1: SSH2_MSG_EXT_INFO received
+debug1: kex_input_ext_info: server-sig-algs=<ssh-ed25519,sk-ssh-ed25519@openssh.com,ssh-rsa,rsa-sha2-256,rsa-sha2-512,ssh-dss,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ecdsa-sha2-nistp256@openssh.com,webauthn-sk-ecdsa-sha2-nistp256@openssh.com>
+debug3: receive packet: type 6
+debug2: service_accept: ssh-userauth
+debug1: SSH2_MSG_SERVICE_ACCEPT received
+debug3: send packet: type 50
+debug3: receive packet: type 53
+debug3: input_userauth_banner: entering
 \S
 Kernel \r on an \m
+debug3: receive packet: type 51
+debug1: Authentications that can continue: publickey,gssapi-keyex,gssapi-with-mic,password
+debug3: start over, passed a different list publickey,gssapi-keyex,gssapi-with-mic,password
+debug3: preferred gssapi-with-mic,publickey,keyboard-interactive,password
+debug3: authmethod_lookup gssapi-with-mic
+debug3: remaining preferred: publickey,keyboard-interactive,password
+debug3: authmethod_is_enabled gssapi-with-mic
+debug1: Next authentication method: gssapi-with-mic
+debug1: No credentials were supplied, or the credentials were unavailable or inaccessible
+No Kerberos credentials available (default cache: KCM:)
+
+
+debug1: No credentials were supplied, or the credentials were unavailable or inaccessible
+No Kerberos credentials available (default cache: KCM:)
+
+
+debug2: we did not send a packet, disable method
+debug3: authmethod_lookup publickey
+debug3: remaining preferred: keyboard-interactive,password
+debug3: authmethod_is_enabled publickey
+debug1: Next authentication method: publickey
+debug1: Offering public key: /home/eisuser/.ssh/id_rsa RSA SHA256:AdS+i+9IlFHZhRvStJqZaU0LKPsRuJHwm7FgwNQVEEQ explicit
+debug3: send packet: type 50
+debug2: we sent a publickey packet, wait for reply
+debug3: receive packet: type 60
+debug1: Server accepts key: /home/eisuser/.ssh/id_rsa RSA SHA256:AdS+i+9IlFHZhRvStJqZaU0LKPsRuJHwm7FgwNQVEEQ explicit
+debug3: sign_and_send_pubkey: RSA SHA256:AdS+i+9IlFHZhRvStJqZaU0LKPsRuJHwm7FgwNQVEEQ
+debug3: sign_and_send_pubkey: signing using rsa-sha2-256 SHA256:AdS+i+9IlFHZhRvStJqZaU0LKPsRuJHwm7FgwNQVEEQ
+debug3: send packet: type 50
+debug3: receive packet: type 52
+Authenticated to eisuatexp09 ([10.177.44.58]:22) using "publickey".
+debug1: pkcs11_del_provider: called, provider_id = (null)
+debug3: ssh_init_stdio_forwarding: azure-10.177.44.170:22
+debug1: channel_connect_stdio_fwd: azure-10.177.44.170:22
+debug2: fd 4 setting O_NONBLOCK
+debug1: channel 0: new [stdio-forward]
+debug3: fd 4 is O_NONBLOCK
+debug2: fd 5 setting O_NONBLOCK
+debug1: getpeername failed: Bad file descriptor
+debug3: send packet: type 90
+debug2: fd 3 setting TCP_NODELAY
+debug3: set_sock_tos: set socket 3 IP_TOS 0x48
+debug1: Requesting no-more-sessions@openssh.com
+debug3: send packet: type 80
+debug1: Entering interactive session.
+debug1: pledge: filesystem full
+debug3: receive packet: type 80
+debug1: client_input_global_request: rtype hostkeys-00@openssh.com want_reply 0
+debug3: client_input_hostkeys: received RSA key SHA256:PfdSU1QtqpQwDIjwb1R0htEa/JTmcsrhuxTUBgOxBIU
+debug3: client_input_hostkeys: received ECDSA key SHA256:7lLw5jpi7SKdW3tnXiCCItFdeBOC6YehkfwmIlDhHuw
+debug3: client_input_hostkeys: received ED25519 key SHA256:G2uJEaVNdhGhw47/Kgx/f1VQLWRclJyurgjIZTRbivI
+debug1: client_input_hostkeys: searching /home/eisuser/.ssh/known_hosts for eisuatexp09 / (none)
+debug3: hostkeys_foreach: reading file "/home/eisuser/.ssh/known_hosts"
+debug3: hostkeys_find: found ssh-ed25519 key under different name/addr at /home/eisuser/.ssh/known_hosts:138
+debug3: hostkeys_find: found ssh-rsa key under different name/addr at /home/eisuser/.ssh/known_hosts:161
+debug3: hostkeys_find: found ecdsa-sha2-nistp256 key under different name/addr at /home/eisuser/.ssh/known_hosts:162
+debug3: hostkeys_find: found ssh-ed25519 key at /home/eisuser/.ssh/known_hosts:225
+debug1: client_input_hostkeys: searching /home/eisuser/.ssh/known_hosts2 for eisuatexp09 / (none)
+debug1: client_input_hostkeys: hostkeys file /home/eisuser/.ssh/known_hosts2 does not exist
+debug3: client_input_hostkeys: 3 server keys: 2 new, 18446744073709551615 retained, 2 incomplete match. 0 to remove
+debug1: client_input_hostkeys: host key found matching a different name/address, skipping UserKnownHostsFile update
+debug3: receive packet: type 4
+debug1: Remote: /home/eisuser/.ssh/authorized_keys:59: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding
+debug3: receive packet: type 4
+debug1: Remote: /home/eisuser/.ssh/authorized_keys:59: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding
+debug3: receive packet: type 92
 channel 0: open failed: connect failed: No address associated with hostname
+debug2: channel_input_open_failure: channel 0: callback start
 stdio forwarding failed
 kex_exchange_identification: Connection closed by remote host
 Connection closed by UNKNOWN port 65535
