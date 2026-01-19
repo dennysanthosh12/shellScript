@@ -1,3 +1,96 @@
-sent 619.06M bytes  received 11.73M bytes  34.10M bytes/sec
-total size is 4.89G  speedup is 7.75
+[eisuser@EISUATEXP09 var]$ rsync -avzhp --delete ./mqsi 10.177.44.59:/var/
+\S
+Kernel \r on an \m
+sending incremental file list
+rsync: [generator] failed to set times on "/var/mqsi": Operation not permitted (1)
+mqsi/
+rsync: [generator] failed to set times on "/var/mqsi/XML": Operation not permitted (1)
+rsync: [generator] failed to set times on "/var/mqsi/XML/external": Operation not permitted (1)
+rsync: [generator] failed to set times on "/var/mqsi/XSL": Operation not permitted (1)
+rsync: [generator] failed to set times on "/var/mqsi/XSL/external": Operation not permitted (1)
+rsync: [generator] failed to set times on "/var/mqsi/certificates": Operation not permitted (1)
+rsync: [generator] failed to set times on "/var/mqsi/certificates/13.0": Operation not permitted (1)
+rsync: [generator] failed to set times on "/var/mqsi/certificates/13.0/admin-ssl": Operation not permitted (1)
+rsync: [generator] failed to set times on "/var/mqsi/certificates/13.0/httpsconnector-ssl": Operation not permitted (1)
+rsync: [generator] failed to set times on "/var/mqsi/common": Operation not permitted (1)
+rsync: [generator] failed to set times on "/var/mqsi/common/adminLog": Operation not permitted (1)
+rsync: [generator] failed to set times on "/var/mqsi/common/errors": Operation not permitted (1)
+rsync: [generator] failed to set times on "/var/mqsi/common/locks": Operation not permitted (1)
+mqsi/XML/
+mqsi/XML/external/
+mqsi/XSL/
+mqsi/XSL/external/
+mqsi/certificates/
+mqsi/certificates/13.0/
+mqsi/certificates/13.0/admin-ssl/
+mqsi/certificates/13.0/httpsconnector-ssl/
+mqsi/common/
+mqsi/common/adminLog/
+mqsi/common/errors/
+mqsi/common/locks/
+rsync: [generator] failed to set times on "/var/mqsi/common/log": Operation not permitted (1)
+mqsi/common/log/
+mqsi/common/log/utility.mqsilist.trace.0.txt
+mqsi/common/log/utility.mqsilist.userTrace.0.txt
+rsync: [generator] failed to set times on "/var/mqsi/common/profiles": Operation not permitted (1)
+rsync: [generator] failed to set times on "/var/mqsi/common/wsrr": Operation not permitted (1)
+rsync: [generator] failed to set times on "/var/mqsi/components": Operation not permitted (1)
+mqsi/common/profiles/
+mqsi/common/wsrr/
+rsync: [sender] send_files failed to open "/var/mqsi/common/wxs/logs/ffdc/HEART_BEAT_localhost_2800_23bd644a_25.11.24_17.04.24.8985659625517980227839.txt": Permission denied (13)
+rsync: [sender] send_files failed to open "/var/mqsi/common/wxs/logs/ffdc/HEART_BEAT_localhost_2800_35e60071_25.11.24_17.04.32.4401390201155661841131.txt": Permission denied (13)
+rsync: [sender] send_files failed to open "/var/mqsi/common/wxs/logs/ffdc/HEART_BEAT_localhost_2800_35e60071_25.11.24_17.04.32.4456745464777039157945.txt": Permission denied (13)
+rsync: [sender] send_files failed to open "/var/mqsi/common/wxs/logs/ffdc/HEART_BEAT_localhost_2800_35e60071_25.11.24_17.04.34.451924602579298332170.txt": Permission denied (13)
+rsync: [sender] send_files failed to open "/var/mqsi/common/wxs/logs/ffdc/HEART_BEAT_localhost_2800_3fe74557_25.11.24_17.04.53.9168646019607345902069.txt": Permission denied (13)
+rsync: [sender] send_files failed to open "/var/mqsi/common/wxs/logs/ffdc/HEART_BEAT_localhost_2800_3fe74557_25.11.24_17.04.53.9212506569500726941732.txt": Permission denied (13)
+rsync: [sender] send_files failed to open "/var/mqsi/common/wxs/logs/ffdc/HEART_BEAT_localhost_2800_exception.log": Permission denied (13)
+rsync: [sender] send_files failed to open "/var/mqsi/common/wxs/logs/ffdc/HEART_BEAT_localhost_2800_exception.log.1763984064893.txt": Permission denied (13)
+rsync: [sender] send_files failed to open "/var/mqsi/common/wxs/logs/ffdc/HEART_BEAT_localhost_2800_exception.log.1764386697124.txt": Permission denied (13)
+rsync: [sender] send_files failed to open "/var/mqsi/common/wxs/logs/ffdc/HEART_BEAT_localhost_2804_8b048b6c_25.11.29_08.54.57.1607761506676892077949.txt": Permission denied (13)
+rsync: [sender] send_files failed to open "/var/mqsi/common/wxs/logs/ffdc/HEART_BEAT_localhost_2804_exception.log": Permission denied (13)
+rsync: [sender] send_files failed to open "/var/mqsi/common/wxs/logs/ffdc/HEART_BEAT_localhost_2804_exception.log.1764386697155.txt": Permission denied (13)
+mqsi/components/
+mqsi/components/ATM_OUTBOUND_SYS/bipMQTT.stderr
+mqsi/components/ATM_OUTBOUND_SYS/servers/ATM_S_01/stdout
+mqsi/components/ATM_OUTBOUND_SYS/servers/ATM_S_02/stdout
+mqsi/components/ATM_OUTBOUND_SYS/servers/ATM_S_03/stdout
+mqsi/components/ATM_OUTBOUND_SYS/servers/ATM_S_04/stdout
+mqsi/components/ATM_OUTBOUND_SYS/servers/ATM_S_05/stdout
+mqsi/components/ATM_OUTBOUND_SYS/servers/ATM_S_08/stdout
+mqsi/components/ATM_OUTBOUND_SYS/servers/ATM_S_09/stdout
+mqsi/components/CACHE/bipMQTT.stderr
+mqsi/components/HEART_BEAT/bipMQTT.stderr
+mqsi/components/HEART_BEAT/servers/Catalog1/stdout
+mqsi/components/HEART_BEAT/servers/Catalog2/stdout
+mqsi/components/MISC_1208_SYS/bipMQTT.stderr
+mqsi/components/MISC_1208_SYS/servers/MISC_1208_01/stdout
+mqsi/components/MISC_SYS/bipMQTT.stderr
+mqsi/components/MISC_SYS/servers/Misc_S_01/stdout
+mqsi/components/MISC_SYS/servers/Misc_S_02/stdout
+mqsi/components/MISC_SYS/servers/Misc_S_03/stdout
+mqsi/components/MISC_SYS/servers/Misc_S_04/stdout
+rsync: [generator] failed to set times on "/var/mqsi/config": Operation not permitted (1)
+rsync: [sender] opendir "/var/mqsi/config/TEST_EXP/MISC_E_01" failed: Permission denied (13)
+rsync: [sender] opendir "/var/mqsi/config/TEST_EXP/MISC_E_02" failed: Permission denied (13)
+rsync: [sender] opendir "/var/mqsi/config/TEST_EXP/MISC_E_03" failed: Permission denied (13)
+rsync: [sender] opendir "/var/mqsi/config/TEST_EXP/MISC_E_04" failed: Permission denied (13)
+mqsi/config/
+rsync: [generator] failed to set times on "/var/mqsi/connectors": Operation not permitted (1)
+rsync: [generator] failed to set times on "/var/mqsi/node_modules": Operation not permitted (1)
+rsync: [generator] failed to set times on "/var/mqsi/odbc": Operation not permitted (1)
+rsync: [generator] failed to set times on "/var/mqsi/registry": Operation not permitted (1)
+rsync: [generator] failed to set times on "/var/mqsi/shared-classes": Operation not permitted (1)
+mqsi/connectors/
+mqsi/node_modules/
+mqsi/odbc/
+mqsi/registry/
+mqsi/shared-classes/
+
+sent 351.80K bytes  received 525.30K bytes  350.84K bytes/sec
+total size is 4.89G  speedup is 5,574.38
 rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1327) [sender=3.2.5]
+[eisuser@EISUATEXP09 var]$ ^C
+[eisuser@EISUATEXP09 var]$ ip r
+default via 10.177.44.1 dev eth0 proto dhcp src 10.177.44.58 metric 100
+10.177.44.0/24 dev eth0 proto kernel scope link src 10.177.44.58 metric 100
+[eisuser@EISUATEXP09 var]$
