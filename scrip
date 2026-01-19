@@ -1,21 +1,23 @@
- mqsichangeflowstats MISC_SYS --all-integration-servers --snapshot --control active --node-data-level basic
-BIP8071I: Successful command completion.
-[eisuser@EISUATEXP09 ~]$
-[eisuser@EISUATEXP09 ~]$
-[eisuser@EISUATEXP09 ~]$ mqsireportflowstats MISC_SYS --all-integration-servers --snapshot
-BIP15077I: Integration Server Misc_S_01 Snapshot Active     state='active', nodeDataLevels='basic', outputFormat='json'
-BIP15079I: Integration Server Misc_S_01 Snapshot Configured state='active', nodeDataLevels='basic', outputFormat='json'
-BIP15077I: Integration Server Misc_S_02 Snapshot Active     state='active', nodeDataLevels='basic', outputFormat='json'
-BIP15079I: Integration Server Misc_S_02 Snapshot Configured state='active', nodeDataLevels='basic', outputFormat='json'
-BIP15077I: Integration Server Misc_S_03 Snapshot Active     state='active', nodeDataLevels='basic', outputFormat='json'
-BIP15079I: Integration Server Misc_S_03 Snapshot Configured state='active', nodeDataLevels='basic', outputFormat='json'
-BIP15077I: Integration Server Misc_S_04 Snapshot Active     state='active', nodeDataLevels='basic', outputFormat='json'
-BIP15079I: Integration Server Misc_S_04 Snapshot Configured state='active', nodeDataLevels='basic', outputFormat='json'
-
-BIP8071I: Successful command completion.
-[eisuser@EISUATEXP09 ~]$ mqsireportflowstats MISC_SYS -e Misc_S_01 --snapshot
+mqsiprofile repetition disallowed
+[eisuser@EISUATSYS08 ~]$ mqsireportflowstats MISC_SYS -e Misc_S_01 --snapshot
 BIP15077I: Integration Server Misc_S_01 Snapshot Active     state='active', nodeDataLevels='basic', outputFormat='json'
 BIP15079I: Integration Server Misc_S_01 Snapshot Configured state='active', nodeDataLevels='basic', outputFormat='json'
 
 BIP8071I: Successful command completion.
-[eisuser@EISUATEXP09 ~]$
+[eisuser@EISUATSYS08 ~]$ mqsireportflowstats MISC_SYS -e Misc_S_01 --snapshot
+BIP15077I: Integration Server Misc_S_01 Snapshot Active     state='active', nodeDataLevels='basic', outputFormat='json'
+BIP15079I: Integration Server Misc_S_01 Snapshot Configured state='active', nodeDataLevels='basic', outputFormat='json'
+
+BIP8071I: Successful command completion.
+[eisuser@EISUATSYS08 ~]$ mqsireportflowstats MISC_SYS -e Misc_S_01 --snapshot
+BIP15077I: Integration Server Misc_S_01 Snapshot Active     state='active', nodeDataLevels='basic', outputFormat='json'
+BIP15079I: Integration Server Misc_S_01 Snapshot Configured state='active', nodeDataLevels='basic', outputFormat='json'
+
+BIP8071I: Successful command completion.
+[eisuser@EISUATSYS08 ~]$ mqsilist  MISC_SYS -e Misc_S_01 | head -5
+BIP1877I: REST API 'thirdParty_SBICARDS_BankIngestEnquiry_sys' on integration server 'Misc_S_01' is running.
+BIP1877I: REST API 'thirdParty_SBICARDS_POSTACK_AuthToken_sys' on integration server 'Misc_S_01' is running.
+BIP1877I: REST API 'thirdParty_SBICreditCardIssuence_sys' on integration server 'Misc_S_01' is running.
+BIP1877I: REST API 'ThirdPartyBASEGetAccDetailsReq_sys' on integration server 'Misc_S_01' is running.
+BIP1877I: REST API 'msBalanceEnquiryMicro_sys' on integration server 'Misc_S_01' is running.
+[eisuser@EISUATSYS08 ~]$
