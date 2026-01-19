@@ -1,137 +1,26 @@
+ssh 10.177.40.67
+\S
+Kernel \r on an \m
+channel 0: open failed: administratively prohibited: open failed
+stdio forwarding failed
+kex_exchange_identification: Connection closed by remote host
+Connection closed by UNKNOWN port 65535
+kex_exchange_identification: Connection closed by remote host
+Connection closed by UNKNOWN port 65535
+[eisuser@eisprmiscexp-15 ~]$ cat .ssh/config
 Host Jump1
   HostName 10.191.171.80
   User eisuser
   Port 22
-  ProxyJump Jump2
 
 Host Jump2
   HostName 10.176.1.80
   User eisuser
   Port 9022
+  ProxyJump Jump1
 
 Host 10.177.*
   User eisuser
   IdentityFile /home/eisuser/.ssh/id_rsa
   Port 22
-  ProxyJump Jump1
-  
-  
-  
-  
-  
-  
-  [eisuser@eisprmiscexp-15 ~]$ ssh -vvv 10.177.40.67
-OpenSSH_8.7p1, OpenSSL 3.5.1 1 Jul 2025
-debug1: Reading configuration data /home/eisuser/.ssh/config
-debug1: /home/eisuser/.ssh/config line 12: Applying options for 10.177.*
-debug1: Reading configuration data /etc/ssh/ssh_config
-debug3: /etc/ssh/ssh_config line 55: Including file /etc/ssh/ssh_config.d/50-redhat.conf depth 0
-debug1: Reading configuration data /etc/ssh/ssh_config.d/50-redhat.conf
-debug2: checking match for 'final all' host 10.177.40.67 originally 10.177.40.67
-debug3: /etc/ssh/ssh_config.d/50-redhat.conf line 3: not matched 'final'
-debug2: match not found
-debug3: /etc/ssh/ssh_config.d/50-redhat.conf line 5: Including file /etc/crypto-policies/back-ends/openssh.config depth 1 (parse only)
-debug1: Reading configuration data /etc/crypto-policies/back-ends/openssh.config
-debug3: gss kex names ok: [gss-curve25519-sha256-,gss-nistp256-sha256-,gss-group14-sha256-,gss-group16-sha512-]
-debug3: kex names ok: [curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512]
-debug1: configuration requests final Match pass
-debug2: resolve_canonicalize: hostname 10.177.40.67 is address
-debug1: re-parsing configuration
-debug1: Reading configuration data /home/eisuser/.ssh/config
-debug1: /home/eisuser/.ssh/config line 12: Applying options for 10.177.*
-debug2: add_identity_file: ignoring duplicate key /home/eisuser/.ssh/id_rsa
-debug1: Reading configuration data /etc/ssh/ssh_config
-debug3: /etc/ssh/ssh_config line 55: Including file /etc/ssh/ssh_config.d/50-redhat.conf depth 0
-debug1: Reading configuration data /etc/ssh/ssh_config.d/50-redhat.conf
-debug2: checking match for 'final all' host 10.177.40.67 originally 10.177.40.67
-debug3: /etc/ssh/ssh_config.d/50-redhat.conf line 3: matched 'final'
-debug2: match found
-debug3: /etc/ssh/ssh_config.d/50-redhat.conf line 5: Including file /etc/crypto-policies/back-ends/openssh.config depth 1
-debug1: Reading configuration data /etc/crypto-policies/back-ends/openssh.config
-debug3: gss kex names ok: [gss-curve25519-sha256-,gss-nistp256-sha256-,gss-group14-sha256-,gss-group16-sha512-]
-debug3: kex names ok: [curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512]
-debug1: Setting implicit ProxyCommand from ProxyJump: ssh -vvv -W '[%h]:%p' Jump1
-debug3: expanded UserKnownHostsFile '~/.ssh/known_hosts' -> '/home/eisuser/.ssh/known_hosts'
-debug3: expanded UserKnownHostsFile '~/.ssh/known_hosts2' -> '/home/eisuser/.ssh/known_hosts2'
-debug1: Executing proxy command: exec ssh -vvv -W '[10.177.40.67]:22' Jump1
-debug1: identity file /home/eisuser/.ssh/id_rsa type 0
-debug1: identity file /home/eisuser/.ssh/id_rsa-cert type -1
-debug1: Local version string SSH-2.0-OpenSSH_8.7
-OpenSSH_8.7p1, OpenSSL 3.5.1 1 Jul 2025
-debug1: Reading configuration data /home/eisuser/.ssh/config
-debug1: /home/eisuser/.ssh/config line 1: Applying options for Jump1
-debug1: Reading configuration data /etc/ssh/ssh_config
-debug3: /etc/ssh/ssh_config line 55: Including file /etc/ssh/ssh_config.d/50-redhat.conf depth 0
-debug1: Reading configuration data /etc/ssh/ssh_config.d/50-redhat.conf
-debug2: checking match for 'final all' host 10.191.171.80 originally Jump1
-debug3: /etc/ssh/ssh_config.d/50-redhat.conf line 3: not matched 'final'
-debug2: match not found
-debug3: /etc/ssh/ssh_config.d/50-redhat.conf line 5: Including file /etc/crypto-policies/back-ends/openssh.config depth 1 (parse only)
-debug1: Reading configuration data /etc/crypto-policies/back-ends/openssh.config
-debug3: gss kex names ok: [gss-curve25519-sha256-,gss-nistp256-sha256-,gss-group14-sha256-,gss-group16-sha512-]
-debug3: kex names ok: [curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512]
-debug1: configuration requests final Match pass
-debug2: resolve_canonicalize: hostname 10.191.171.80 is address
-debug1: re-parsing configuration
-debug1: Reading configuration data /home/eisuser/.ssh/config
-debug1: Reading configuration data /etc/ssh/ssh_config
-debug3: /etc/ssh/ssh_config line 55: Including file /etc/ssh/ssh_config.d/50-redhat.conf depth 0
-debug1: Reading configuration data /etc/ssh/ssh_config.d/50-redhat.conf
-debug2: checking match for 'final all' host 10.191.171.80 originally Jump1
-debug3: /etc/ssh/ssh_config.d/50-redhat.conf line 3: matched 'final'
-debug2: match found
-debug3: /etc/ssh/ssh_config.d/50-redhat.conf line 5: Including file /etc/crypto-policies/back-ends/openssh.config depth 1
-debug1: Reading configuration data /etc/crypto-policies/back-ends/openssh.config
-debug3: gss kex names ok: [gss-curve25519-sha256-,gss-nistp256-sha256-,gss-group14-sha256-,gss-group16-sha512-]
-debug3: kex names ok: [curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512]
-debug1: Setting implicit ProxyCommand from ProxyJump: ssh -vvv -W '[%h]:%p' Jump2
-debug3: expanded UserKnownHostsFile '~/.ssh/known_hosts' -> '/home/eisuser/.ssh/known_hosts'
-debug3: expanded UserKnownHostsFile '~/.ssh/known_hosts2' -> '/home/eisuser/.ssh/known_hosts2'
-debug1: Executing proxy command: exec ssh -vvv -W '[10.191.171.80]:22' Jump2
-debug1: identity file /home/eisuser/.ssh/id_rsa type 0
-debug1: identity file /home/eisuser/.ssh/id_rsa-cert type -1
-debug1: identity file /home/eisuser/.ssh/id_dsa type -1
-debug1: identity file /home/eisuser/.ssh/id_dsa-cert type -1
-debug1: identity file /home/eisuser/.ssh/id_ecdsa type -1
-debug1: identity file /home/eisuser/.ssh/id_ecdsa-cert type -1
-debug1: identity file /home/eisuser/.ssh/id_ecdsa_sk type -1
-debug1: identity file /home/eisuser/.ssh/id_ecdsa_sk-cert type -1
-debug1: identity file /home/eisuser/.ssh/id_ed25519 type -1
-debug1: identity file /home/eisuser/.ssh/id_ed25519-cert type -1
-debug1: identity file /home/eisuser/.ssh/id_ed25519_sk type -1
-debug1: identity file /home/eisuser/.ssh/id_ed25519_sk-cert type -1
-debug1: identity file /home/eisuser/.ssh/id_xmss type -1
-debug1: identity file /home/eisuser/.ssh/id_xmss-cert type -1
-debug1: Local version string SSH-2.0-OpenSSH_8.7
-OpenSSH_8.7p1, OpenSSL 3.5.1 1 Jul 2025
-debug1: Reading configuration data /home/eisuser/.ssh/config
-debug1: /home/eisuser/.ssh/config line 7: Applying options for Jump2
-debug1: Reading configuration data /etc/ssh/ssh_config
-debug3: /etc/ssh/ssh_config line 55: Including file /etc/ssh/ssh_config.d/50-redhat.conf depth 0
-debug1: Reading configuration data /etc/ssh/ssh_config.d/50-redhat.conf
-debug2: checking match for 'final all' host 10.176.1.80 originally Jump2
-debug3: /etc/ssh/ssh_config.d/50-redhat.conf line 3: not matched 'final'
-debug2: match not found
-debug3: /etc/ssh/ssh_config.d/50-redhat.conf line 5: Including file /etc/crypto-policies/back-ends/openssh.config depth 1 (parse only)
-debug1: Reading configuration data /etc/crypto-policies/back-ends/openssh.config
-debug3: gss kex names ok: [gss-curve25519-sha256-,gss-nistp256-sha256-,gss-group14-sha256-,gss-group16-sha512-]
-debug3: kex names ok: [curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512]
-debug1: configuration requests final Match pass
-debug2: resolve_canonicalize: hostname 10.176.1.80 is address
-debug1: re-parsing configuration
-debug1: Reading configuration data /home/eisuser/.ssh/config
-debug1: Reading configuration data /etc/ssh/ssh_config
-debug3: /etc/ssh/ssh_config line 55: Including file /etc/ssh/ssh_config.d/50-redhat.conf depth 0
-debug1: Reading configuration data /etc/ssh/ssh_config.d/50-redhat.conf
-debug2: checking match for 'final all' host 10.176.1.80 originally Jump2
-debug3: /etc/ssh/ssh_config.d/50-redhat.conf line 3: matched 'final'
-debug2: match found
-debug3: /etc/ssh/ssh_config.d/50-redhat.conf line 5: Including file /etc/crypto-policies/back-ends/openssh.config depth 1
-debug1: Reading configuration data /etc/crypto-policies/back-ends/openssh.config
-debug3: gss kex names ok: [gss-curve25519-sha256-,gss-nistp256-sha256-,gss-group14-sha256-,gss-group16-sha512-]
-debug3: kex names ok: [curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512]
-debug3: expanded UserKnownHostsFile '~/.ssh/known_hosts' -> '/home/eisuser/.ssh/known_hosts'
-debug3: expanded UserKnownHostsFile '~/.ssh/known_hosts2' -> '/home/eisuser/.ssh/known_hosts2'
-debug3: ssh_connect_direct: entering
-debug1: Connecting to 10.176.1.80 [10.176.1.80] port 9022.
-debug3: set_sock_tos: set socket 3 IP_TOS 0x48
+  ProxyJump Jump2
