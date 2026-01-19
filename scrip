@@ -1,4 +1,24 @@
- ssh -vvv 10.177.40.10
+[eisuser@eisprmiscexp-15 ~]$ cat .ssh/config
+Host Jump1
+  HostName 10.191.171.80
+  User eisuser
+  Port 22
+
+Host Jump2
+  HostName 10.176.1.80
+  User eisuser
+  Port 9022
+  ProxyJump Jump1
+
+Host 10.177.*
+  User eisuser
+  IdentityFile /home/eisuser/.ssh/id_rsa
+  Port 22
+  ProxyJump Jump2
+[eisuser@eisprmiscexp-15 ~]$ ip r
+default via 10.188.24.1 dev eth0 proto dhcp src 10.188.24.67 metric 100
+10.188.24.0/24 dev eth0 proto kernel scope link src 10.188.24.67 metric 100
+[eisuser@eisprmiscexp-15 ~]$ ssh -vvv 10.177.40.10
 OpenSSH_8.7p1, OpenSSL 3.5.1 1 Jul 2025
 debug1: Reading configuration data /home/eisuser/.ssh/config
 debug1: /home/eisuser/.ssh/config line 12: Applying options for 10.177.*
@@ -282,5 +302,4 @@ kex_exchange_identification: Connection closed by remote host
 Connection closed by UNKNOWN port 65535
 kex_exchange_identification: Connection closed by remote host
 Connection closed by UNKNOWN port 65535
-[eisuser@eisprmiscexp-15 ~]$ vi .ssh/config
 [eisuser@eisprmiscexp-15 ~]$
