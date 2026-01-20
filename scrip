@@ -1,7 +1,54 @@
-rsync -avz --delete \
-  --exclude="common/wxs/" \
-  --exclude="common/log/" \
-  --exclude="common/errors/" \
-  --exclude="common/locks/" \
-  --exclude="*/ffdc/" \
-  ./mqsi/ 10.177.44.59:/var/mqsi/
+@Service
+@RequiredArgsConstructor
+public class IntegrationPollingService {
+
+    private final IntegrationEndpointRepository repository;
+    private final WebClient webClient;
+    private final IntegrationStatusRepository statusRepo;
+
+    public Mono<Void> pollAllNodes() {
+
+        List<IntegrationEndpoint> endpoints =
+                repository.findByActiveTrue();
+
+        return Flux.fromIterable(endpoints)
+                .parallel()
+                .runOn(Schedulers.boundedElastic())
+                .flatMap(this::callAceApi)
+                .sequential()
+                .then();
+    }
+
+    private Mono<Void> callAceApi(IntegrationEndpoint ep) {
+
+        String url = String.format(
+                "%s://%s:%d/apiv2",
+                ep.getProtocol(), ep.getHost(), ep.getPort());
+
+        return webClient.get()
+                .uri(url)
+                .retrieve()
+                .bodyToMono(IntegrationNodeResponse.class)
+                .doOnNext(resp -> saveStatus(ep, resp))
+                .onErrorResume(ex -> {
+                    saveFailure(ep, ex);
+                    return Mono.empty();
+                })
+                .then();
+    }
+}
+
+
+
+@EnableScheduling
+@Component
+@RequiredArgsConstructor
+public class IntegrationScheduler {
+
+    private final IntegrationPollingService pollingService;
+
+    @Scheduled(fixedRate = 10000)
+    public void pollIntegrationNodes() {
+        pollingService.pollAllNodes().subscribe();
+    }
+}
