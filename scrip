@@ -1,54 +1,85 @@
+@Entity
+@Table(name = "integration_status")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class IntegrationStatus {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "node_name", length = 50, nullable = false)
+    private String nodeName;
+
+    @Column(name = "status", length = 20, nullable = false)
+    private String status;
+
+    @Column(name = "last_checked", nullable = false)
+    private LocalDateTime lastChecked;
+
+    @Column(name = "response", columnDefinition = "json")
+    private String response;   // JSON as String
+}
+
+@Repository
+public interface IntegrationStatusRepository
+        extends JpaRepository<IntegrationStatus, Long> {
+}
+
 @Service
 @RequiredArgsConstructor
-public class IntegrationPollingService {
+public class IntegrationStatusService {
 
-    private final IntegrationEndpointRepository repository;
-    private final WebClient webClient;
-    private final IntegrationStatusRepository statusRepo;
+    private final IntegrationStatusRepository statusRepository;
+    private final ObjectMapper objectMapper;
 
-    public Mono<Void> pollAllNodes() {
+    public void saveStatus(IntegrationEndpoint ep,
+                           IntegrationNodeResponse response) {
 
-        List<IntegrationEndpoint> endpoints =
-                repository.findByActiveTrue();
+        try {
+            String jsonResponse =
+                    objectMapper.writeValueAsString(response);
 
-        return Flux.fromIterable(endpoints)
-                .parallel()
-                .runOn(Schedulers.boundedElastic())
-                .flatMap(this::callAceApi)
-                .sequential()
-                .then();
+            IntegrationStatus status = IntegrationStatus.builder()
+                    .nodeName(ep.getNodeName())
+                    .status("UP")
+                    .lastChecked(LocalDateTime.now())
+                    .response(jsonResponse)
+                    .build();
+
+            statusRepository.save(status);
+
+        } catch (Exception e) {
+            // fallback if JSON conversion fails
+            saveFailure(ep, e);
+        }
     }
 
-    private Mono<Void> callAceApi(IntegrationEndpoint ep) {
 
-        String url = String.format(
-                "%s://%s:%d/apiv2",
-                ep.getProtocol(), ep.getHost(), ep.getPort());
+    public void saveFailure(IntegrationEndpoint ep, Throwable ex) {
 
-        return webClient.get()
-                .uri(url)
-                .retrieve()
-                .bodyToMono(IntegrationNodeResponse.class)
-                .doOnNext(resp -> saveStatus(ep, resp))
-                .onErrorResume(ex -> {
-                    saveFailure(ep, ex);
-                    return Mono.empty();
-                })
-                .then();
+        IntegrationStatus status = IntegrationStatus.builder()
+                .nodeName(ep.getNodeName())
+                .status("DOWN")
+                .lastChecked(LocalDateTime.now())
+                .response(buildErrorJson(ex))
+                .build();
+
+        statusRepository.save(status);
     }
-}
 
-
-
-@EnableScheduling
-@Component
-@RequiredArgsConstructor
-public class IntegrationScheduler {
-
-    private final IntegrationPollingService pollingService;
-
-    @Scheduled(fixedRate = 10000)
-    public void pollIntegrationNodes() {
-        pollingService.pollAllNodes().subscribe();
+    private String buildErrorJson(Throwable ex) {
+        return String.format(
+                "{\"error\":\"%s\",\"message\":\"%s\"}",
+                ex.getClass().getSimpleName(),
+                ex.getMessage()
+        );
     }
 }
+
+
+
+
