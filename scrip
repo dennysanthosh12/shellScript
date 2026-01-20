@@ -1,85 +1,46 @@
-@Entity
-@Table(name = "integration_status")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class IntegrationStatus {
+Question 1
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+You receive an email from the Revenue Agency addressed to Dear Citizen. It says that they have reviewed your file and that you are eligible for a tax refund of $1286.62. It provides links to a website for additional information and to a refund form.
 
-    @Column(name = "node_name", length = 50, nullable = false)
-    private String nodeName;
+This is a legitimate email
 
-    @Column(name = "status", length = 20, nullable = false)
-    private String status;
+This is a phishing attempt
 
-    @Column(name = "last_checked", nullable = false)
-    private LocalDateTime lastChecked;
-
-    @Column(name = "response", columnDefinition = "json")
-    private String response;   // JSON as String
-}
-
-@Repository
-public interface IntegrationStatusRepository
-        extends JpaRepository<IntegrationStatus, Long> {
-}
-
-@Service
-@RequiredArgsConstructor
-public class IntegrationStatusService {
-
-    private final IntegrationStatusRepository statusRepository;
-    private final ObjectMapper objectMapper;
-
-    public void saveStatus(IntegrationEndpoint ep,
-                           IntegrationNodeResponse response) {
-
-        try {
-            String jsonResponse =
-                    objectMapper.writeValueAsString(response);
-
-            IntegrationStatus status = IntegrationStatus.builder()
-                    .nodeName(ep.getNodeName())
-                    .status("UP")
-                    .lastChecked(LocalDateTime.now())
-                    .response(jsonResponse)
-                    .build();
-
-            statusRepository.save(status);
-
-        } catch (Exception e) {
-            // fallback if JSON conversion fails
-            saveFailure(ep, e);
-        }
-    }
+Submit
 
 
-    public void saveFailure(IntegrationEndpoint ep, Throwable ex) {
+Start Over
+Question 2
 
-        IntegrationStatus status = IntegrationStatus.builder()
-                .nodeName(ep.getNodeName())
-                .status("DOWN")
-                .lastChecked(LocalDateTime.now())
-                .response(buildErrorJson(ex))
-                .build();
+You receive an email saying that your mailbox has exceeded the storage limit. You will no longer be able to send or receive emails unless you click on a link and fill out a form to increase your mailbox capacity. The email does not contain any spelling mistakes and hovering your mouse over the sender’s name returns quota@webmaster.com.
 
-        statusRepository.save(status);
-    }
+This is a legitimate email
 
-    private String buildErrorJson(Throwable ex) {
-        return String.format(
-                "{\"error\":\"%s\",\"message\":\"%s\"}",
-                ex.getClass().getSimpleName(),
-                ex.getMessage()
-        );
-    }
-}
+This is a phishing attempt
+
+Submit
 
 
 
 
+Start Over
+Question 3
+
+You receive and email from your bank saying that your electronic statements are ready. It states the name of your company, a partial account number and a phone number to call for further assistance. There is no spelling mistakes and no links to click on, instead it asks you to sign in as usual.
+
+This is a legitimate email
+
+This is a phishing attempt
+
+Submit
+
+
+
+Start Over
+Question 4
+
+You receive an email from your bank addressed to Dear Client, saying that there has been a widespread security breach in their systems. All clients must immediately update their information using the link provided. The email contains two spelling mistakes, and you can see all other recipients’ emails. It also says that it is an automated message and not to reply to it.
+
+This is a legitimate email
+
+This is a phishing attempt
