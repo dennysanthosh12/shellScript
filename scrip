@@ -1,46 +1,237 @@
-Question 1
+keytool -list -v -keystore keyStore.jks -storepass password -alias eispriuat
+Alias name: eispriuat
+Creation date: Dec 6, 2023
+Entry type: PrivateKeyEntry
+Certificate chain length: 2
+Certificate[1]:
+Owner: CN=ENC_EIS_UAT, OU=EIS, O=SBI, L=Mumbai, ST=Maharashtra, C=IN
+Issuer: CN=SBI-PROD-RCA, DC=AD, DC=SBI
+Serial number: 1a0010c94233cfa888635f9e5900000010c942
+Valid from: Sat Nov 04 19:54:22 IST 2023 until: Mon Nov 03 19:54:22 IST 2025
+Certificate fingerprints:
+         SHA1: 06:88:4A:2C:3C:93:59:E8:47:BB:59:71:77:B2:34:11:50:1B:5C:5D
+         SHA256: CB:77:56:18:0A:18:54:2C:3B:17:EA:76:C2:AB:8D:3D:6F:0D:95:B0:8F:BE:72:25:8E:B3:D2:6D:40:42:C7:9B
+Signature algorithm name: SHA256withRSA
+Subject Public Key Algorithm: 2048-bit RSA key
+Version: 3
 
-You receive an email from the Revenue Agency addressed to Dear Citizen. It says that they have reviewed your file and that you are eligible for a tax refund of $1286.62. It provides links to a website for additional information and to a refund form.
+Extensions:
 
-This is a legitimate email
-
-This is a phishing attempt
-
-Submit
-
-
-Start Over
-Question 2
-
-You receive an email saying that your mailbox has exceeded the storage limit. You will no longer be able to send or receive emails unless you click on a link and fill out a form to increase your mailbox capacity. The email does not contain any spelling mistakes and hovering your mouse over the sender’s name returns quota@webmaster.com.
-
-This is a legitimate email
-
-This is a phishing attempt
-
-Submit
-
-
-
-
-Start Over
-Question 3
-
-You receive and email from your bank saying that your electronic statements are ready. It states the name of your company, a partial account number and a phone number to call for further assistance. There is no spelling mistakes and no links to click on, instead it asks you to sign in as usual.
-
-This is a legitimate email
-
-This is a phishing attempt
-
-Submit
+#1: ObjectId: 1.3.6.1.4.1.311.21.10 Criticality=false
+0000: 30 18 30 0A 06 08 2B 06   01 05 05 07 03 01 30 0A  0.0...+.......0.
+0010: 06 08 2B 06 01 05 05 07   03 02                    ..+.......
 
 
+#2: ObjectId: 1.3.6.1.4.1.311.21.7 Criticality=false
+0000: 30 2D 06 25 2B 06 01 04   01 82 37 15 08 86 81 9C  0-.%+.....7.....
+0010: 5C 83 C7 80 5B 83 F5 91   37 84 E0 81 66 B3 EA 64  \...[...7...f..d
+0020: 6A 86 E8 D0 0D 83 81 ED   09 02 01 64 02 01 15     j..........d...
 
-Start Over
-Question 4
 
-You receive an email from your bank addressed to Dear Client, saying that there has been a widespread security breach in their systems. All clients must immediately update their information using the link provided. The email contains two spelling mistakes, and you can see all other recipients’ emails. It also says that it is an automated message and not to reply to it.
+#3: ObjectId: 1.3.6.1.5.5.7.1.1 Criticality=false
+AuthorityInfoAccess [
+  [
+   accessMethod: caIssuers
+   accessLocation: URIName: ldap:///CN=SBI-PROD-RCA,CN=AIA,CN=Public%20Key%20Services,CN=Services,CN=Configuration,DC=AD,DC=SBI?cACertificate?base?objectClass=certificationAuthority
+]
+]
 
-This is a legitimate email
+#4: ObjectId: 2.5.29.35 Criticality=false
+AuthorityKeyIdentifier [
+KeyIdentifier [
+0000: 37 9A 20 74 30 5E 24 FD   1F E5 BF AE FF 00 F4 6B  7. t0^$........k
+0010: 15 75 9F B0                                        .u..
+]
+]
 
-This is a phishing attempt
+#5: ObjectId: 2.5.29.31 Criticality=false
+CRLDistributionPoints [
+  [DistributionPoint:
+     [URIName: ldap:///CN=SBI-PROD-RCA,CN=SBIROOTCAPROD,CN=CDP,CN=Public%20Key%20Services,CN=Services,CN=Configuration,DC=AD,DC=SBI?certificateRevocationList?base?objectClass=cRLDistributionPoint]
+]]
+
+#6: ObjectId: 2.5.29.37 Criticality=false
+ExtendedKeyUsages [
+  serverAuth
+  clientAuth
+]
+
+#7: ObjectId: 2.5.29.15 Criticality=true
+KeyUsage [
+  DigitalSignature
+  Key_Encipherment
+]
+
+#8: ObjectId: 2.5.29.14 Criticality=false
+SubjectKeyIdentifier [
+KeyIdentifier [
+0000: 88 07 18 B7 F8 8D 44 8B   56 7D B2 4D 79 B2 38 B0  ......D.V..My.8.
+0010: DC 35 32 DD                                        .52.
+]
+]
+
+Certificate[2]:
+Owner: CN=SBI-PROD-RCA, DC=AD, DC=SBI
+Issuer: CN=SBI-PROD-RCA, DC=AD, DC=SBI
+Serial number: 4c0313589c4855aa442593721858fa0e
+Valid from: Wed Feb 08 12:25:49 IST 2017 until: Thu Feb 08 12:35:47 IST 2057
+Certificate fingerprints:
+         SHA1: 00:35:2F:F3:0F:A5:A3:06:66:5A:07:62:26:C2:DF:8A:D3:3A:5B:99
+         SHA256: 6B:E9:B4:74:E5:4D:3B:4C:68:5D:ED:B5:00:E3:28:9A:7D:48:E6:13:5C:75:BB:F9:D3:76:04:FA:F4:B1:D9:FD
+Signature algorithm name: SHA256withRSA
+Subject Public Key Algorithm: 2048-bit RSA key
+Version: 3
+
+Extensions:
+
+#1: ObjectId: 1.3.6.1.4.1.311.20.2 Criticality=false
+0000: 1E 04 00 43 00 41                                  ...C.A
+
+
+#2: ObjectId: 1.3.6.1.4.1.311.21.1 Criticality=false
+0000: 02 01 00                                           ...
+
+
+#3: ObjectId: 2.5.29.19 Criticality=true
+BasicConstraints:[
+  CA:true
+  PathLen: no limit
+]
+
+#4: ObjectId: 2.5.29.15 Criticality=true
+KeyUsage [
+  DigitalSignature
+  Key_CertSign
+  Crl_Sign
+]
+
+#5: ObjectId: 2.5.29.14 Criticality=false
+SubjectKeyIdentifier [
+KeyIdentifier [
+0000: 37 9A 20 74 30 5E 24 FD   1F E5 BF AE FF 00 F4 6B  7. t0^$........k
+0010: 15 75 9F B0                                        .u..
+]
+]
+
+
+Warning:
+The JKS keystore uses a proprietary format. It is recommended to migrate to PKCS12 which is an industry standard format using "keytool -importkeystore -srckeystore keyStore.jks -destkeystore keyStore.jks -deststoretype pkcs12".
+[eisuser@EISUATSYS02 Keystore]$ keytool -list -v -keystore keyStore.jks -storepass password -alias eispriuatsit
+Alias name: eispriuatsit
+Creation date: Nov 18, 2023
+Entry type: PrivateKeyEntry
+Certificate chain length: 2
+Certificate[1]:
+Owner: CN=ENC_EIS_UAT, OU=EIS, O=SBI, L=Mumbai, ST=Maharashtra, C=IN
+Issuer: CN=SBI-PROD-RCA, DC=AD, DC=SBI
+Serial number: 1a0010c94233cfa888635f9e5900000010c942
+Valid from: Sat Nov 04 19:54:22 IST 2023 until: Mon Nov 03 19:54:22 IST 2025
+Certificate fingerprints:
+         SHA1: 06:88:4A:2C:3C:93:59:E8:47:BB:59:71:77:B2:34:11:50:1B:5C:5D
+         SHA256: CB:77:56:18:0A:18:54:2C:3B:17:EA:76:C2:AB:8D:3D:6F:0D:95:B0:8F:BE:72:25:8E:B3:D2:6D:40:42:C7:9B
+Signature algorithm name: SHA256withRSA
+Subject Public Key Algorithm: 2048-bit RSA key
+Version: 3
+
+Extensions:
+
+#1: ObjectId: 1.3.6.1.4.1.311.21.10 Criticality=false
+0000: 30 18 30 0A 06 08 2B 06   01 05 05 07 03 01 30 0A  0.0...+.......0.
+0010: 06 08 2B 06 01 05 05 07   03 02                    ..+.......
+
+
+#2: ObjectId: 1.3.6.1.4.1.311.21.7 Criticality=false
+0000: 30 2D 06 25 2B 06 01 04   01 82 37 15 08 86 81 9C  0-.%+.....7.....
+0010: 5C 83 C7 80 5B 83 F5 91   37 84 E0 81 66 B3 EA 64  \...[...7...f..d
+0020: 6A 86 E8 D0 0D 83 81 ED   09 02 01 64 02 01 15     j..........d...
+
+
+#3: ObjectId: 1.3.6.1.5.5.7.1.1 Criticality=false
+AuthorityInfoAccess [
+  [
+   accessMethod: caIssuers
+   accessLocation: URIName: ldap:///CN=SBI-PROD-RCA,CN=AIA,CN=Public%20Key%20Services,CN=Services,CN=Configuration,DC=AD,DC=SBI?cACertificate?base?objectClass=certificationAuthority
+]
+]
+
+#4: ObjectId: 2.5.29.35 Criticality=false
+AuthorityKeyIdentifier [
+KeyIdentifier [
+0000: 37 9A 20 74 30 5E 24 FD   1F E5 BF AE FF 00 F4 6B  7. t0^$........k
+0010: 15 75 9F B0                                        .u..
+]
+]
+
+#5: ObjectId: 2.5.29.31 Criticality=false
+CRLDistributionPoints [
+  [DistributionPoint:
+     [URIName: ldap:///CN=SBI-PROD-RCA,CN=SBIROOTCAPROD,CN=CDP,CN=Public%20Key%20Services,CN=Services,CN=Configuration,DC=AD,DC=SBI?certificateRevocationList?base?objectClass=cRLDistributionPoint]
+]]
+
+#6: ObjectId: 2.5.29.37 Criticality=false
+ExtendedKeyUsages [
+  serverAuth
+  clientAuth
+]
+
+#7: ObjectId: 2.5.29.15 Criticality=true
+KeyUsage [
+  DigitalSignature
+  Key_Encipherment
+]
+
+#8: ObjectId: 2.5.29.14 Criticality=false
+SubjectKeyIdentifier [
+KeyIdentifier [
+0000: 88 07 18 B7 F8 8D 44 8B   56 7D B2 4D 79 B2 38 B0  ......D.V..My.8.
+0010: DC 35 32 DD                                        .52.
+]
+]
+
+Certificate[2]:
+Owner: CN=SBI-PROD-RCA, DC=AD, DC=SBI
+Issuer: CN=SBI-PROD-RCA, DC=AD, DC=SBI
+Serial number: 4c0313589c4855aa442593721858fa0e
+Valid from: Wed Feb 08 12:25:49 IST 2017 until: Thu Feb 08 12:35:47 IST 2057
+Certificate fingerprints:
+         SHA1: 00:35:2F:F3:0F:A5:A3:06:66:5A:07:62:26:C2:DF:8A:D3:3A:5B:99
+         SHA256: 6B:E9:B4:74:E5:4D:3B:4C:68:5D:ED:B5:00:E3:28:9A:7D:48:E6:13:5C:75:BB:F9:D3:76:04:FA:F4:B1:D9:FD
+Signature algorithm name: SHA256withRSA
+Subject Public Key Algorithm: 2048-bit RSA key
+Version: 3
+
+Extensions:
+
+#1: ObjectId: 1.3.6.1.4.1.311.20.2 Criticality=false
+0000: 1E 04 00 43 00 41                                  ...C.A
+
+
+#2: ObjectId: 1.3.6.1.4.1.311.21.1 Criticality=false
+0000: 02 01 00                                           ...
+
+
+#3: ObjectId: 2.5.29.19 Criticality=true
+BasicConstraints:[
+  CA:true
+  PathLen: no limit
+]
+
+#4: ObjectId: 2.5.29.15 Criticality=true
+KeyUsage [
+  DigitalSignature
+  Key_CertSign
+  Crl_Sign
+]
+
+#5: ObjectId: 2.5.29.14 Criticality=false
+SubjectKeyIdentifier [
+KeyIdentifier [
+0000: 37 9A 20 74 30 5E 24 FD   1F E5 BF AE FF 00 F4 6B  7. t0^$........k
+0010: 15 75 9F B0                                        .u..
+]
+]
+
+
+Warning:
+The JKS keystore uses a proprietary format. It is recommended to migrate to PKCS12 which is an industry standard format using "keytool -importkeystore -srckeystore keyStore.jks -destkeystore keyStore.jks -deststoretype pkcs12".
+[eisuser@EISUATSYS02 Keystore]$
