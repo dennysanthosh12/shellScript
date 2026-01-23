@@ -1,237 +1,138 @@
-keytool -list -v -keystore keyStore.jks -storepass password -alias eispriuat
-Alias name: eispriuat
-Creation date: Dec 6, 2023
-Entry type: PrivateKeyEntry
-Certificate chain length: 2
-Certificate[1]:
-Owner: CN=ENC_EIS_UAT, OU=EIS, O=SBI, L=Mumbai, ST=Maharashtra, C=IN
-Issuer: CN=SBI-PROD-RCA, DC=AD, DC=SBI
-Serial number: 1a0010c94233cfa888635f9e5900000010c942
-Valid from: Sat Nov 04 19:54:22 IST 2023 until: Mon Nov 03 19:54:22 IST 2025
-Certificate fingerprints:
-         SHA1: 06:88:4A:2C:3C:93:59:E8:47:BB:59:71:77:B2:34:11:50:1B:5C:5D
-         SHA256: CB:77:56:18:0A:18:54:2C:3B:17:EA:76:C2:AB:8D:3D:6F:0D:95:B0:8F:BE:72:25:8E:B3:D2:6D:40:42:C7:9B
-Signature algorithm name: SHA256withRSA
-Subject Public Key Algorithm: 2048-bit RSA key
-Version: 3
+#       $OpenBSD: sshd_config,v 1.104 2021/07/02 05:11:21 dtucker Exp $
 
-Extensions:
+# This is the sshd server system-wide configuration file.  See
+# sshd_config(5) for more information.
 
-#1: ObjectId: 1.3.6.1.4.1.311.21.10 Criticality=false
-0000: 30 18 30 0A 06 08 2B 06   01 05 05 07 03 01 30 0A  0.0...+.......0.
-0010: 06 08 2B 06 01 05 05 07   03 02                    ..+.......
+# This sshd was compiled with PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin
 
+# The strategy used for options in the default sshd_config shipped with
+# OpenSSH is to specify options with their default value where
+# possible, but leave them commented.  Uncommented options override the
+# default value.
 
-#2: ObjectId: 1.3.6.1.4.1.311.21.7 Criticality=false
-0000: 30 2D 06 25 2B 06 01 04   01 82 37 15 08 86 81 9C  0-.%+.....7.....
-0010: 5C 83 C7 80 5B 83 F5 91   37 84 E0 81 66 B3 EA 64  \...[...7...f..d
-0020: 6A 86 E8 D0 0D 83 81 ED   09 02 01 64 02 01 15     j..........d...
+# To modify the system-wide sshd configuration, create a  *.conf  file under
+#  /etc/ssh/sshd_config.d/  which will be automatically included below
+Include /etc/ssh/sshd_config.d/*.conf
 
+# If you want to change the port on a SELinux system, you have to tell
+# SELinux about this change.
+# semanage port -a -t ssh_port_t -p tcp #PORTNUMBER
+#
+#Port 22
+#AddressFamily any
+#ListenAddress 0.0.0.0
+#ListenAddress ::
 
-#3: ObjectId: 1.3.6.1.5.5.7.1.1 Criticality=false
-AuthorityInfoAccess [
-  [
-   accessMethod: caIssuers
-   accessLocation: URIName: ldap:///CN=SBI-PROD-RCA,CN=AIA,CN=Public%20Key%20Services,CN=Services,CN=Configuration,DC=AD,DC=SBI?cACertificate?base?objectClass=certificationAuthority
-]
-]
+#HostKey /etc/ssh/ssh_host_rsa_key
+#HostKey /etc/ssh/ssh_host_ecdsa_key
+#HostKey /etc/ssh/ssh_host_ed25519_key
 
-#4: ObjectId: 2.5.29.35 Criticality=false
-AuthorityKeyIdentifier [
-KeyIdentifier [
-0000: 37 9A 20 74 30 5E 24 FD   1F E5 BF AE FF 00 F4 6B  7. t0^$........k
-0010: 15 75 9F B0                                        .u..
-]
-]
+# Ciphers and keying
+#RekeyLimit default none
+#Ciphers aes256-ctr, aes192-ctr, aes128-ctr
+MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256
 
-#5: ObjectId: 2.5.29.31 Criticality=false
-CRLDistributionPoints [
-  [DistributionPoint:
-     [URIName: ldap:///CN=SBI-PROD-RCA,CN=SBIROOTCAPROD,CN=CDP,CN=Public%20Key%20Services,CN=Services,CN=Configuration,DC=AD,DC=SBI?certificateRevocationList?base?objectClass=cRLDistributionPoint]
-]]
+# Logging
+#SyslogFacility AUTH
+LogLevel VERBOSE
 
-#6: ObjectId: 2.5.29.37 Criticality=false
-ExtendedKeyUsages [
-  serverAuth
-  clientAuth
-]
+# Authentication:
 
-#7: ObjectId: 2.5.29.15 Criticality=true
-KeyUsage [
-  DigitalSignature
-  Key_Encipherment
-]
+LoginGraceTime 60
+#PermitRootLogin prohibit-password
+#StrictModes yes
+MaxAuthTries 4
+#MaxSessions 10
+PermitRootLogin yes
 
-#8: ObjectId: 2.5.29.14 Criticality=false
-SubjectKeyIdentifier [
-KeyIdentifier [
-0000: 88 07 18 B7 F8 8D 44 8B   56 7D B2 4D 79 B2 38 B0  ......D.V..My.8.
-0010: DC 35 32 DD                                        .52.
-]
-]
+#PubkeyAuthentication yes
 
-Certificate[2]:
-Owner: CN=SBI-PROD-RCA, DC=AD, DC=SBI
-Issuer: CN=SBI-PROD-RCA, DC=AD, DC=SBI
-Serial number: 4c0313589c4855aa442593721858fa0e
-Valid from: Wed Feb 08 12:25:49 IST 2017 until: Thu Feb 08 12:35:47 IST 2057
-Certificate fingerprints:
-         SHA1: 00:35:2F:F3:0F:A5:A3:06:66:5A:07:62:26:C2:DF:8A:D3:3A:5B:99
-         SHA256: 6B:E9:B4:74:E5:4D:3B:4C:68:5D:ED:B5:00:E3:28:9A:7D:48:E6:13:5C:75:BB:F9:D3:76:04:FA:F4:B1:D9:FD
-Signature algorithm name: SHA256withRSA
-Subject Public Key Algorithm: 2048-bit RSA key
-Version: 3
+# The default is to check both .ssh/authorized_keys and .ssh/authorized_keys2
+# but this is overridden so installations will only check .ssh/authorized_keys
+AuthorizedKeysFile .ssh/authorized_keys
 
-Extensions:
+#AuthorizedPrincipalsFile none
 
-#1: ObjectId: 1.3.6.1.4.1.311.20.2 Criticality=false
-0000: 1E 04 00 43 00 41                                  ...C.A
+#AuthorizedKeysCommand none
+#AuthorizedKeysCommandUser nobody
 
+# For this to work you will also need host keys in /etc/ssh/ssh_known_hosts
+HostbasedAuthentication no
+# Change to yes if you don't trust ~/.ssh/known_hosts for
+# HostbasedAuthentication
+#IgnoreUserKnownHosts no
+# Don't read the user's ~/.rhosts and ~/.shosts files
+IgnoreRhosts yes
 
-#2: ObjectId: 1.3.6.1.4.1.311.21.1 Criticality=false
-0000: 02 01 00                                           ...
+# To disable tunneled clear text passwords, change to no here!
+PasswordAuthentication yes
+PermitEmptyPasswords no
 
+# Change to no to disable s/key passwords
+#KbdInteractiveAuthentication yes
 
-#3: ObjectId: 2.5.29.19 Criticality=true
-BasicConstraints:[
-  CA:true
-  PathLen: no limit
-]
+# Kerberos options
+#KerberosAuthentication no
+#KerberosOrLocalPasswd yes
+#KerberosTicketCleanup yes
+#KerberosGetAFSToken no
+#KerberosUseKuserok yes
 
-#4: ObjectId: 2.5.29.15 Criticality=true
-KeyUsage [
-  DigitalSignature
-  Key_CertSign
-  Crl_Sign
-]
+# GSSAPI options
+#GSSAPIAuthentication no
+#GSSAPICleanupCredentials yes
+#GSSAPIStrictAcceptorCheck yes
+#GSSAPIKeyExchange no
+#GSSAPIEnablek5users no
 
-#5: ObjectId: 2.5.29.14 Criticality=false
-SubjectKeyIdentifier [
-KeyIdentifier [
-0000: 37 9A 20 74 30 5E 24 FD   1F E5 BF AE FF 00 F4 6B  7. t0^$........k
-0010: 15 75 9F B0                                        .u..
-]
-]
+# Set this to 'yes' to enable PAM authentication, account processing,
+# and session processing. If this is enabled, PAM authentication will
+# be allowed through the KbdInteractiveAuthentication and
+# PasswordAuthentication.  Depending on your PAM configuration,
+# PAM authentication via KbdInteractiveAuthentication may bypass
+# the setting of "PermitRootLogin without-password".
+# If you just want the PAM account and session checks to run without
+# PAM authentication, then enable this but set PasswordAuthentication
+# and KbdInteractiveAuthentication to 'no'.
+# WARNING: 'UsePAM no' is not supported in RHEL and may cause several
+# problems.
+#UsePAM no
 
+Protocol 2
 
-Warning:
-The JKS keystore uses a proprietary format. It is recommended to migrate to PKCS12 which is an industry standard format using "keytool -importkeystore -srckeystore keyStore.jks -destkeystore keyStore.jks -deststoretype pkcs12".
-[eisuser@EISUATSYS02 Keystore]$ keytool -list -v -keystore keyStore.jks -storepass password -alias eispriuatsit
-Alias name: eispriuatsit
-Creation date: Nov 18, 2023
-Entry type: PrivateKeyEntry
-Certificate chain length: 2
-Certificate[1]:
-Owner: CN=ENC_EIS_UAT, OU=EIS, O=SBI, L=Mumbai, ST=Maharashtra, C=IN
-Issuer: CN=SBI-PROD-RCA, DC=AD, DC=SBI
-Serial number: 1a0010c94233cfa888635f9e5900000010c942
-Valid from: Sat Nov 04 19:54:22 IST 2023 until: Mon Nov 03 19:54:22 IST 2025
-Certificate fingerprints:
-         SHA1: 06:88:4A:2C:3C:93:59:E8:47:BB:59:71:77:B2:34:11:50:1B:5C:5D
-         SHA256: CB:77:56:18:0A:18:54:2C:3B:17:EA:76:C2:AB:8D:3D:6F:0D:95:B0:8F:BE:72:25:8E:B3:D2:6D:40:42:C7:9B
-Signature algorithm name: SHA256withRSA
-Subject Public Key Algorithm: 2048-bit RSA key
-Version: 3
+#AllowAgentForwarding yes
+#AllowTcpForwarding yes
+#GatewayPorts no
+X11Forwarding no
+#X11DisplayOffset 10
+#X11UseLocalhost yes
+#PermitTTY yes
+#PrintMotd yes
+#PrintLastLog yes
+#TCPKeepAlive yes
+PermitUserEnvironment no
+#Compression delayed
+ClientAliveInterval 300
+ClientAliveCountMax 0
+#UseDNS no
+#PidFile /var/run/sshd.pid
+#MaxStartups 10:30:100
+#PermitTunnel no
+#ChrootDirectory none
+#VersionAddendum none
 
-Extensions:
+# no default banner path
+Banner /etc/issue.net
 
-#1: ObjectId: 1.3.6.1.4.1.311.21.10 Criticality=false
-0000: 30 18 30 0A 06 08 2B 06   01 05 05 07 03 01 30 0A  0.0...+.......0.
-0010: 06 08 2B 06 01 05 05 07   03 02                    ..+.......
+# override default of no subsystems
+Subsystem sftp  /usr/libexec/openssh/sftp-server
 
-
-#2: ObjectId: 1.3.6.1.4.1.311.21.7 Criticality=false
-0000: 30 2D 06 25 2B 06 01 04   01 82 37 15 08 86 81 9C  0-.%+.....7.....
-0010: 5C 83 C7 80 5B 83 F5 91   37 84 E0 81 66 B3 EA 64  \...[...7...f..d
-0020: 6A 86 E8 D0 0D 83 81 ED   09 02 01 64 02 01 15     j..........d...
-
-
-#3: ObjectId: 1.3.6.1.5.5.7.1.1 Criticality=false
-AuthorityInfoAccess [
-  [
-   accessMethod: caIssuers
-   accessLocation: URIName: ldap:///CN=SBI-PROD-RCA,CN=AIA,CN=Public%20Key%20Services,CN=Services,CN=Configuration,DC=AD,DC=SBI?cACertificate?base?objectClass=certificationAuthority
-]
-]
-
-#4: ObjectId: 2.5.29.35 Criticality=false
-AuthorityKeyIdentifier [
-KeyIdentifier [
-0000: 37 9A 20 74 30 5E 24 FD   1F E5 BF AE FF 00 F4 6B  7. t0^$........k
-0010: 15 75 9F B0                                        .u..
-]
-]
-
-#5: ObjectId: 2.5.29.31 Criticality=false
-CRLDistributionPoints [
-  [DistributionPoint:
-     [URIName: ldap:///CN=SBI-PROD-RCA,CN=SBIROOTCAPROD,CN=CDP,CN=Public%20Key%20Services,CN=Services,CN=Configuration,DC=AD,DC=SBI?certificateRevocationList?base?objectClass=cRLDistributionPoint]
-]]
-
-#6: ObjectId: 2.5.29.37 Criticality=false
-ExtendedKeyUsages [
-  serverAuth
-  clientAuth
-]
-
-#7: ObjectId: 2.5.29.15 Criticality=true
-KeyUsage [
-  DigitalSignature
-  Key_Encipherment
-]
-
-#8: ObjectId: 2.5.29.14 Criticality=false
-SubjectKeyIdentifier [
-KeyIdentifier [
-0000: 88 07 18 B7 F8 8D 44 8B   56 7D B2 4D 79 B2 38 B0  ......D.V..My.8.
-0010: DC 35 32 DD                                        .52.
-]
-]
-
-Certificate[2]:
-Owner: CN=SBI-PROD-RCA, DC=AD, DC=SBI
-Issuer: CN=SBI-PROD-RCA, DC=AD, DC=SBI
-Serial number: 4c0313589c4855aa442593721858fa0e
-Valid from: Wed Feb 08 12:25:49 IST 2017 until: Thu Feb 08 12:35:47 IST 2057
-Certificate fingerprints:
-         SHA1: 00:35:2F:F3:0F:A5:A3:06:66:5A:07:62:26:C2:DF:8A:D3:3A:5B:99
-         SHA256: 6B:E9:B4:74:E5:4D:3B:4C:68:5D:ED:B5:00:E3:28:9A:7D:48:E6:13:5C:75:BB:F9:D3:76:04:FA:F4:B1:D9:FD
-Signature algorithm name: SHA256withRSA
-Subject Public Key Algorithm: 2048-bit RSA key
-Version: 3
-
-Extensions:
-
-#1: ObjectId: 1.3.6.1.4.1.311.20.2 Criticality=false
-0000: 1E 04 00 43 00 41                                  ...C.A
-
-
-#2: ObjectId: 1.3.6.1.4.1.311.21.1 Criticality=false
-0000: 02 01 00                                           ...
-
-
-#3: ObjectId: 2.5.29.19 Criticality=true
-BasicConstraints:[
-  CA:true
-  PathLen: no limit
-]
-
-#4: ObjectId: 2.5.29.15 Criticality=true
-KeyUsage [
-  DigitalSignature
-  Key_CertSign
-  Crl_Sign
-]
-
-#5: ObjectId: 2.5.29.14 Criticality=false
-SubjectKeyIdentifier [
-KeyIdentifier [
-0000: 37 9A 20 74 30 5E 24 FD   1F E5 BF AE FF 00 F4 6B  7. t0^$........k
-0010: 15 75 9F B0                                        .u..
-]
-]
-
-
-Warning:
-The JKS keystore uses a proprietary format. It is recommended to migrate to PKCS12 which is an industry standard format using "keytool -importkeystore -srckeystore keyStore.jks -destkeystore keyStore.jks -deststoretype pkcs12".
-[eisuser@EISUATSYS02 Keystore]$
+# Example of overriding settings on a per-user basis
+#Match User anoncvs
+#       X11Forwarding no
+#       AllowTcpForwarding no
+#       PermitTTY no
+#       ForceCommand cvs server
+#PasswordAuthentication no
+Ciphers aes128-ctr,aes192-ctr,aes256-ctr
+[root@EISUATSYS09 ssh]#
