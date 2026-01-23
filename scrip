@@ -136,3 +136,10 @@ Subsystem sftp  /usr/libexec/openssh/sftp-server
 #PasswordAuthentication no
 Ciphers aes128-ctr,aes192-ctr,aes256-ctr
 [root@EISUATSYS09 ssh]#
+
+
+[root@EISUATEXP09 ~]# ssh 10.177.44.67
+
+Kernel  on an
+root@10.177.44.67: Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+[root@EISUATEXP09 ~]#
