@@ -1,164 +1,44 @@
-#       $OpenBSD: sshd_config,v 1.104 2021/07/02 05:11:21 dtucker Exp $
+package com.EIS.TCS.apiadmin.Model;
 
-# This is the sshd server system-wide configuration file.  See
-# sshd_config(5) for more information.
+import java.time.LocalDateTime;
 
-# This sshd was compiled with PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-# The strategy used for options in the default sshd_config shipped with
-# OpenSSH is to specify options with their default value where
-# possible, but leave them commented.  Uncommented options override the
-# default value.
+@Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Getter
+@Setter
+public class IntegrationStatus {
 
-# To modify the system-wide sshd configuration, create a  *.conf  file under
-#  /etc/ssh/sshd_config.d/  which will be automatically included below
-Include /etc/ssh/sshd_config.d/*.conf
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-# If you want to change the port on a SELinux system, you have to tell
-# SELinux about this change.
-# semanage port -a -t ssh_port_t -p tcp #PORTNUMBER
-#
-#Port 22
-#AddressFamily any
-#ListenAddress 0.0.0.0
-#ListenAddress ::
+    @Column(name = "node_name", length = 50, nullable = false)
+    private String nodeName;
 
-#HostKey /etc/ssh/ssh_host_rsa_key
-#HostKey /etc/ssh/ssh_host_ecdsa_key
-#HostKey /etc/ssh/ssh_host_ed25519_key
+    @Column(name = "status", length = 20, nullable = false)
+    private String status;
 
-# Ciphers and keying
-#RekeyLimit default none
-#Ciphers aes256-ctr, aes192-ctr, aes128-ctr
-MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256
+    @Column(name = "last_checked", nullable = false)
+    private LocalDateTime lastChecked;
 
-# Logging
-#SyslogFacility AUTH
-LogLevel VERBOSE
-
-# Authentication:
-
-LoginGraceTime 60
-#PermitRootLogin prohibit-password
-#StrictModes yes
-MaxAuthTries 4
-#MaxSessions 10
-PermitRootLogin yes
-
-#PubkeyAuthentication yes
-
-# The default is to check both .ssh/authorized_keys and .ssh/authorized_keys2
-# but this is overridden so installations will only check .ssh/authorized_keys
-AuthorizedKeysFile .ssh/authorized_keys
-
-#AuthorizedPrincipalsFile none
-
-#AuthorizedKeysCommand none
-#AuthorizedKeysCommandUser nobody
-
-# For this to work you will also need host keys in /etc/ssh/ssh_known_hosts
-HostbasedAuthentication no
-# Change to yes if you don't trust ~/.ssh/known_hosts for
-# HostbasedAuthentication
-#IgnoreUserKnownHosts no
-# Don't read the user's ~/.rhosts and ~/.shosts files
-IgnoreRhosts yes
-
-# To disable tunneled clear text passwords, change to no here!
-PasswordAuthentication yes
-PermitEmptyPasswords no
-
-# Change to no to disable s/key passwords
-#KbdInteractiveAuthentication yes
-
-# Kerberos options
-#KerberosAuthentication no
-#KerberosOrLocalPasswd yes
-#KerberosTicketCleanup yes
-#KerberosGetAFSToken no
-#KerberosUseKuserok yes
-
-# GSSAPI options
-#GSSAPIAuthentication no
-#GSSAPICleanupCredentials yes
-#GSSAPIStrictAcceptorCheck yes
-#GSSAPIKeyExchange no
-#GSSAPIEnablek5users no
-
-# Set this to 'yes' to enable PAM authentication, account processing,
-# and session processing. If this is enabled, PAM authentication will
-# be allowed through the KbdInteractiveAuthentication and
-# PasswordAuthentication.  Depending on your PAM configuration,
-# PAM authentication via KbdInteractiveAuthentication may bypass
-# the setting of "PermitRootLogin without-password".
-# If you just want the PAM account and session checks to run without
-# PAM authentication, then enable this but set PasswordAuthentication
-# and KbdInteractiveAuthentication to 'no'.
-# WARNING: 'UsePAM no' is not supported in RHEL and may cause several
-# problems.
-#UsePAM no
-
-Protocol 2
-
-#AllowAgentForwarding yes
-#AllowTcpForwarding yes
-#GatewayPorts no
-X11Forwarding no
-#X11DisplayOffset 10
-#X11UseLocalhost yes
-#PermitTTY yes
-#PrintMotd yes
-#PrintLastLog yes
-#TCPKeepAlive yes
-PermitUserEnvironment no
-#Compression delayed
-ClientAliveInterval 300
-ClientAliveCountMax 0
-#UseDNS no
-#PidFile /var/run/sshd.pid
-#MaxStartups 10:30:100
-#PermitTunnel no
-#ChrootDirectory none
-#VersionAddendum none
-
-# no default banner path
-Banner /etc/issue.net
-
-# override default of no subsystems
-Subsystem sftp  /usr/libexec/openssh/sftp-server
-
-# Example of overriding settings on a per-user basis
-#Match User anoncvs
-#       X11Forwarding no
-#       AllowTcpForwarding no
-#       PermitTTY no
-#       ForceCommand cvs server
-#PasswordAuthentication no
-Ciphers aes128-ctr,aes192-ctr,aes256-ctr
-[root@EISUATSYS09 ssh]#
-
-
-[root@EISUATEXP09 ~]# ssh 10.177.44.67
-
-Kernel  on an
-root@10.177.44.67: Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
-[root@EISUATEXP09 ~]#
-
-
-[root@EISUATSYS09 ssh]# cat ssh_config.d/50-redhat.conf
-# The options here are in the "Match final block" to be applied as the last
-# options and could be potentially overwritten by the user configuration
-Match final all
-        # Follow system-wide Crypto Policy, if defined:
-        Include /etc/crypto-policies/back-ends/openssh.config
-
-        GSSAPIAuthentication yes
-
-# If this option is set to yes then remote X11 clients will have full access
-# to the original X11 display. As virtually no X11 client supports the untrusted
-# mode correctly we set this to yes.
-        ForwardX11Trusted yes
-
-# Uncomment this if you want to use .local domain
-# Host *.local
-[root@EISUATSYS09 ssh]#
+    @Column(name = "response", columnDefinition = "json")
+    private String response;   // JSON as String
+    
+    
+    
+}
