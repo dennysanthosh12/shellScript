@@ -1,111 +1,43 @@
-package com.EIS.TCS.apiadmin.Dto;
-import lombok.Data;
-
-@Data
-public class IntegrationNodeWrapper {
-
-	private String name;
-	private PropertiesWrapper properties;
-	private NodeChildrenWrapper children;
-	
-}
-
-package com.EIS.TCS.apiadmin.Dto;
-import lombok.Data;
-
-@Data
-public class NodeChildrenWrapper {
-
-	private ServerWrapper servers;
-	
-}
-
-package com.EIS.TCS.apiadmin.Dto;
-
-import java.util.ArrayList;
-
-import lombok.Data;
-
-@Data
-public class ServerWrapper {
-
-	private boolean hasChildren;
-	private ArrayList<ChildrenWrapper> children;
-}
+[eisuser@eisuatsftp01 ~]$ curl -k -X POST http://10.177.44.180:50032/api/Auth/login -H"Content-Type: application/json" -d'{"username":"denny","password":"12345678"}'   eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiRGVubnkiLCJpYXQiOjE3NzA3NDE0NzQsImV4cCI6MTc3MDc0MjkxNH0.O7j0ECUR53TLX1ipLrDVvJki3g5q6mgFTGa3J-V9NOb-eDXrMHy9J-1cPd1Nu7BfC_KQOOb5jUZ8pFaW0S8DO5Nqp_kiIhiHB_w7ka5X-F5khmcFLxl_fW0JRYFjy-ZJ0RWrDCWACQYI8y4zp0-9GiKlZEJ_N0uiquykruxgGo5JPiLUpSSQZxO_sc5T7Jdn_WzVp7T3nLeYQldTgCCHdruOEJrG0wqSdE0DmOXiFIsF7DhX0xAL8gWSpK3dfZnoQv5x_ioaI4BEJE0z_nhlGtBOQsBQ5VafJBptRliJygYhWK-IxnQOVSOXY70OxxC0SxAsFczKmXAPto5XOv-lnw[eisuser@eisuatsftp01 ~]$
+[eisuser@eisuatsftp01 ~]$
+[eisuser@eisuatsftp01 ~]$ export TOKEN='eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiRGVubnkiLCJpYXQiOjE3NzA3NDE0NzQsImV4cCI6MTc3MDc0MjkxNH0.O7j0ECUR53TLX1ipLrDVvJki3g5q6mgFTGa3J-V9NOb-eDXrMHy9J-1cPd1Nu7BfC_KQOOb5jUZ8pFaW0S8DO5Nqp_kiIhiHB_w7ka5X-F5khmcFLxl_fW0JRYFjy-ZJ0RWrDCWACQYI8y4zp0-9GiKlZEJ_N0uiquykruxgGo5JPiLUpSSQZxO_sc5T7Jdn_WzVp7T3nLeYQldTgCCHdruOEJrG0wqSdE0DmOXiFIsF7DhX0xAL8gWSpK3dfZnoQv5x_ioaI4BEJE0z_nhlGtBOQsBQ5VafJBptRliJygYhWK-IxnQOVSOXY70OxxC0SxAsFczKmXAPto5XOv-lnw'
+[eisuser@eisuatsftp01 ~]$
+[eisuser@eisuatsftp01 ~]$ curl -k  -H"Authorization:Bearer $TOKEN" http://10.177.44.180:50032/apiv1/update/endpoint -d"[]"^C
+[eisuser@eisuatsftp01 ~]$ curl -v -k -X POST http://10.177.44.180:50032/apiv1/update/endpoint -H"Authorization:Bearer $TOKEN" -H "Content-Type: application/json" -d"[{"host":"10.177.44.50","port":4018,"protocol":"https","active": true}]"
+Note: Unnecessary use of -X or --request, POST is already inferred.
+*   Trying 10.177.44.180:50032...
+* Connected to 10.177.44.180 (10.177.44.180) port 50032 (#0)
+> POST /apiv1/update/endpoint HTTP/1.1
+> Host: 10.177.44.180:50032
+> User-Agent: curl/7.76.1
+> Accept: */*
+> Authorization:Bearer eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiRGVubnkiLCJpYXQiOjE3NzA3NDE0NzQsImV4cCI6MTc3MDc0MjkxNH0.O7j0ECUR53TLX1ipLrDVvJki3g5q6mgFTGa3J-V9NOb-eDXrMHy9J-1cPd1Nu7BfC_KQOOb5jUZ8pFaW0S8DO5Nqp_kiIhiHB_w7ka5X-F5khmcFLxl_fW0JRYFjy-ZJ0RWrDCWACQYI8y4zp0-9GiKlZEJ_N0uiquykruxgGo5JPiLUpSSQZxO_sc5T7Jdn_WzVp7T3nLeYQldTgCCHdruOEJrG0wqSdE0DmOXiFIsF7DhX0xAL8gWSpK3dfZnoQv5x_ioaI4BEJE0z_nhlGtBOQsBQ5VafJBptRliJygYhWK-IxnQOVSOXY70OxxC0SxAsFczKmXAPto5XOv-lnw
+> Content-Type: application/json
+> Content-Length: 59
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 403
+< X-Content-Type-Options: nosniff
+< X-XSS-Protection: 0
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: 0
+< X-Frame-Options: DENY
+< Content-Length: 0
+< Date: Tue, 10 Feb 2026 16:41:34 GMT
+<
+* Connection #0 to host 10.177.44.180 left intact
+[eisuser@eisuatsftp01 ~]$
 
 
-package com.EIS.TCS.apiadmin.Dto;
-import lombok.Data;
-
-@Data
-public class ChildrenWrapper {
-
-	private String name;
-	private boolean hasChildren;
-	private ChildActivewrapper active;
-}
-
-package com.EIS.TCS.apiadmin.Dto;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.Data;
-
-@Data
-public class ChildActivewrapper {
-
-	@JsonProperty("isRunning")
-	private boolean running;
-	private String state; 
-}
 
 
-package com.EIS.TCS.apiadmin.Model;
 
-import java.time.LocalDateTime;
-
-import com.EIS.TCS.apiadmin.Dto.IntegrationNodeWrapper;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Entity
-@Data
-@NoArgsConstructor
-public class IntegrationStatus {
-
-	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "node_name", length = 50, nullable = false)
-    private String nodeName;
-    
-    @Column(name = "server_ip", length = 15, nullable = false)
-    private String serverIp;
-
-    @Column(name = "status", length = 20, nullable = false)
-    private String status;
-
-    @Column(name = "last_checked", nullable = false)
-    private LocalDateTime lastChecked;
-
-    
-    private IntegrationNodeWrapper nodeWrapper;   
-
-	public IntegrationStatus(String nodeName,String serverIp, String status, LocalDateTime lastChecked, IntegrationNodeWrapper response) {
-		this.nodeName = nodeName;
-		this.serverIp = serverIp;
-		this.status = status;
-		this.lastChecked = lastChecked;
-		this.nodeWrapper = response;
-	}
-    
-    
-    
-}
+2026-02-10T16:37:53.757Z DEBUG 1 --- [apiadmin] [nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured POST /api/Auth/login
+2026-02-10T16:37:53.963Z DEBUG 1 --- [apiadmin] [nio-8080-exec-2] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2026-02-10T16:41:34.209Z DEBUG 1 --- [apiadmin] [nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing POST /apiv1/update/endpoint
+2026-02-10T16:41:34.251Z DEBUG 1 --- [apiadmin] [nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured POST /apiv1/update/endpoint
+2026-02-10T16:41:34.253Z  WARN 1 --- [apiadmin] [nio-8080-exec-3] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Unexpected character ('h' (code 104)): was expecting double-quote to start property name]
+2026-02-10T16:41:34.254Z DEBUG 1 --- [apiadmin] [nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-02-10T16:41:34.254Z DEBUG 1 --- [apiadmin] [nio-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-10T16:41:34.254Z DEBUG 1 --- [apiadmin] [nio-8080-exec-3] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
