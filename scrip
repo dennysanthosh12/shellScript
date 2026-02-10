@@ -1,49 +1,103 @@
-private Mono<Void> callAceApi(NodeEndpoint ep) {
+[eisuser@eisuatsftp01 Denny]$ podman images
+REPOSITORY      TAG         IMAGE ID      CREATED        SIZE
+localhost/app   v1.2        cd073d327054  2 minutes ago  1.33 GB
+localhost/app   v1.1        78d294c2b576  4 weeks ago    1.33 GB
+localhost/rhel  9.6         c17949d600f8  5 weeks ago    1.18 GB
+[eisuser@eisuatsftp01 Denny]$ podman run cd073d327054
+WARN[0000] Failed to mount subscriptions, skipping entry in /usr/share/containers/mounts.conf: getting host subscription data: failed to read subscriptions from "/usr/share/rhel/secrets": open /usr/share/rhel/secrets/redhat.repo: permission denied
 
-    String url = String.format(
-            "%s://%s:%d/apiv2",
-            ep.getProtocol(), ep.getHost(), ep.getPort());
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
 
-    return webClient.get()
-            .uri(url)
-            .retrieve()
-            .bodyToMono(IntegrationNodeWrapper.class)
-            .flatMap(resp ->
-                Mono.fromRunnable(() -> saveStatus(ep, resp))
-                    .subscribeOn(Schedulers.boundedElastic())
-            )
-            .onErrorResume(ex -> {
-                saveDownStatus(ep, ex);
-                return Mono.empty();
-            })
-            .then();
-}
-private void saveDownStatus(NodeEndpoint ep, Throwable ex) {
+ :: Spring Boot ::                (v4.0.1)
 
-    IntegrationStatus status =
-            new IntegrationStatus(
-                    ep.getName(),
-                    ep.getHost(),
-                    "DOWN",
-                    LocalDateTime.now(),
-                    null);
+2026-02-10T13:35:03.780Z  INFO 1 --- [apiadmin] [           main] c.EIS.TCS.apiadmin.ApiadminApplication   : Starting ApiadminApplication v0.0.1-SNAPSHOT using Java 25 with PID 1 (/opt/app.jar started by root in /app)
+2026-02-10T13:35:03.794Z  INFO 1 --- [apiadmin] [           main] c.EIS.TCS.apiadmin.ApiadminApplication   : No active profile set, falling back to 1 default profile: "default"
+2026-02-10T13:35:05.145Z  INFO 1 --- [apiadmin] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-10T13:35:05.286Z  INFO 1 --- [apiadmin] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 132 ms. Found 4 JPA repository interfaces.
+2026-02-10T13:35:05.842Z  INFO 1 --- [apiadmin] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-02-10T13:35:05.857Z  INFO 1 --- [apiadmin] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-02-10T13:35:05.858Z  INFO 1 --- [apiadmin] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-02-10T13:35:05.885Z  INFO 1 --- [apiadmin] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1939 ms
+2026-02-10T13:35:06.168Z  INFO 1 --- [apiadmin] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-02-10T13:35:06.215Z  INFO 1 --- [apiadmin] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.0.Final
+2026-02-10T13:35:06.585Z  INFO 1 --- [apiadmin] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-10T13:35:06.611Z  INFO 1 --- [apiadmin] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-02-10T13:35:06.920Z  INFO 1 --- [apiadmin] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2dfd157b
+2026-02-10T13:35:06.921Z  INFO 1 --- [apiadmin] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-02-10T13:35:07.006Z  INFO 1 --- [apiadmin] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+        Database JDBC URL [jdbc:mysql://host.containers.internal:3306/UAT_DB]
+        Database driver: MySQL Connector/J
+        Database dialect: MySQLDialect
+        Database version: 8.0.44
+        Default catalog/schema: UAT_DB/undefined
+        Autocommit mode: undefined/unknown
+        Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+        JDBC fetch size: none
+        Pool: DataSourceConnectionProvider
+        Minimum pool size: undefined/unknown
+        Maximum pool size: undefined/unknown
+2026-02-10T13:35:07.145Z ERROR 1 --- [apiadmin] [           main] j.LocalContainerEntityManagerFactoryBean : Failed to initialize JPA EntityManagerFactory: Could not determine recommended JdbcType for Java type 'com.EIS.TCS.apiadmin.Dto.IntegrationNodeWrapper'
+2026-02-10T13:35:07.145Z  WARN 1 --- [apiadmin] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/hibernate/autoconfigure/HibernateJpaConfiguration.class]: Could not determine recommended JdbcType for Java type 'com.EIS.TCS.apiadmin.Dto.IntegrationNodeWrapper'
+2026-02-10T13:35:07.146Z  INFO 1 --- [apiadmin] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-02-10T13:35:07.150Z  INFO 1 --- [apiadmin] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-02-10T13:35:07.152Z  INFO 1 --- [apiadmin] [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-02-10T13:35:07.159Z  INFO 1 --- [apiadmin] [           main] .s.b.a.l.ConditionEvaluationReportLogger :
 
-    statusRepository.save(status);
-}private void saveDownStatus(NodeEndpoint ep, Throwable ex) {
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-02-10T13:35:07.171Z ERROR 1 --- [apiadmin] [           main] o.s.boot.SpringApplication               : Application run failed
 
-    IntegrationStatus status =
-            new IntegrationStatus(
-                    ep.getName(),
-                    ep.getHost(),
-                    "DOWN",
-                    LocalDateTime.now(),
-                    null);
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/hibernate/autoconfigure/HibernateJpaConfiguration.class]: Could not determine recommended JdbcType for Java type 'com.EIS.TCS.apiadmin.Dto.IntegrationNodeWrapper'
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1817) ~[spring-beans-7.0.2.jar!/:7.0.2]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:603) ~[spring-beans-7.0.2.jar!/:7.0.2]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525) ~[spring-beans-7.0.2.jar!/:7.0.2]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333) ~[spring-beans-7.0.2.jar!/:7.0.2]
+        at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371) ~[spring-beans-7.0.2.jar!/:7.0.2]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331) ~[spring-beans-7.0.2.jar!/:7.0.2]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:201) ~[spring-beans-7.0.2.jar!/:7.0.2]
+        at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:976) ~[spring-context-7.0.2.jar!/:7.0.2]
+        at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:620) ~[spring-context-7.0.2.jar!/:7.0.2]
+        at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143) ~[spring-boot-web-server-4.0.1.jar!/:4.0.1]
+        at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756) ~[spring-boot-4.0.1.jar!/:4.0.1]
+        at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445) ~[spring-boot-4.0.1.jar!/:4.0.1]
+        at org.springframework.boot.SpringApplication.run(SpringApplication.java:321) ~[spring-boot-4.0.1.jar!/:4.0.1]
+        at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365) ~[spring-boot-4.0.1.jar!/:4.0.1]
+        at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354) ~[spring-boot-4.0.1.jar!/:4.0.1]
+        at com.EIS.TCS.apiadmin.ApiadminApplication.main(ApiadminApplication.java:10) ~[!/:0.0.1-SNAPSHOT]
+        at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source) ~[na:na]
+        at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+        at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:106) ~[app.jar:0.0.1-SNAPSHOT]
+        at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64) ~[app.jar:0.0.1-SNAPSHOT]
+        at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40) ~[app.jar:0.0.1-SNAPSHOT]
+Caused by: org.hibernate.type.descriptor.java.spi.JdbcTypeRecommendationException: Could not determine recommended JdbcType for Java type 'com.EIS.TCS.apiadmin.Dto.IntegrationNodeWrapper'
+        at org.hibernate.type.descriptor.java.spi.UnknownBasicJavaType.getRecommendedJdbcType(UnknownBasicJavaType.java:60) ~[hibernate-core-7.2.0.Final.jar!/:7.2.0.Final]
+        at org.hibernate.boot.model.process.internal.InferredBasicValueResolver.from(InferredBasicValueResolver.java:161) ~[hibernate-core-7.2.0.Final.jar!/:7.2.0.Final]
+        at org.hibernate.mapping.BasicValue.resolution(BasicValue.java:643) ~[hibernate-core-7.2.0.Final.jar!/:7.2.0.Final]
+        at org.hibernate.mapping.BasicValue.buildResolution(BasicValue.java:447) ~[hibernate-core-7.2.0.Final.jar!/:7.2.0.Final]
+        at org.hibernate.mapping.BasicValue.buildResolution(BasicValue.java:421) ~[hibernate-core-7.2.0.Final.jar!/:7.2.0.Final]
+        at org.hibernate.mapping.BasicValue.resolve(BasicValue.java:338) ~[hibernate-core-7.2.0.Final.jar!/:7.2.0.Final]
+        at org.hibernate.mapping.BasicValue.resolve(BasicValue.java:328) ~[hibernate-core-7.2.0.Final.jar!/:7.2.0.Final]
+        at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.lambda$processValueResolvers$0(InFlightMetadataCollectorImpl.java:1760) ~[hibernate-core-7.2.0.Final.jar!/:7.2.0.Final]
+        at java.base/java.util.ArrayList.removeIf(Unknown Source) ~[na:na]
+        at java.base/java.util.ArrayList.removeIf(Unknown Source) ~[na:na]
+        at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.processValueResolvers(InFlightMetadataCollectorImpl.java:1760) ~[hibernate-core-7.2.0.Final.jar!/:7.2.0.Final]
+        at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.processSecondPasses(InFlightMetadataCollectorImpl.java:1749) ~[hibernate-core-7.2.0.Final.jar!/:7.2.0.Final]
+        at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.coordinateProcessors(MetadataBuildingProcess.java:330) ~[hibernate-core-7.2.0.Final.jar!/:7.2.0.Final]
+        at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:199) ~[hibernate-core-7.2.0.Final.jar!/:7.2.0.Final]
+        at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:1392) ~[hibernate-core-7.2.0.Final.jar!/:7.2.0.Final]
+        at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.populateSessionFactoryBuilder(EntityManagerFactoryBuilderImpl.java:1472) ~[hibernate-core-7.2.0.Final.jar!/:7.2.0.Final]
+        at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1454) ~[hibernate-core-7.2.0.Final.jar!/:7.2.0.Final]
+        at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:66) ~[spring-orm-7.0.2.jar!/:7.0.2]
+        at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:433) ~[spring-orm-7.0.2.jar!/:7.0.2]
+        at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:416) ~[spring-orm-7.0.2.jar!/:7.0.2]
+        at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:396) ~[spring-orm-7.0.2.jar!/:7.0.2]
+        at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:409) ~[spring-orm-7.0.2.jar!/:7.0.2]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1864) ~[spring-beans-7.0.2.jar!/:7.0.2]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1813) ~[spring-beans-7.0.2.jar!/:7.0.2]
+        ... 20 common frames omitted
 
-    statusRepository.save(status);
-}
-
-return Flux.fromIterable(endpoints)
-        .flatMap(this::callAceApi) // async by default
-        .then();
-
-
+[eisuser@eisuatsftp01 Denny]$
