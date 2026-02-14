@@ -1,65 +1,18 @@
-curl -v -k -X POST http://10.177.44.180:50032/apiv1/update/endpoint -H"Authorization:Bearer $TOKEN" -H "Content-Type: application/json" -d'[{"host":"10.177.44.52","port":4019,"protocol":"https","active": true}]' Note: Unnecessary use of -X or --request, POST is already inferred.
-*   Trying 10.177.44.180:50032...
-* Connected to 10.177.44.180 (10.177.44.180) port 50032 (#0)
-> POST /apiv1/update/endpoint HTTP/1.1
-> Host: 10.177.44.180:50032
-> User-Agent: curl/7.76.1
-> Accept: */*
-> Authorization:Bearer eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiRGVubnkiLCJpYXQiOjE3NzEwNjMxOTIsImV4cCI6MTc3MTA2NDYzMn0.CqKKfDewo6Q-Zs-fROrPSsmA3CBZkaVCSNJx6xUcRaykSBoym_Xicz6v6vwS6IiQ79Ni3EulkhTs-dtz5ijHk8I7_1QbKWIbEPI-fV5vIC5qKBLmUh3SXyYw4ucEs9nafh7sair1wMU2HkM0eeLAy26uBQWAGHygzCiPg-P9Kuwmn8PD43sczhS7bL0R1e1SHUW1EjTIPr2lLANJh7TYjYiM0K7ZTgPK6IxriDWTAmOtMdSDDI_nmIuYlQTI7IwaZMWhYbEi7aPrgaWdYvG9mLv4TgWb0f8JV-Gc86jc51giRgq6tDmimIZwVGnXX0s-tHkpgSErNQ_VmFh6VfaRhA
-> Content-Type: application/json
-> Content-Length: 71
->
-* Mark bundle as not supporting multiuse
-< HTTP/1.1 500
-< X-Content-Type-Options: nosniff
-< X-XSS-Protection: 0
-< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-< Pragma: no-cache
-< Expires: 0
-< X-Frame-Options: DENY
-< Content-Type: text/plain;charset=UTF-8
-< Content-Length: 278
-< Date: Sat, 14 Feb 2026 10:00:32 GMT
-< Connection: close
-<
-* Closing connection 0
-could not execute statement [Duplicate entry '0' for key 'node_endpoint.PRIMARY'] [insert into node_endpoint (active,host,port,protocol,id) values (?,?,?,?,?)]; SQL [insert into node_endpoint (active,host,port,protocol,id) values (?,?,?,?,?)]; constraint [node_endpoint.PRIMARY][eisuser@EISUATEXP09 ~]$
-
-package com.EIS.TCS.apiadmin.Model;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 @Entity
+@Table(
+  uniqueConstraints =
+    @UniqueConstraint(columnNames = {"host","port"})
+)
 @Data
 @NoArgsConstructor
 public class NodeEndpoint {
 
-	@Id
-	private int id;
-	private String host;
-	private int port;
-	private String protocol;
-	private boolean active;
-	
-	public NodeEndpoint(String host, int port, String protocol, boolean active) {
-		this.id=(host+":"+port).hashCode();
-		this.host = host;
-		this.port = port;
-		this.protocol = protocol;
-		this.active = active;
-	}
-	
-	public NodeEndpoint(int id,String host, int port, String protocol, boolean active) {
-		this.id=(host+":"+port).hashCode();
-		this.host = host;
-		this.port = port;
-		this.protocol = protocol;
-		this.active = active;
-	}
-	
-	
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String host;
+    private int port;
+    private String protocol;
+    private boolean active;
 }
