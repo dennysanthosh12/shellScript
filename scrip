@@ -132,3 +132,32 @@ mysql> select * from node_endpoint
 1 row in set (0.00 sec)
 
 mysql>
+[eisuser@EISUATEXP09 ~]$ curl -v -k -X POST http://10.177.44.180:50032/apiv1/update/endpoint -H"Authorization:Bearer $TOKEN" -H "Content-Type: application/json" -d'[{"host":"10.177.44.52","port":4019,"protocol":"https","active": true}]'
+Note: Unnecessary use of -X or --request, POST is already inferred.
+*   Trying 10.177.44.180:50032...
+* Connected to 10.177.44.180 (10.177.44.180) port 50032 (#0)
+> POST /apiv1/update/endpoint HTTP/1.1
+> Host: 10.177.44.180:50032
+> User-Agent: curl/7.76.1
+> Accept: */*
+> Authorization:Bearer eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiRGVubnkiLCJpYXQiOjE3NzEwNjE3NDYsImV4cCI6MTc3MTA2MzE4Nn0.DMkJTw2jQyNIuA5t9G7kSd20LuT5IxmhVDPXrSRNvMkWJnlx6MaX0U0sFGUYr8Bnk0CZCc-tHjLgO1H0uaQi1fZytmrGjGN_yMiXtmMCKZofyp6OxONtk17gD9AsXx9aPbbY60E_Oz1CFgTUhcdDeVZXGxQ7AiWrCiZl9mBtVQqbkrQSOnfOqkLmybrig70xP0z5mIQowjHiL6ORrRS0JRh0d6AtmriVr6tENyj6qFK4xv1ZvNtiyqGZcETXmQb--HwEDrCfF_7MmGYjRW0Xg7y8qoOx-Sui01Ivi10TRa-H0fXFPSWaCdinNDSGJuDfci_-JFV4nn9F5Ck8Cf2eFQ
+> Content-Type: application/json
+> Content-Length: 71
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 500
+< X-Content-Type-Options: nosniff
+< X-XSS-Protection: 0
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: 0
+< X-Frame-Options: DENY
+< Content-Type: text/plain;charset=UTF-8
+< Content-Length: 278
+< Date: Sat, 14 Feb 2026 09:38:44 GMT
+< Connection: close
+<
+* Closing connection 0
+could not execute statement [Duplicate entry '0' for key 'node_endpoint.PRIMARY'] [insert into node_endpoint (active,host,port,protocol,id) values (?,?,?,?,?)]; SQL [insert into node_endpoint (active,host,port,protocol,id) values (?,?,?,?,?)]; constraint [node_endpoint.PRIMARY][eisuser@EISUATEXP09 ~]$ curl -v -k -X POST http://10.177.44.180:50032/apiv1/update/endpoint -H"Authorization:Bearer $TOKEN" -H "Content-Type: application/json" -d'[{"host":"10.177.44.52","port":4019,"protocol":"https","active": true}]'
+
+
