@@ -1,18 +1,85 @@
-@Entity
-@Table(
-  uniqueConstraints =
-    @UniqueConstraint(columnNames = {"host","port"})
-)
-@Data
-@NoArgsConstructor
-public class NodeEndpoint {
+package com.EIS.TCS.apiadmin.Services;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+import java.time.LocalDateTime;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import com.EIS.TCS.apiadmin.Dto.IntegrationNodeWrapper;
+import com.EIS.TCS.apiadmin.Model.IntegrationStatus;
+import com.EIS.TCS.apiadmin.Model.NodeEndpoint;
+import com.EIS.TCS.apiadmin.Repository.EndpointRepository;
+import com.EIS.TCS.apiadmin.Repository.IntegrationStatusRepository;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
+import tools.jackson.databind.ObjectMapper;
 
-    private String host;
-    private int port;
-    private String protocol;
-    private boolean active;
+@Service
+public class IntegrationPollingService {
+	
+	private static final ObjectMapper objectMapper = new ObjectMapper();
+
+	@Autowired
+	private IntegrationStatusRepository statusRepository;
+	
+	@Autowired
+	private WebClient webClient;
+	
+	@Autowired
+	private EndpointRepository endpointRepo;
+	
+	public Mono<Void> pollAllNodes() {
+
+        List<NodeEndpoint> endpoints =
+                endpointRepo.findByActiveTrue();
+
+        return Flux.fromIterable(endpoints)
+                .flatMap(this::callAceApi) 
+                .then();
+    }
+	
+	private Mono<Void> callAceApi(NodeEndpoint ep) {
+
+        String url = String.format(
+                "%s://%s:%d/apiv2?depth=2",
+                ep.getProtocol(), ep.getHost(), ep.getPort());
+
+        return webClient.get()
+                .uri(url)
+                .retrieve()
+                .bodyToMono(IntegrationNodeWrapper.class)
+                .flatMap(resp ->
+                    Mono.fromRunnable(() -> saveStatus(ep, resp))
+                        .subscribeOn(Schedulers.boundedElastic())
+                )
+                .onErrorResume(ex -> {
+                    saveDownStatus(ep, ex);
+                    return Mono.empty();
+                })
+                .then();
+    }
+	
+	private void saveDownStatus(NodeEndpoint ep, Throwable ex) {
+
+	    IntegrationStatus status =
+	            new IntegrationStatus(
+	                    ep.getHost(),
+	                    ep.getHost(),
+	                    "DOWN",
+	                    LocalDateTime.now(),
+	                    null);
+
+	    statusRepository.save(status);
+	    System.out.println(ex.getMessage());
+	}
+	
+	public void saveStatus(NodeEndpoint ep,IntegrationNodeWrapper response) {
+
+
+		String jsonResponse = objectMapper.writeValueAsString(response);
+		IntegrationStatus status = new IntegrationStatus(response.getName(),ep.getHost(),"UP",LocalDateTime.now(),jsonResponse);
+		statusRepository.save(status);
+
+}
 }
