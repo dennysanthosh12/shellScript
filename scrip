@@ -1,13 +1,43 @@
-@Bean
-public WebClient webClient() {
+package com.EIS.TCS.apiadmin.Services;
 
-    HttpClient httpClient = HttpClient.create()
-        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000) // 3 sec connect
-        .responseTimeout(Duration.ofSeconds(5));             // 5 sec response
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-    return WebClient.builder()
-        .clientConnector(
-            new ReactorClientHttpConnector(httpClient)
-        )
-        .build();
+import com.EIS.TCS.apiadmin.Dto.IntegrationNodeWrapper;
+import com.EIS.TCS.apiadmin.Dto.NodeWrapper;
+import com.EIS.TCS.apiadmin.Model.NodeEndpoint;
+import com.EIS.TCS.apiadmin.Repository.EndpointRepository;
+import com.EIS.TCS.apiadmin.Repository.IntegrationStatusRepository;
+
+import tools.jackson.databind.ObjectMapper;
+
+@Service
+public class ApiadminServices {
+
+	private static final ObjectMapper objectMapper = new ObjectMapper();
+	
+	@Autowired
+	private IntegrationStatusRepository statusrepo;
+	
+	@Autowired
+	private EndpointRepository endpointRepo;
+	
+	
+
+	public List<NodeEndpoint> updateHostPort(ArrayList<NodeEndpoint> endpoints) {
+		return endpointRepo.saveAll(endpoints);
+	}
+
+
+
+	public List<NodeWrapper> getNodeDetails() {
+		
+		return statusrepo.findAll()
+				.stream()
+				.map(status -> new NodeWrapper(status.getServerIp(),status.getStatus(),status.getLastChecked(),objectMapper.readValue(status.getServerDetails(), IntegrationNodeWrapper.class)))
+				.toList();
+	}
+
 }
