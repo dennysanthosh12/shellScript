@@ -1,93 +1,29 @@
-package com.EIS.TCS.apiadmin.Controller;
-
-import java.util.ArrayList;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.EIS.TCS.apiadmin.Model.NodeEndpoint;
-import com.EIS.TCS.apiadmin.Services.ApiadminServices;
-
-@RestController
-@RequestMapping("apiv1")
-public class ApiadminController {
-
-	@Autowired
-	private ApiadminServices apiService;
-	
-	@GetMapping("/node")
-	public ResponseEntity<?> getNodeDetails(){
-		try {
-			
-			return new ResponseEntity<>(apiService.getNodeDetails(),HttpStatus.ACCEPTED);
-			
-		} catch (Exception e) {
-			return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	
-	@PostMapping("/update/endpoint")
-	public ResponseEntity<?> updateHostPort(@RequestBody ArrayList<NodeEndpoint> endpoints){
-		try {
-			return new ResponseEntity<>(apiService.updateHostPort(endpoints),HttpStatus.CREATED);
-		} catch (Exception e) {
-			return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-}
-
-
-package com.EIS.TCS.apiadmin.Services;
-
-import java.util.ArrayList;
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.EIS.TCS.apiadmin.Dto.IntegrationNodeWrapper;
-import com.EIS.TCS.apiadmin.Dto.NodeWrapper;
-import com.EIS.TCS.apiadmin.Model.NodeEndpoint;
-import com.EIS.TCS.apiadmin.Repository.EndpointRepository;
-import com.EIS.TCS.apiadmin.Repository.IntegrationStatusRepository;
-
-import tools.jackson.databind.ObjectMapper;
-
-@Service
-public class ApiadminServices {
-
-	private static final ObjectMapper objectMapper = new ObjectMapper();
-	
-	@Autowired
-	private IntegrationStatusRepository statusrepo;
-	
-	@Autowired
-	private EndpointRepository endpointRepo;
-	
-	
-
-	public List<NodeEndpoint> updateHostPort(ArrayList<NodeEndpoint> endpoints) {
-		return endpointRepo.saveAll(endpoints);
-	}
-
-
-
-	public List<NodeWrapper> getNodeDetails() {
-		
-		return statusrepo.findAll()
-				.stream()
-				.map(status -> new NodeWrapper(status.getServerIp(),status.getStatus(),status.getLastChecked(),objectMapper.readValue(status.getServerDetails(), IntegrationNodeWrapper.class)))
-				.toList();
-	}
-
-}
-
-
+curl -v -k -X POST http://10.177.44.180:50032/apiv1/update/endpoint -H"Authorization:Bearer $TOKEN" -H "Content-Type: application/json" -d'[{"host":"10.177.44.52","port":4019,"protocol":"https","active": true}]' Note: Unnecessary use of -X or --request, POST is already inferred.
+*   Trying 10.177.44.180:50032...
+* Connected to 10.177.44.180 (10.177.44.180) port 50032 (#0)
+> POST /apiv1/update/endpoint HTTP/1.1
+> Host: 10.177.44.180:50032
+> User-Agent: curl/7.76.1
+> Accept: */*
+> Authorization:Bearer eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiRGVubnkiLCJpYXQiOjE3NzEwNjMxOTIsImV4cCI6MTc3MTA2NDYzMn0.CqKKfDewo6Q-Zs-fROrPSsmA3CBZkaVCSNJx6xUcRaykSBoym_Xicz6v6vwS6IiQ79Ni3EulkhTs-dtz5ijHk8I7_1QbKWIbEPI-fV5vIC5qKBLmUh3SXyYw4ucEs9nafh7sair1wMU2HkM0eeLAy26uBQWAGHygzCiPg-P9Kuwmn8PD43sczhS7bL0R1e1SHUW1EjTIPr2lLANJh7TYjYiM0K7ZTgPK6IxriDWTAmOtMdSDDI_nmIuYlQTI7IwaZMWhYbEi7aPrgaWdYvG9mLv4TgWb0f8JV-Gc86jc51giRgq6tDmimIZwVGnXX0s-tHkpgSErNQ_VmFh6VfaRhA
+> Content-Type: application/json
+> Content-Length: 71
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 500
+< X-Content-Type-Options: nosniff
+< X-XSS-Protection: 0
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: 0
+< X-Frame-Options: DENY
+< Content-Type: text/plain;charset=UTF-8
+< Content-Length: 278
+< Date: Sat, 14 Feb 2026 10:00:32 GMT
+< Connection: close
+<
+* Closing connection 0
+could not execute statement [Duplicate entry '0' for key 'node_endpoint.PRIMARY'] [insert into node_endpoint (active,host,port,protocol,id) values (?,?,?,?,?)]; SQL [insert into node_endpoint (active,host,port,protocol,id) values (?,?,?,?,?)]; constraint [node_endpoint.PRIMARY][eisuser@EISUATEXP09 ~]$
 
 package com.EIS.TCS.apiadmin.Model;
 
@@ -99,7 +35,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class NodeEndpoint {
 
@@ -118,46 +53,13 @@ public class NodeEndpoint {
 		this.active = active;
 	}
 	
+	public NodeEndpoint(int id,String host, int port, String protocol, boolean active) {
+		this.id=(host+":"+port).hashCode();
+		this.host = host;
+		this.port = port;
+		this.protocol = protocol;
+		this.active = active;
+	}
+	
 	
 }
-
-
-mysql> select * from node_endpoint
-    -> ;
-+----+----------------+--------------+------+----------+
-| id | active         | host         | port | protocol |
-+----+----------------+--------------+------+----------+
-|  0 | 0x01           | 10.177.44.50 | 4418 | https    |
-+----+----------------+--------------+------+----------+
-1 row in set (0.00 sec)
-
-mysql>
-[eisuser@EISUATEXP09 ~]$ curl -v -k -X POST http://10.177.44.180:50032/apiv1/update/endpoint -H"Authorization:Bearer $TOKEN" -H "Content-Type: application/json" -d'[{"host":"10.177.44.52","port":4019,"protocol":"https","active": true}]'
-Note: Unnecessary use of -X or --request, POST is already inferred.
-*   Trying 10.177.44.180:50032...
-* Connected to 10.177.44.180 (10.177.44.180) port 50032 (#0)
-> POST /apiv1/update/endpoint HTTP/1.1
-> Host: 10.177.44.180:50032
-> User-Agent: curl/7.76.1
-> Accept: */*
-> Authorization:Bearer eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiRGVubnkiLCJpYXQiOjE3NzEwNjE3NDYsImV4cCI6MTc3MTA2MzE4Nn0.DMkJTw2jQyNIuA5t9G7kSd20LuT5IxmhVDPXrSRNvMkWJnlx6MaX0U0sFGUYr8Bnk0CZCc-tHjLgO1H0uaQi1fZytmrGjGN_yMiXtmMCKZofyp6OxONtk17gD9AsXx9aPbbY60E_Oz1CFgTUhcdDeVZXGxQ7AiWrCiZl9mBtVQqbkrQSOnfOqkLmybrig70xP0z5mIQowjHiL6ORrRS0JRh0d6AtmriVr6tENyj6qFK4xv1ZvNtiyqGZcETXmQb--HwEDrCfF_7MmGYjRW0Xg7y8qoOx-Sui01Ivi10TRa-H0fXFPSWaCdinNDSGJuDfci_-JFV4nn9F5Ck8Cf2eFQ
-> Content-Type: application/json
-> Content-Length: 71
->
-* Mark bundle as not supporting multiuse
-< HTTP/1.1 500
-< X-Content-Type-Options: nosniff
-< X-XSS-Protection: 0
-< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-< Pragma: no-cache
-< Expires: 0
-< X-Frame-Options: DENY
-< Content-Type: text/plain;charset=UTF-8
-< Content-Length: 278
-< Date: Sat, 14 Feb 2026 09:38:44 GMT
-< Connection: close
-<
-* Closing connection 0
-could not execute statement [Duplicate entry '0' for key 'node_endpoint.PRIMARY'] [insert into node_endpoint (active,host,port,protocol,id) values (?,?,?,?,?)]; SQL [insert into node_endpoint (active,host,port,protocol,id) values (?,?,?,?,?)]; constraint [node_endpoint.PRIMARY][eisuser@EISUATEXP09 ~]$ curl -v -k -X POST http://10.177.44.180:50032/apiv1/update/endpoint -H"Authorization:Bearer $TOKEN" -H "Content-Type: application/json" -d'[{"host":"10.177.44.52","port":4019,"protocol":"https","active": true}]'
-
-
