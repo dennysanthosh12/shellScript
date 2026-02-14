@@ -1,43 +1,36 @@
-package com.EIS.TCS.apiadmin.Services;
+public List<NodeWrapper> getNodeDetails() {
 
-import java.util.ArrayList;
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+    return statusrepo.findAll()
+            .stream()
+            .map(status -> {
 
-import com.EIS.TCS.apiadmin.Dto.IntegrationNodeWrapper;
-import com.EIS.TCS.apiadmin.Dto.NodeWrapper;
-import com.EIS.TCS.apiadmin.Model.NodeEndpoint;
-import com.EIS.TCS.apiadmin.Repository.EndpointRepository;
-import com.EIS.TCS.apiadmin.Repository.IntegrationStatusRepository;
+                IntegrationNodeWrapper wrapper = null;
 
-import tools.jackson.databind.ObjectMapper;
+                try {
 
-@Service
-public class ApiadminServices {
+                    String json = status.getServerDetails();
 
-	private static final ObjectMapper objectMapper = new ObjectMapper();
-	
-	@Autowired
-	private IntegrationStatusRepository statusrepo;
-	
-	@Autowired
-	private EndpointRepository endpointRepo;
-	
-	
+                    if (json != null && !json.isBlank()) {
+                        wrapper = objectMapper.readValue(
+                                json,
+                                IntegrationNodeWrapper.class
+                        );
+                    }
 
-	public List<NodeEndpoint> updateHostPort(ArrayList<NodeEndpoint> endpoints) {
-		return endpointRepo.saveAll(endpoints);
-	}
+                } catch (Exception e) {
+                    // log + ignore OR handle
+                    System.out.println(
+                        "JSON parse failed for IP: "
+                        + status.getServerIp()
+                    );
+                }
 
-
-
-	public List<NodeWrapper> getNodeDetails() {
-		
-		return statusrepo.findAll()
-				.stream()
-				.map(status -> new NodeWrapper(status.getServerIp(),status.getStatus(),status.getLastChecked(),objectMapper.readValue(status.getServerDetails(), IntegrationNodeWrapper.class)))
-				.toList();
-	}
-
+                return new NodeWrapper(
+                        status.getServerIp(),
+                        status.getStatus(),
+                        status.getLastChecked(),
+                        wrapper   // can be null safely
+                );
+            })
+            .toList();
 }
