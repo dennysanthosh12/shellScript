@@ -1,3 +1,85 @@
+[eisuser@EISUATEXP09 ~]$ curl -v -k -X DELETE http://10.177.44.180:50032/apiv1/remove/endpoint -H"Content-Type: application/json" -H"Authorization:Bearer $TOKEN" -d'{"host":"10.177.44.51","port":4418}'
+*   Trying 10.177.44.180:50032...
+* Connected to 10.177.44.180 (10.177.44.180) port 50032 (#0)
+> DELETE /apiv1/remove/endpoint HTTP/1.1
+> Host: 10.177.44.180:50032
+> User-Agent: curl/7.76.1
+> Accept: */*
+> Content-Type: application/json
+> Authorization:Bearer eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiRGVubnkiLCJpYXQiOjE3NzEwNzI5MDksImV4cCI6MTc3MTA3NDM0OX0.Kw3P5RRT6SiX5wp9Mg_1sR7-FHTW3pZku748PJ2AyQwZNoySYJVj3TWNEcsDlqTBzsF0oR0V71XiUcugoicjIJq0TOwrXhvx1AH2R9iXGpaFx78fDX6jIze7Cs4pWkjrf4cTIFlBEXgKYYlkYckRG8aOEyr41Jm_r9nJ3-GYnzyPTiNCez82OW76ObpRPN4T49NTB7hVb7g5nh6Wu_USMFQyiB2xjpGeY5dGlcehDHKv9mQta57BalnieQBgSG81gcP6hfEatH3WkFPk1Eso3Of91glE5nwFkXPj10ikXsvV5EipxMHDg_U2-ER5RBPiu_GE3sStTnJpA_NdbQvUDA
+> Content-Length: 35
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 500
+< X-Content-Type-Options: nosniff
+< X-XSS-Protection: 0
+< Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+< Pragma: no-cache
+< Expires: 0
+< X-Frame-Options: DENY
+< Content-Type: text/plain;charset=UTF-8
+< Content-Length: 109
+< Date: Sat, 14 Feb 2026 12:48:18 GMT
+< Connection: close
+<
+* Closing connection 0
+No EntityManager with actual transaction available for current thread - cannot reliably process 'remove' call
+
+package com.EIS.TCS.apiadmin.Controller;
+
+import java.util.ArrayList;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.EIS.TCS.apiadmin.Model.NodeEndpoint;
+import com.EIS.TCS.apiadmin.Services.ApiadminServices;
+
+@RestController
+@RequestMapping("apiv1")
+public class ApiadminController {
+
+	@Autowired
+	private ApiadminServices apiService;
+	
+	@GetMapping("/node")
+	public ResponseEntity<?> getNodeDetails(){
+		try {
+			
+			return new ResponseEntity<>(apiService.getNodeDetails(),HttpStatus.ACCEPTED);
+			
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@PostMapping("/update/endpoint")
+	public ResponseEntity<?> updateHostPort(@RequestBody ArrayList<NodeEndpoint> endpoints){
+		try {
+			return new ResponseEntity<>(apiService.updateHostPort(endpoints),HttpStatus.CREATED);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@DeleteMapping("/remove/endpoint")
+	public ResponseEntity<?> removeHostPort(@RequestBody NodeEndpoint endpoint){
+		try {
+			return apiService.removeHostPort(endpoint);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+}
+
+
 package com.EIS.TCS.apiadmin.Model;
 
 import java.time.LocalDateTime;
@@ -52,6 +134,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.EIS.TCS.apiadmin.Model.IntegrationStatus;
 
-public interface IntegrationStatusRepository extends JpaRepository<IntegrationStatus, Long> {
+public interface IntegrationStatusRepository extends JpaRepository<IntegrationStatus, Integer> {
 
+	long deleteByServerIpAndPort(String serverIp,int port);
 }
