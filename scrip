@@ -1,12 +1,32 @@
+[eisuser@eisuatsftp01 ~]$ mysql -ueisuat -p
+Enter password:
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 8
+Server version: 8.0.44 Source distribution
 
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
 
-CREATE COMPUTE MODULE testApi_Compute
-	CREATE FUNCTION Main() RETURNS BOOLEAN
-	BEGIN
-		
-		
-		
-		RETURN TRUE;
-	END;
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
 
-END MODULE;
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> USE UAT_DB;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> show tables;
++--------------------+
+| Tables_in_UAT_DB   |
++--------------------+
+| integration_status |
+| node_endpoint      |
+| role               |
+| user               |
+| user_roles         |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql>
