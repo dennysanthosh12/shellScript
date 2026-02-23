@@ -30,3 +30,20 @@ mysql> show tables;
 5 rows in set (0.00 sec)
 
 mysql>
+[SIDEV]
+Driver= /opt/IBM/ace/server/ODBC/drivers/lib/UKora95.so
+Description=DataDirect ODBC Oracle Wire Protocol
+HostName=eissiuat-scan1.sbi.co.in
+PortNumber=1786
+#HostName=10.177.29.36
+#PortNumber=1787
+ServiceName=UATIIB_SRV
+CatalogOptions=0
+EnableStaticCursorsForLongData=0
+ApplicationUsingThreads=1
+EnableDescribeParam=1
+OptimizePrepare=1
+WorkArounds=536870912
+ProcedureRetResults=1
+ColumnSizeAsCharacter=1
+LoginTimeout=0
