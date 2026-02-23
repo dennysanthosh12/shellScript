@@ -1,13 +1,26 @@
-[UAT_DB]
-Driver=/opt/IBM/ace/server/ODBC/drivers/lib/UKmysql95.so
-Description=DataDirect ODBC MySQL Wire Protocol
-HostName=localhost
-PortNumber=3306
-DatabaseName=UAT_DB
-CatalogOptions=0
-EnableStaticCursorsForLongData=0
-ApplicationUsingThreads=1
-EnableDescribeParam=1
-OptimizePrepare=1
-WorkArounds=536870912
-LoginTimeout=0
+
+
+CREATE COMPUTE MODULE postEndpoint_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE host1 CHARACTER;
+		SET host1 = InputRoot.JSON.Data.host;
+		DECLARE port1 CHARACTER;
+		SET port1 = InputRoot.JSON.Data.port;
+		DECLARE counts INTEGER 0;
+		
+		SELECT COUNT(*) INTO counts FROM Database.node_endpoint WHERE host = host1 AND port = port1;
+		
+		IF counts > 0 THEN
+			SET OutputRoot.JSON.Data.Status = "Failed";
+			SET OutputRoot.JSON.Data.Message = "Host and port alredy exist";
+			PROPAGATE TO TERMINAL "out1";
+		ELSE
+			PROPAGATE;
+			
+		END IF;		 
+		
+		RETURN FALSE;
+	END;
+
+END MODULE;
