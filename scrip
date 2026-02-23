@@ -1,5 +1,7 @@
 
 
+C
+
 CREATE COMPUTE MODULE postEndpoint_Compute
 	CREATE FUNCTION Main() RETURNS BOOLEAN
 	BEGIN
@@ -8,6 +10,7 @@ CREATE COMPUTE MODULE postEndpoint_Compute
 		DECLARE port1 CHARACTER;
 		SET port1 = InputRoot.JSON.Data.port;
 		DECLARE counts INTEGER 0;
+		SET OutputRoot.JSON.Data.Protocol = InputRoot.JSON.Data.protocol;
 		
 		SET counts = SELECT COUNT(*) FROM Database.node_endpoint as n WHERE n.host = host1 AND n.port = port1;
 		
@@ -24,6 +27,7 @@ CREATE COMPUTE MODULE postEndpoint_Compute
 	END;
 
 END MODULE;
+
 
 
 
