@@ -1,449 +1,315 @@
-{
-  "swagger" : "2.0",
-  "info" : {
-    "description" : "Developers may use this swagger specification to create an API for deposits Long Enquiry Reply.",
-    "version" : "2.0.0",
-    "title" : "Swagger Specification for deposits Long Enquiry through Account number V2.0",
-    "termsOfService" : "Please refer to SBI Lotus Project usage policy at developer.sbilotus.com/tos",
-    "contact" : {
-      "email" : "apisupport.eis@sbi.co.in"
-    }
-  },
-  "basePath" : "/test/sbi/eis",
-  "tags" : [ {
-    "name" : "dennyapi",
-    "description" : "This operation will get the customer details based on Customer Birth Date and Name.(Night Enabled-N)"
-  } ],
-  "schemes" : [ "https" ],
-  "paths" : {
-    "/cbs" : {
-      "post" : {
-        "tags" : [ "Long Enquiry" ],
-        "summary" : "Returns customer details based on the linked account number.",
-        "description" : "This operation will get the customer details of the linked account number.(Night Enabled-N)",
-        "operationId" : "dennyapi",
-        "produces" : [ "application/json" ],
-        "consumes" : [ "application/json" ],
-        "parameters" : [ {
-          "in" : "body",
-          "name" : "Long Enquiry",
-          "description" : "This operation will get the customer details of the linked account number.(Night Enabled-N)",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/definitions/LongEnqReq"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Success",
-            "schema" : {
-              "$ref" : "#/definitions/ResponseDetails"
-            }
-          }
-        }
-      }
-    }
-  },
-  "definitions" : {
-    "LongEnqReq" : {
-      "properties" : {
-        "REQUEST_REFERENCE_NUMBER" : {
-          "type" : "string",
-          "description" : "Unique Reference Number format SBIXXYYDDDhhMMssSSSnnnnnn.First 3 alphabets will always be SBI,XX will signify Channel Identifier (eg: LT for YONO channel),YYDDD will signify the Julian date (eg: 26-02-2020 will be represented as 20057),hhMMssSSS will signify the current time in hours, minutes, second and milisecond,nnnnnn will signify running sequence number. ",
-          "maxLength" : 25
-        },
-        "SOURCE_ID" : {
-          "type" : "string",
-          "description" : "Unique code assigned to identify from which channel the request is initiated"
-        },
-        "REQUEST_TELLER_ID" : {
-          "type" : "string",
-          "description" : "Teller ID. This teller is the maker of the transactions",
-          "maxLength" : 7
-        },
-        "REQUEST_AUTH_ID" : {
-          "type" : "string",
-          "description" : "Checker ID. This teller authorises the transactions if required.",
-          "maxLength" : 7
-        },
-        "BRANCH_CODE" : {
-          "type" : "string",
-          "description" : "Code of the bank's branch",
-          "maxLength" : 5
-        },
-        "ACCOUNT_NUMBER" : {
-          "type" : "string",
-          "description" : "The unique account number of the customer.",
-          "maxLength" : 17
-        }
-      },
-      "required" : [ "REQUEST_REFERENCE_NUMBER", "SOURCE_ID", "REQUEST_TELLER_ID" ]
-    },
-    "LINES" : {
-      "properties" : {
-        "SERIAL_NUMBER" : {
-          "type" : "string",
-          "description" : "Serial Number",
-          "maxLength" : 6
-        },
-        "TYPE" : {
-          "type" : "string",
-          "description" : "Type",
-          "maxLength" : 2
-        },
-        "POST_DATE" : {
-          "type" : "string",
-          "description" : "Post Date",
-          "maxLength" : 8
-        },
-        "JOURNAL_NUMBER" : {
-          "type" : "string",
-          "description" : "Journal Number",
-          "maxLength" : 9
-        },
-        "VALUE_DATE" : {
-          "type" : "string",
-          "description" : "Value Date",
-          "maxLength" : 8
-        },
-        "TXN_AMOUNT" : {
-          "type" : "string",
-          "description" : "Transaction Amount",
-          "maxLength" : 18
-        },
-        "CURRENT_BALANCE" : {
-          "type" : "string",
-          "description" : "Balance",
-          "maxLength" : 18
-        },
-        "CHEQUE_NUMBER" : {
-          "type" : "string",
-          "description" : "Cheque Number",
-          "maxLength" : 8
-        },
-        "TXN_DESC" : {
-          "type" : "string",
-          "description" : " Transaction Description",
-          "maxLength" : 24
-        },
-        "TXN_CODE" : {
-          "type" : "string",
-          "description" : "Transaction Code",
-          "maxLength" : 6
-        },
-        "BRANCH" : {
-          "type" : "string",
-          "description" : "Branch",
-          "maxLength" : 5
-        },
-        "TERMINAL" : {
-          "type" : "string",
-          "description" : "Terminal",
-          "maxLength" : 2
-        },
-        "TELLER" : {
-          "type" : "string",
-          "description" : "Teller ID",
-          "maxLength" : 7
-        }
-      }
-    },
-    "ResponseDetails" : {
-      "properties" : {
-        "REQUEST_REFERENCE_NUMBER" : {
-          "type" : "string",
-          "description" : "Unique Reference Number ,format SBIXXYYDDDhhMMssSSSnnnnnn.First 3 alphabets will always be SBI,XX will signify Channel Identifier (eg: LT for YONO channel),YYDDD will signify the Julian date (eg: 26-02-2020 will be represented as 20057),hhMMssSSS will signify the current time in hours, minutes, second and milisecond.nnnnnn will signify running sequence number.",
-          "maxLength" : 25
-        },
-        "RESPONSE_DATE" : {
-          "format" : "date",
-          "type" : "string",
-          "description" : "Response Date (dd-mm-yyyy HH:MM:SS)"
-        },
-        "RESPONSE_STATUS" : {
-          "description" : " '0' for successful transaction and '1' for failure",
-          "type" : "string",
-          "maxLength" : 1
-        },
-        "ERROR_CODE" : {
-          "type" : "string",
-          "description" : "Error Code",
-          "enum" : [ "SI001 : EXCEPTION WHILE PROCESSING THE RESPONSE", "SI002 : NO CONNECTIVITY TO THE DESTINATION SERVER", "SI014 : TIMEOUT/ PLEASE TRY AFTER SOMETIME", "SI011 : INPUT STRING/REQUEST WAS NOT IN CORRECT FORMAT", "SI051 : YOU ARE NOT AUTHORIZED FOR THIS SERVICE", "SI163 : JOURNAL NUMBER MISMATCH", "SI094 : INVALID REQUEST REFERENCE NUMBER" ],
-          "maxLength" : 5
-        },
-        "ERROR_DESCRIPTION" : {
-          "type" : "string",
-          "description" : "Unique code assigned to individual branch(physical/virtual) from where the request is initiated-Not required for Public API",
-          "maxLength" : 100
-        },
-        "ACCOUNT_DETAILS" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/LINES"
-          }
-        },
-        "ACCOUNT_NO" : {
-          "description" : "The unique account number of the customer.",
-          "type" : "string",
-          "maximum" : 20
-        },
-        "CURRENCY" : {
-          "format" : "date",
-          "type" : "string",
-          "description" : "Currency code",
-          "maxLength" : 3
-        },
-        "PRODUCT" : {
-          "description" : "Product type",
-          "type" : "string",
-          "maxLength" : 30
-        },
-        "HOME_BRANCH" : {
-          "description" : "Home branch",
-          "type" : "string",
-          "maxLength" : 5
-        },
-        "USER_CODES" : {
-          "description" : "The unique user codes",
-          "type" : "string",
-          "maxLength" : 20
-        },
-        "STATUS" : {
-          "description" : "Status of the account",
-          "type" : "string",
-          "maxLength" : 4
-        },
-        "INVT_TYPE" : {
-          "description" : "Investment Type",
-          "type" : "string",
-          "maxLength" : 4
-        },
-        "DISTRICT" : {
-          "description" : "District",
-          "type" : "string",
-          "maxLength" : 4
-        },
-        "AGENT_CODE" : {
-          "description" : "Agent Code",
-          "type" : "string",
-          "maxLength" : 5
-        },
-        "REL_MANAGER" : {
-          "description" : "Rel Manager",
-          "type" : "string",
-          "maximum" : 7
-        },
-        "NOTICE_IND" : {
-          "type" : "string",
-          "description" : "Notice Indicator",
-          "maxLength" : 1
-        },
-        "MAIL_IND" : {
-          "description" : "Mail Indicator",
-          "type" : "string",
-          "maxLength" : 1
-        },
-        "ACCOUNT_NAME" : {
-          "description" : "Account Name",
-          "type" : "string",
-          "maxLength" : 54
-        },
-        "ACCOUNT_MAINTAINED_AT" : {
-          "description" : "Account maintained at",
-          "type" : "string",
-          "maxLength" : 5
-        },
-        "CUSTOMER_NAME" : {
-          "description" : "Customers name",
-          "type" : "string",
-          "maxLength" : 60
-        },
-        "DOOR" : {
-          "description" : "Door",
-          "type" : "string",
-          "maxLength" : 40
-        },
-        "INT_PAID_1" : {
-          "description" : "Interest Paid",
-          "type" : "string",
-          "maxLength" : 19
-        },
-        "STREET" : {
-          "description" : "Street",
-          "type" : "string",
-          "maxLength" : 40
-        },
-        "INT_PAID_2" : {
-          "description" : "Interest Paid",
-          "type" : "string",
-          "maximum" : 19
-        },
-        "LOCALITY" : {
-          "format" : "date",
-          "type" : "string",
-          "description" : "Locality",
-          "maxLength" : 40
-        },
-        "INT_PAID_3" : {
-          "description" : "Interest paid",
-          "type" : "string",
-          "maxLength" : 19
-        },
-        "DISTRICT_1" : {
-          "description" : "District",
-          "type" : "string",
-          "maxLength" : 40
-        },
-        "POST_CODE" : {
-          "description" : "Postal code",
-          "type" : "string",
-          "maxLength" : 8
-        },
-        "INT_PAID_4" : {
-          "description" : "Interest Paid",
-          "type" : "string",
-          "maxLength" : 19
-        },
-        "OPEN_DATE" : {
-          "description" : "Open date",
-          "type" : "string",
-          "maxLength" : 10
-        },
-        "CR_INT_RATE" : {
-          "description" : "CR interest rate",
-          "type" : "string",
-          "maxLength" : 7
-        },
-        "DR_INT_RATE" : {
-          "description" : "DR interest rate",
-          "type" : "string",
-          "maxLength" : 7
-        },
-        "INT_PAID_5" : {
-          "description" : "Interest paid",
-          "type" : "string",
-          "maximum" : 19
-        },
-        "BALANCE" : {
-          "format" : "date",
-          "type" : "string",
-          "description" : "Balance",
-          "maxLength" : 21
-        },
-        "OD_EXP" : {
-          "description" : "OD Expiry",
-          "type" : "string",
-          "maxLength" : 10
-        },
-        "HOLD_VALUE" : {
-          "description" : "Hold value",
-          "type" : "string",
-          "maxLength" : 19
-        },
-        "OD_LIMIT" : {
-          "description" : "OD Limit",
-          "type" : "string",
-          "maxLength" : 14
-        },
-        "UNCLEARED_BALANCE" : {
-          "description" : "Uncleared balance",
-          "type" : "string",
-          "maxLength" : 19
-        },
-        "CR_INT_INCR" : {
-          "description" : " CR Interest Increment",
-          "type" : "string",
-          "maxLength" : 19
-        },
-        "INT_FROM" : {
-          "description" : "Interest from",
-          "type" : "string",
-          "maxLength" : 10
-        },
-        "CLS_INT" : {
-          "description" : "Cls interest",
-          "type" : "string",
-          "maxLength" : 19
-        },
-        "CR_INT_PROJ" : {
-          "description" : "CR interest project ",
-          "type" : "string",
-          "maximum" : 19
-        },
-        "INT_TO" : {
-          "format" : "date",
-          "type" : "string",
-          "description" : "Interest to",
-          "maxLength" : 10
-        },
-        "CLS_TAX" : {
-          "description" : "Cls Tax",
-          "type" : "string",
-          "maxLength" : 19
-        },
-        "INT_AVAIL" : {
-          "description" : "Interest availabilty",
-          "type" : "string",
-          "maxLength" : 21
-        },
-        "LAST_TXN" : {
-          "description" : "Last transaction",
-          "type" : "string",
-          "maxLength" : 10
-        },
-        "MATCHED_RATE" : {
-          "description" : "Matched Rate",
-          "type" : "string",
-          "maxLength" : 8
-        },
-        "LASTACC_TYPECHANGE" : {
-          "description" : "Last account type change",
-          "type" : "string",
-          "maxLength" : 10
-        },
-        "OD_INT" : {
-          "description" : "OD_INT",
-          "type" : "string",
-          "maxLength" : 20
-        },
-        "AVL_BAL" : {
-          "description" : "Available Balance",
-          "type" : "string",
-          "maxLength" : 21
-        },
-        "COMP_FREQ" : {
-          "description" : "COMP_FREQ",
-          "type" : "string",
-          "maximum" : 3
-        },
-        "COMP_AMT" : {
-          "format" : "date",
-          "type" : "string",
-          "description" : "COMP_AMT",
-          "maxLength" : 19
-        },
-        "COMP_SOP_DT" : {
-          "description" : "COMP_SOP_DT",
-          "type" : "string",
-          "maxLength" : 10
-        },
-        "COMP_EOP_DT" : {
-          "description" : "COMP_EOP_DT",
-          "type" : "string",
-          "maxLength" : 10
-        },
-        "INT_MONTHLY_BASIS" : {
-          "description" : "INT_MONTHLY_BASIS",
-          "type" : "string",
-          "maxLength" : 1
-        },
-        "RENEWAL_DATE" : {
-          "description" : "RENEWAL_DATE",
-          "type" : "string",
-          "maxLength" : 8
-        }
-      },
-      "required" : [ "RESPONSE_DATE", "REQUEST_REFERENCE_NUMBER", "RESPONSE_STATUS" ]
-    }
-  }
-}
+
+stages:
+# ============== Validation and Initilization ============
+- stage: Validation_Stage
+  displayName: Validation and Intialization
+  pool:
+    name: TFS-RH-1
+  jobs:
+    - job: Validation_Job
+      displayName: Validation
+      steps:
+
+        - checkout: self
+          path: s/app
+
+        - checkout: git://devops_testing/eis-configuration@refs/heads/config
+          path: s/eis-configurations
+
+        - task: CmdLine@2
+          name: val_task
+          env:
+            BRANCH: $(Build.SourceBranchName)
+          displayName: Validating repository
+          inputs:
+            script: |
+              set -e
+
+
+              applicationName=$(ls -1 $(Build.SourcesDirectory)/app | grep -vE "Config|README.md|azure-pipelines.yml" | tail -n 1)
+              echo "Application name : $applicationName"
+              echo "branch: $BRANCH"
+              
+              if [ -e $(Build.SourcesDirectory)/app/Config ]; then
+                mkdir -p $(Build.SourcesDirectory)/app/Config
+              fi
+
+
+              yq e ".$applicationName" $(Build.SourcesDirectory)/eis-configurations/"$BRANCH"_config.yml > $(Build.SourcesDirectory)/app/Config/config_eis_configuration.yml
+
+
+              if [ -s $(Build.SourcesDirectory)/app/Config/config_eis_configuration.yml ]; then
+                config_path=$(Build.SourcesDirectory)/app/Config/config_eis_configuration.yml
+                cp "$config_path" $(Build.ArtifactStagingDirectory)
+              elif [ -s $(Build.SourcesDirectory)/app/Config/config.yml ]; then
+                config_path=$(Build.SourcesDirectory)/app/Config/config.yml
+                cp "$config_path" $(Build.ArtifactStagingDirectory)
+              else
+                echo "ERROR: config.yml not found"
+                exit 1
+              fi
+
+
+              REQUIRED_FIELDS=(
+                IntegrationNode
+                IntegrationServer
+              )
+              for field in "${REQUIRED_FIELDS[@]}"; do
+                value=$(yq e ".$field // \"\"" "$config_path" | tr -d '[:space:]')
+                echo "Value: $value"
+                if [ -z "$value" ]; then
+                  echo " ERROR: $field is missing or empty in $BRANCH_config.yml"
+                  exit 1
+                fi
+              done
+
+              DEPLOY=$(yq e ".Deploy" "$config_path" | tr -d '[:space:]')
+              CACHE_PRESENT=$(yq e ".Cache // [] | length > 0" "$config_path" | tr -d '[:space:]')
+              echo "CACHE: $CACHE_PRESENT DEPLOY: $DEPLOY"
+              if [ "$DEPLOY" = false ] || [ "$DEPLOY" = "false" ]; then
+                DEPLOY="false"
+              else
+                DEPLOY="true"
+              fi
+              if [ "$CACHE_PRESENT" = true ] || [ "$CACHE_PRESENT" = "true" ]; then
+                CACHE_PRESENT="true"
+              else
+                CACHE_PRESENT="false"
+              fi
+
+              if [ "$DEPLOY" != true ] && [ "$DEPLOY" != false ]; then
+                echo "Invalid Deploy flag in config.yml"
+                exit 1
+              fi
+
+              echo "##vso[task.setvariable variable=DeployFlag;isOutput=true]$DEPLOY"
+              echo "##vso[task.setvariable variable=CacheFlag;isOutput=true]$CACHE_PRESENT"
+
+
+        - task: PublishBuildArtifacts@1
+          condition: eq(variables['val_task.DeployFlag'], false)
+          inputs:
+            PathtoPublish: $(Build.ArtifactStagingDirectory)
+            ArtifactName: drop
+                   
+
+# ================= BUILD STAGE =================
+- stage: Build
+  displayName: Build Stage
+  dependsOn: Validation_Stage
+  pool:
+    name: TFS-RH-1
+    
+  condition: succeeded('Validation_Stage')
+        
+  jobs:
+    - job: Build_Job
+      displayName: Agent Build job 
+      steps:
+
+        - checkout: self
+          path: s/app
+
+        - checkout: git://devops_testing/eis-configuration@refs/heads/config
+          path: s/eis-configurations
+
+        - task: CmdLine@2
+          displayName: Building Bar file
+          env:
+            BRANCH: $(Build.SourceBranchName)
+          inputs:
+            script: |
+              set -e
+              . /opt/IBM/ace/server/bin/mqsiprofile
+
+              applicationName=$(ls -1 $(Build.SourcesDirectory)/app | grep -vE "Config|README.md|azure-pipelines.yml" | tail -n 1)
+
+              if [ -e $(Build.SourcesDirectory)/app/Config ]; then
+                mkdir -p $(Build.SourcesDirectory)/app/Config
+              fi
+
+              yq e ".$applicationName" $(Build.SourcesDirectory)/eis-configurations/"$BRANCH"_config.yml > $(Build.SourcesDirectory)/app/Config/config_eis_configuration.yml
+
+
+              if [ -s $(Build.SourcesDirectory)/app/Config/config_eis_configuration.yml ]; then
+                config_path=$(Build.SourcesDirectory)/app/Config/config_eis_configuration.yml
+                yq -i ".ApplicationName = strenv(applicationName)" "$config_path"
+              elif [ -s $(Build.SourcesDirectory)/app/Config/config.yml ]; then
+                config_path=$(Build.SourcesDirectory)/app/Config/config.yml
+                yq -i ".ApplicationName = strenv(applicationName)" "$config_path"
+              fi
+
+              
+              
+              if [ "$BRANCH" != "DEV" ]; then
+                yq ".$applicationName| to_entries[] | .key + \" = \" + .value" $(Build.SourcesDirectory)/eis-configurations/"$BRANCH"_override.yml > $(Build.SourcesDirectory)/app/Config/override.properties
+              fi
+              
+
+              if [ -f $(Build.SourcesDirectory)/app/Config/override.properties ]; then
+                override_path=$(Build.SourcesDirectory)/app/Config/override.properties
+              fi
+              
+
+              if [ -s "$override_path" ]; then
+                ibmint package --input-path $(Build.SourcesDirectory)/app \
+                               --output-bar-file $(Build.BinariesDirectory)/$applicationName.bar \
+                               --java-version 8 \
+                               --overrides-file "$override_path"
+              else
+                ibmint package --input-path $(Build.SourcesDirectory) \
+                               --output-bar-file $(Build.BinariesDirectory)/$applicationName.bar \
+                               --java-version 8
+              fi
+              
+              
+              mqsireadbar -b $(Build.BinariesDirectory)/$applicationName.bar -r | grep "=" | sed -e 's/^[[:space:]]*//' > $(Build.SourcesDirectory)/app/Config/override.properties
+              cp -r $(Build.SourcesDirectory)/app/Config $(Build.BinariesDirectory)
+              
+        
+        - task: CopyFiles@2
+          inputs:
+            SourceFolder: $(Build.BinariesDirectory)
+            TargetFolder: $(Build.ArtifactStagingDirectory)
+            OverWrite: true
+
+        - task: PublishBuildArtifacts@1
+          inputs:
+            PathtoPublish: $(Build.ArtifactStagingDirectory)
+            ArtifactName: drop
+
+# ================= RELEASE STAGE =================
+- stage: Release
+  displayName: Deploy Stage
+  pool:
+    name: TFS-RH-1
+  dependsOn: Build
+  condition: |
+    and(
+      succeeded('Build'),
+      eq(
+          dependencies.Validation_Stage.outputs['Validation_Job.val_task.DeployFlag'],
+          'true'
+        ),
+        ne(variables['Build.SourceBranchName'], 'main')
+    )
+  jobs:
+    - deployment: DeployApp
+      displayName: Deployment Job
+      environment: $(Build.SourceBranchName)
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+
+              - download: current
+                artifact: drop
+
+              - task: CmdLine@2
+                displayName: Deploying Bar File
+                env:
+                  BRANCH: $(Build.SourceBranchName)
+                inputs:
+                  workingDirectory: $(Pipeline.Workspace)/drop
+                  script: |
+                    set -e
+                    . /opt/IBM/ace/server/bin/mqsiprofile
+
+                    IntegrationNode=$(yq e ".IntegrationNode" config.yml)
+                    ApplicationName=$(yq e ".ApplicationName" config.yml)
+                    IntegrationServer=$(yq e ".IntegrationServer" config.yml)
+
+                    for broker_file in /home/devops/broker/$BRANCH/$IntegrationNode*; do
+                      fname=$(basename "$broker_file"); 
+                      if [[ $fname =~ ^${IntegrationNode}_([0-9]+)\.broker$  ]];
+                      then
+                        cat "$broker_file" |grep host| awk -F"\"" '{print "HOST: " $4 " , " "IntegrationNode: " $6}';
+                        ibmint deploy \
+                          --input-bar-file "$ApplicationName.bar" \
+                          --integration-node-file "$broker_file" \
+                          --output-server "$IntegrationServer";
+                      fi;
+                    done
+
+# ================= CACHE STAGE =================
+- stage: Cache
+  displayName: CACHE
+  pool:
+    name: TFS-RH-1
+  dependsOn: 
+    - Validation_Stage
+    - Build
+  condition: |
+    and(
+      succeeded('Validation_Stage'),
+      eq(
+          dependencies.Validation_Stage.outputs['Validation_Job.val_task.CacheFlag'],
+          'true'
+        ),
+      or(
+        eq(
+          dependencies.Validation_Stage.outputs['Validation_Job.val_task.DeployFlag'],
+          'false'
+        ),
+        succeeded('Build')
+      ),
+      ne(variables['Build.SourceBranchName'], 'main')
+    )
+  jobs:
+    - job: Cache_Job
+      displayName: CACHE UPDATE
+      steps:
+        
+        - download: current
+          artifact: drop
+
+        - task: CmdLine@2
+          displayName: Update cache in Database
+          env:
+            BRANCH: $(Build.SourceBranchName)
+          inputs:
+            workingDirectory: $(Pipeline.Workspace)/drop/
+            script: |
+              source ~/.bashrc
+              set -e
+              if [ ! -f config.yml ];
+              then echo "config.yml file was not found !!"; exit 1;
+              fi
+              yq ".Cache[].Query" config.yml | while  IFS= read -r SQL;
+              do echo "---------------------------------------------------------";
+              echo "Executing SQL Cache Query";
+              echo "$SQL";
+              echo "---------------------------------------------------------";
+              OUTPUT=$(echo "$SQL" | isql "$BRANCH" "$DB_USER" "$DB_PASS" 2>&1);
+              STATUS=$?;
+              if [[ $STATUS -eq 0 ]] && echo "$OUTPUT" | grep -qi "SQLRowCount";
+              then echo "SUCCESS: Query executed";
+              else echo "FAILED: Query did not execute"; exit 1;
+              fi;
+              echo " ";
+              done
+
+        - task: CmdLine@2
+          displayName: Update Cache in Server
+          env:
+            BRANCH: $(Build.SourceBranchName)
+          inputs:
+            workingDirectory: $(Pipeline.Workspace)/drop/
+            script: |
+              set -e
+
+              IntegrationNode=$(yq ".IntegrationNode" config.yml)
+              for broker_file in /home/devops/broker/$BRANCH/$IntegrationNode*; do
+                host=$(cat "$broker_file" | grep host | cut -d"\"" -f4)
+                if yq -e ".Cache" config.yml >/dev/null 2>&1; then
+                  response=$(curl -s -k -X POST http://"$host":8002/cache/v1/loadCache \
+                  -H "Content-Type: application/json" \
+                  -d "$(yq -o=json ".$BRANCH.Cache | map({\"FIELD_NAME\": .FIELD_NAME, \"FIELD_VALUE\": .FIELD_VALUE})" config.yml)")
+                  if [[ "$response" != *'"RESPONSE":"success"'* ]]; then
+                    echo "Cache load failed: $response"
+                    exit 1
+                  fi
+                  echo "Cache load successful on $host"
+                  echo "$(yq -o=json ".$BRANCH.Cache | map({\"FIELD_NAME\": .FIELD_NAME, \"FIELD_VALUE\": .FIELD_VALUE})" config.yml)"
+                fi
+              done
