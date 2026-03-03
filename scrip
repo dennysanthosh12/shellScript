@@ -1,34 +1,3 @@
-[azagent@az-rh-uat-01 ~]$ cd /home/azagent/_work/421
-[azagent@az-rh-uat-01 421]$
-[azagent@az-rh-uat-01 421]$
-[azagent@az-rh-uat-01 421]$ ll
-total 0
-drwxr-xr-x 2 azagent azagent  6 Mar  3 17:57 TestResults
-drwxr-xr-x 3 azagent azagent 97 Mar  3 17:58 a
-drwxr-xr-x 3 azagent azagent 97 Mar  3 17:58 b
-drwxr-xr-x 4 azagent azagent 43 Mar  3 17:58 s
-[azagent@az-rh-uat-01 421]$ cd b/
-[azagent@az-rh-uat-01 b]$ ll
-total 32
-drwxr-xr-x 2 azagent azagent    87 Mar  3 17:31 Config
--rw-r--r-- 1 azagent azagent    66 Mar  3 17:58 config.yml
--rw-r--r-- 1 azagent azagent   256 Mar  3 17:58 override.properties
--rw-rw---- 1 azagent azagent 22565 Mar  3 17:58 thirdPartyAAMAZE_sys.bar
-[azagent@az-rh-uat-01 b]$ cd ../s/
-[azagent@az-rh-uat-01 s]$ ll
-total 4
-drwxr-xr-x 5 azagent azagent  104 Mar  3 09:14 app
-drwxr-xr-x 3 azagent azagent 4096 Mar  3 14:22 eis-configurations
-[azagent@az-rh-uat-01 s]$ cd ../a/
-[azagent@az-rh-uat-01 a]$ ll
-total 32
-drwxr-xr-x 2 azagent azagent    87 Mar  3 17:58 Config
--rw-r--r-- 1 azagent azagent    66 Mar  3 17:58 config.yml
--rw-r--r-- 1 azagent azagent   256 Mar  3 17:58 override.properties
--rw-rw---- 1 azagent azagent 22565 Mar  3 17:58 thirdPartyAAMAZE_sys.bar
-[azagent@az-rh-uat-01 a]$
-
-
 
 stages:
 # ============== Validation and Initilization ============
@@ -39,6 +8,8 @@ stages:
   jobs:
     - job: Validation_Job
       displayName: Validation
+      workspace:
+        clean: all
       steps:
 
         - checkout: self
@@ -136,6 +107,8 @@ stages:
   jobs:
     - job: Build_Job
       displayName: Agent Build job 
+      workspace:
+        clean: all
       steps:
 
         - checkout: self
@@ -163,7 +136,7 @@ stages:
 
 
               if [ -s $(Build.SourcesDirectory)/app/Config/config_eis_configuration.yml ]; then
-                echo "$(Build.SourcesDirectory)/app/Config/config_eis_configuration.yml" > $(Build.SourcesDirectory)/app/Config/config.yml
+                cat "$(Build.SourcesDirectory)/app/Config/config_eis_configuration.yml" > $(Build.SourcesDirectory)/app/Config/config.yml
                 rm $(Build.SourcesDirectory)/app/Config/config_eis_configuration.yml
               fi
 
@@ -195,6 +168,7 @@ stages:
               
               mqsireadbar -b $(Build.BinariesDirectory)/$applicationName.bar -r | grep "=" | sed -e 's/^[[:space:]]*//' > $(Build.SourcesDirectory)/app/Config/override.properties
               cp $(Build.SourcesDirectory)/app/Config/* $(Build.BinariesDirectory)
+              cat "$config_path"
               
         
         - task: CopyFiles@2
@@ -227,6 +201,8 @@ stages:
     - deployment: DeployApp
       displayName: Deployment Job
       environment: $(Build.SourceBranchName)
+      workspace:
+        clean: all
       strategy:
         runOnce:
           deploy:
@@ -288,6 +264,8 @@ stages:
   jobs:
     - job: Cache_Job
       displayName: CACHE UPDATE
+      workspace:
+        clean: all
       steps:
         
         - download: current
@@ -343,3 +321,42 @@ stages:
                   echo "$(yq -o=json ".$BRANCH.Cache | map({\"FIELD_NAME\": .FIELD_NAME, \"FIELD_VALUE\": .FIELD_VALUE})" config.yml)"
                 fi
               done
+
+
+Building Bar file
+Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/command-line
+==============================================================================
+Generating script.
+========================== Starting Command Output ===========================
+/usr/bin/bash --noprofile --norc /home/azagent/_work/_temp/45b6e1fe-2795-4661-a5a9-aa25c5fc28ed.sh
+BIP8409I: Compiling Java project '/home/azagent/_work/421/s/app/thirdPartyAAMAZE_sys/SBI Life' 
+BIP1859I: Successfully added file 'SBI Life/SBI Life.jar' to the BAR file.
+BIP1859I: Successfully added file 'gen/thirdPartyAAMAZE_sys.msgflow' to the BAR file.
+BIP1859I: Successfully added file 'restapi.descriptor' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartyAAMAZE_sys.subflow' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartyAAMAZE_sysInputCatchHandler.subflow' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartyAAMAZE_sysInputFailureHandler.subflow' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartyAAMAZE_sysInputTimeoutHandler.subflow' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartyAAMAZE_sys_Compute.esql' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartyAAMAZE_sys_Compute1.esql' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartyAAMAZE_sys_Compute2.esql' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartyAAMAZE_sys_Compute3.esql' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartyAAMAZE_sys_Filter.esql' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartySBILife_sys.json' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartySBILife_sys_Compute.esql' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartySBILife_sys_Compute1.esql' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartySBILife_sys_Compute2.esql' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartySBILife_sys_Compute3.esql' to the BAR file.
+BIP1859I: Successfully added file 'thirdPartySBILife_sys_Filter.esql' to the BAR file.
+BIP1849W: The application 'thirdPartyAAMAZE_sys' references project 'EIS_API_LOGGER' which does not exist.
+BIP1853I: Application file 'thirdPartyAAMAZE_sys.appzip' successfully added to the BAR file.
+BIP1138I: Applying overrides using runtime ibmint apply overrides...
+BIP1140I: Overriding property thirdPartyAAMAZE_sys#HTTP Request.URLSpecifier with 'http://10.176.31.240:8443/login' in 'thirdPartyAAMAZE_sys.appzip/META-INF/broker.xml' ...
+BIP1140I: Overriding property gen.thirdPartyAAMAZE_sys#additionalInstances with '1' in 'thirdPartyAAMAZE_sys.appzip/META-INF/broker.xml' ...
+BIP1143I: Saving Bar file /home/azagent/_work/421/b/thirdPartyAAMAZE_sys.bar...
+BIP8071I: Successful command completion. 
+"IntegrationNode": PAYMENT_SYS
+"IntegrationServer": Payment_S_03
+"Deploy": False
+ApplicationName: ""
+Finishing: Building Bar file
