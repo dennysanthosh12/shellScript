@@ -1,3 +1,34 @@
+[azagent@az-rh-uat-01 ~]$ cd /home/azagent/_work/421
+[azagent@az-rh-uat-01 421]$
+[azagent@az-rh-uat-01 421]$
+[azagent@az-rh-uat-01 421]$ ll
+total 0
+drwxr-xr-x 2 azagent azagent  6 Mar  3 17:57 TestResults
+drwxr-xr-x 3 azagent azagent 97 Mar  3 17:58 a
+drwxr-xr-x 3 azagent azagent 97 Mar  3 17:58 b
+drwxr-xr-x 4 azagent azagent 43 Mar  3 17:58 s
+[azagent@az-rh-uat-01 421]$ cd b/
+[azagent@az-rh-uat-01 b]$ ll
+total 32
+drwxr-xr-x 2 azagent azagent    87 Mar  3 17:31 Config
+-rw-r--r-- 1 azagent azagent    66 Mar  3 17:58 config.yml
+-rw-r--r-- 1 azagent azagent   256 Mar  3 17:58 override.properties
+-rw-rw---- 1 azagent azagent 22565 Mar  3 17:58 thirdPartyAAMAZE_sys.bar
+[azagent@az-rh-uat-01 b]$ cd ../s/
+[azagent@az-rh-uat-01 s]$ ll
+total 4
+drwxr-xr-x 5 azagent azagent  104 Mar  3 09:14 app
+drwxr-xr-x 3 azagent azagent 4096 Mar  3 14:22 eis-configurations
+[azagent@az-rh-uat-01 s]$ cd ../a/
+[azagent@az-rh-uat-01 a]$ ll
+total 32
+drwxr-xr-x 2 azagent azagent    87 Mar  3 17:58 Config
+-rw-r--r-- 1 azagent azagent    66 Mar  3 17:58 config.yml
+-rw-r--r-- 1 azagent azagent   256 Mar  3 17:58 override.properties
+-rw-rw---- 1 azagent azagent 22565 Mar  3 17:58 thirdPartyAAMAZE_sys.bar
+[azagent@az-rh-uat-01 a]$
+
+
 
 stages:
 # ============== Validation and Initilization ============
@@ -132,13 +163,12 @@ stages:
 
 
               if [ -s $(Build.SourcesDirectory)/app/Config/config_eis_configuration.yml ]; then
-                config_path=$(Build.SourcesDirectory)/app/Config/config_eis_configuration.yml
-                yq -i ".ApplicationName = strenv(applicationName)" "$config_path"
-              elif [ -s $(Build.SourcesDirectory)/app/Config/config.yml ]; then
-                config_path=$(Build.SourcesDirectory)/app/Config/config.yml
-                yq -i ".ApplicationName = strenv(applicationName)" "$config_path"
+                echo "$(Build.SourcesDirectory)/app/Config/config_eis_configuration.yml" > $(Build.SourcesDirectory)/app/Config/config.yml
+                rm $(Build.SourcesDirectory)/app/Config/config_eis_configuration.yml
               fi
 
+              config_path=$(Build.SourcesDirectory)/app/Config/config.yml
+              yq -i ".ApplicationName = strenv(applicationName)" "$config_path"
               
               
               if [ "$BRANCH" != "DEV" ]; then
@@ -164,7 +194,7 @@ stages:
               
               
               mqsireadbar -b $(Build.BinariesDirectory)/$applicationName.bar -r | grep "=" | sed -e 's/^[[:space:]]*//' > $(Build.SourcesDirectory)/app/Config/override.properties
-              cp -r $(Build.SourcesDirectory)/app/Config $(Build.BinariesDirectory)
+              cp $(Build.SourcesDirectory)/app/Config/* $(Build.BinariesDirectory)
               
         
         - task: CopyFiles@2
