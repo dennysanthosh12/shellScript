@@ -1,138 +1,449 @@
-
-
-C
-
-CREATE COMPUTE MODULE postEndpoint_Compute
-	CREATE FUNCTION Main() RETURNS BOOLEAN
-	BEGIN
-		DECLARE host1 CHARACTER;
-		SET host1 = InputRoot.JSON.Data.host;
-		DECLARE port1 CHARACTER;
-		SET port1 = InputRoot.JSON.Data.port;
-		DECLARE counts INTEGER 0;
-		SET OutputRoot.JSON.Data.Protocol = InputRoot.JSON.Data.protocol;
-		
-		SET counts = SELECT COUNT(*) FROM Database.node_endpoint as n WHERE n.host = host1 AND n.port = port1;
-		
-		IF counts > 0 THEN
-			SET OutputRoot.JSON.Data.Status = "Failed";
-			SET OutputRoot.JSON.Data.Message = "Host and port alredy exist";
-			PROPAGATE TO TERMINAL "out1";
-		ELSE
-			PROPAGATE;
-			
-		END IF;		 
-		
-		RETURN FALSE;
-	END;
-
-END MODULE;
-
-
-
-
-package com.sbi.tcs;
-
-import com.ibm.broker.javacompute.MbJavaComputeNode;
-import com.ibm.broker.plugin.MbException;
-import com.ibm.broker.plugin.MbMessage;
-import com.ibm.broker.plugin.MbMessageAssembly;
-import com.ibm.broker.plugin.MbOutputTerminal;
-import com.ibm.broker.plugin.MbUserException;
-
-public class PostEndpoint_JavaCompute extends MbJavaComputeNode {
-
-	public void evaluate(MbMessageAssembly inAssembly) throws MbException {
-		MbOutputTerminal out = getOutputTerminal("out");
-		MbOutputTerminal alt = getOutputTerminal("alternate");
-
-		MbMessage inMessage = inAssembly.getMessage();
-		MbMessageAssembly outAssembly = null;
-		try {
-			// create new message as a copy of the input
-			MbMessage outMessage = new MbMessage(inMessage);
-			outAssembly = new MbMessageAssembly(inAssembly, outMessage);
-			// ----------------------------------------------------------
-			// Add user code below
-
-			// End of user code
-			// ----------------------------------------------------------
-		} catch (MbException e) {
-			// Re-throw to allow Broker handling of MbException
-			throw e;
-		} catch (RuntimeException e) {
-			// Re-throw to allow Broker handling of RuntimeException
-			throw e;
-		} catch (Exception e) {
-			// Consider replacing Exception with type(s) thrown by user code
-			// Example handling ensures all exceptions are re-thrown to be handled in the flow
-			throw new MbUserException(this, "evaluate()", "", "", e.toString(), null);
-		}
-		// The following should only be changed
-		// if not propagating message to the 'out' terminal
-		out.propagate(outAssembly);
-
-	}
-
-	/**
-	 * onPreSetupValidation() is called during the construction of the node
-	 * to allow the node configuration to be validated.  Updating the node
-	 * configuration or connecting to external resources should be avoided.
-	 *
-	 * @throws MbException
-	 */
-	@Override
-	public void onPreSetupValidation() throws MbException {
-	}
-
-	/**
-	 * onSetup() is called during the start of the message flow allowing
-	 * configuration to be read/cached, and endpoints to be registered.
-	 *
-	 * Calling getPolicy() within this method to retrieve a policy links this
-	 * node to the policy. If the policy is subsequently redeployed the message
-	 * flow will be torn down and reinitialized to it's state prior to the policy
-	 * redeploy.
-	 *
-	 * @throws MbException
-	 */
-	@Override
-	public void onSetup() throws MbException {
-	}
-
-	/**
-	 * onStart() is called as the message flow is started. The thread pool for
-	 * the message flow is running when this method is invoked.
-	 *
-	 * @throws MbException
-	 */
-	@Override
-	public void onStart() throws MbException {
-	}
-
-	/**
-	 * onStop() is called as the message flow is stopped. 
-	 *
-	 * The onStop method is called twice as a message flow is stopped. Initially
-	 * with a 'wait' value of false and subsequently with a 'wait' value of true.
-	 * Blocking operations should be avoided during the initial call. All thread
-	 * pools and external connections should be stopped by the completion of the
-	 * second call.
-	 *
-	 * @throws MbException
-	 */
-	@Override
-	public void onStop(boolean wait) throws MbException {
-	}
-
-	/**
-	 * onTearDown() is called to allow any cached data to be released and any
-	 * endpoints to be deregistered.
-	 *
-	 * @throws MbException
-	 */
-	@Override
-	public void onTearDown() throws MbException {
-	}
-
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "Developers may use this swagger specification to create an API for deposits Long Enquiry Reply.",
+    "version" : "2.0.0",
+    "title" : "Swagger Specification for deposits Long Enquiry through Account number V2.0",
+    "termsOfService" : "Please refer to SBI Lotus Project usage policy at developer.sbilotus.com/tos",
+    "contact" : {
+      "email" : "apisupport.eis@sbi.co.in"
+    }
+  },
+  "basePath" : "/test/sbi/eis",
+  "tags" : [ {
+    "name" : "dennyapi",
+    "description" : "This operation will get the customer details based on Customer Birth Date and Name.(Night Enabled-N)"
+  } ],
+  "schemes" : [ "https" ],
+  "paths" : {
+    "/cbs" : {
+      "post" : {
+        "tags" : [ "Long Enquiry" ],
+        "summary" : "Returns customer details based on the linked account number.",
+        "description" : "This operation will get the customer details of the linked account number.(Night Enabled-N)",
+        "operationId" : "dennyapi",
+        "produces" : [ "application/json" ],
+        "consumes" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "Long Enquiry",
+          "description" : "This operation will get the customer details of the linked account number.(Night Enabled-N)",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/LongEnqReq"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "schema" : {
+              "$ref" : "#/definitions/ResponseDetails"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "LongEnqReq" : {
+      "properties" : {
+        "REQUEST_REFERENCE_NUMBER" : {
+          "type" : "string",
+          "description" : "Unique Reference Number format SBIXXYYDDDhhMMssSSSnnnnnn.First 3 alphabets will always be SBI,XX will signify Channel Identifier (eg: LT for YONO channel),YYDDD will signify the Julian date (eg: 26-02-2020 will be represented as 20057),hhMMssSSS will signify the current time in hours, minutes, second and milisecond,nnnnnn will signify running sequence number. ",
+          "maxLength" : 25
+        },
+        "SOURCE_ID" : {
+          "type" : "string",
+          "description" : "Unique code assigned to identify from which channel the request is initiated"
+        },
+        "REQUEST_TELLER_ID" : {
+          "type" : "string",
+          "description" : "Teller ID. This teller is the maker of the transactions",
+          "maxLength" : 7
+        },
+        "REQUEST_AUTH_ID" : {
+          "type" : "string",
+          "description" : "Checker ID. This teller authorises the transactions if required.",
+          "maxLength" : 7
+        },
+        "BRANCH_CODE" : {
+          "type" : "string",
+          "description" : "Code of the bank's branch",
+          "maxLength" : 5
+        },
+        "ACCOUNT_NUMBER" : {
+          "type" : "string",
+          "description" : "The unique account number of the customer.",
+          "maxLength" : 17
+        }
+      },
+      "required" : [ "REQUEST_REFERENCE_NUMBER", "SOURCE_ID", "REQUEST_TELLER_ID" ]
+    },
+    "LINES" : {
+      "properties" : {
+        "SERIAL_NUMBER" : {
+          "type" : "string",
+          "description" : "Serial Number",
+          "maxLength" : 6
+        },
+        "TYPE" : {
+          "type" : "string",
+          "description" : "Type",
+          "maxLength" : 2
+        },
+        "POST_DATE" : {
+          "type" : "string",
+          "description" : "Post Date",
+          "maxLength" : 8
+        },
+        "JOURNAL_NUMBER" : {
+          "type" : "string",
+          "description" : "Journal Number",
+          "maxLength" : 9
+        },
+        "VALUE_DATE" : {
+          "type" : "string",
+          "description" : "Value Date",
+          "maxLength" : 8
+        },
+        "TXN_AMOUNT" : {
+          "type" : "string",
+          "description" : "Transaction Amount",
+          "maxLength" : 18
+        },
+        "CURRENT_BALANCE" : {
+          "type" : "string",
+          "description" : "Balance",
+          "maxLength" : 18
+        },
+        "CHEQUE_NUMBER" : {
+          "type" : "string",
+          "description" : "Cheque Number",
+          "maxLength" : 8
+        },
+        "TXN_DESC" : {
+          "type" : "string",
+          "description" : " Transaction Description",
+          "maxLength" : 24
+        },
+        "TXN_CODE" : {
+          "type" : "string",
+          "description" : "Transaction Code",
+          "maxLength" : 6
+        },
+        "BRANCH" : {
+          "type" : "string",
+          "description" : "Branch",
+          "maxLength" : 5
+        },
+        "TERMINAL" : {
+          "type" : "string",
+          "description" : "Terminal",
+          "maxLength" : 2
+        },
+        "TELLER" : {
+          "type" : "string",
+          "description" : "Teller ID",
+          "maxLength" : 7
+        }
+      }
+    },
+    "ResponseDetails" : {
+      "properties" : {
+        "REQUEST_REFERENCE_NUMBER" : {
+          "type" : "string",
+          "description" : "Unique Reference Number ,format SBIXXYYDDDhhMMssSSSnnnnnn.First 3 alphabets will always be SBI,XX will signify Channel Identifier (eg: LT for YONO channel),YYDDD will signify the Julian date (eg: 26-02-2020 will be represented as 20057),hhMMssSSS will signify the current time in hours, minutes, second and milisecond.nnnnnn will signify running sequence number.",
+          "maxLength" : 25
+        },
+        "RESPONSE_DATE" : {
+          "format" : "date",
+          "type" : "string",
+          "description" : "Response Date (dd-mm-yyyy HH:MM:SS)"
+        },
+        "RESPONSE_STATUS" : {
+          "description" : " '0' for successful transaction and '1' for failure",
+          "type" : "string",
+          "maxLength" : 1
+        },
+        "ERROR_CODE" : {
+          "type" : "string",
+          "description" : "Error Code",
+          "enum" : [ "SI001 : EXCEPTION WHILE PROCESSING THE RESPONSE", "SI002 : NO CONNECTIVITY TO THE DESTINATION SERVER", "SI014 : TIMEOUT/ PLEASE TRY AFTER SOMETIME", "SI011 : INPUT STRING/REQUEST WAS NOT IN CORRECT FORMAT", "SI051 : YOU ARE NOT AUTHORIZED FOR THIS SERVICE", "SI163 : JOURNAL NUMBER MISMATCH", "SI094 : INVALID REQUEST REFERENCE NUMBER" ],
+          "maxLength" : 5
+        },
+        "ERROR_DESCRIPTION" : {
+          "type" : "string",
+          "description" : "Unique code assigned to individual branch(physical/virtual) from where the request is initiated-Not required for Public API",
+          "maxLength" : 100
+        },
+        "ACCOUNT_DETAILS" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/LINES"
+          }
+        },
+        "ACCOUNT_NO" : {
+          "description" : "The unique account number of the customer.",
+          "type" : "string",
+          "maximum" : 20
+        },
+        "CURRENCY" : {
+          "format" : "date",
+          "type" : "string",
+          "description" : "Currency code",
+          "maxLength" : 3
+        },
+        "PRODUCT" : {
+          "description" : "Product type",
+          "type" : "string",
+          "maxLength" : 30
+        },
+        "HOME_BRANCH" : {
+          "description" : "Home branch",
+          "type" : "string",
+          "maxLength" : 5
+        },
+        "USER_CODES" : {
+          "description" : "The unique user codes",
+          "type" : "string",
+          "maxLength" : 20
+        },
+        "STATUS" : {
+          "description" : "Status of the account",
+          "type" : "string",
+          "maxLength" : 4
+        },
+        "INVT_TYPE" : {
+          "description" : "Investment Type",
+          "type" : "string",
+          "maxLength" : 4
+        },
+        "DISTRICT" : {
+          "description" : "District",
+          "type" : "string",
+          "maxLength" : 4
+        },
+        "AGENT_CODE" : {
+          "description" : "Agent Code",
+          "type" : "string",
+          "maxLength" : 5
+        },
+        "REL_MANAGER" : {
+          "description" : "Rel Manager",
+          "type" : "string",
+          "maximum" : 7
+        },
+        "NOTICE_IND" : {
+          "type" : "string",
+          "description" : "Notice Indicator",
+          "maxLength" : 1
+        },
+        "MAIL_IND" : {
+          "description" : "Mail Indicator",
+          "type" : "string",
+          "maxLength" : 1
+        },
+        "ACCOUNT_NAME" : {
+          "description" : "Account Name",
+          "type" : "string",
+          "maxLength" : 54
+        },
+        "ACCOUNT_MAINTAINED_AT" : {
+          "description" : "Account maintained at",
+          "type" : "string",
+          "maxLength" : 5
+        },
+        "CUSTOMER_NAME" : {
+          "description" : "Customers name",
+          "type" : "string",
+          "maxLength" : 60
+        },
+        "DOOR" : {
+          "description" : "Door",
+          "type" : "string",
+          "maxLength" : 40
+        },
+        "INT_PAID_1" : {
+          "description" : "Interest Paid",
+          "type" : "string",
+          "maxLength" : 19
+        },
+        "STREET" : {
+          "description" : "Street",
+          "type" : "string",
+          "maxLength" : 40
+        },
+        "INT_PAID_2" : {
+          "description" : "Interest Paid",
+          "type" : "string",
+          "maximum" : 19
+        },
+        "LOCALITY" : {
+          "format" : "date",
+          "type" : "string",
+          "description" : "Locality",
+          "maxLength" : 40
+        },
+        "INT_PAID_3" : {
+          "description" : "Interest paid",
+          "type" : "string",
+          "maxLength" : 19
+        },
+        "DISTRICT_1" : {
+          "description" : "District",
+          "type" : "string",
+          "maxLength" : 40
+        },
+        "POST_CODE" : {
+          "description" : "Postal code",
+          "type" : "string",
+          "maxLength" : 8
+        },
+        "INT_PAID_4" : {
+          "description" : "Interest Paid",
+          "type" : "string",
+          "maxLength" : 19
+        },
+        "OPEN_DATE" : {
+          "description" : "Open date",
+          "type" : "string",
+          "maxLength" : 10
+        },
+        "CR_INT_RATE" : {
+          "description" : "CR interest rate",
+          "type" : "string",
+          "maxLength" : 7
+        },
+        "DR_INT_RATE" : {
+          "description" : "DR interest rate",
+          "type" : "string",
+          "maxLength" : 7
+        },
+        "INT_PAID_5" : {
+          "description" : "Interest paid",
+          "type" : "string",
+          "maximum" : 19
+        },
+        "BALANCE" : {
+          "format" : "date",
+          "type" : "string",
+          "description" : "Balance",
+          "maxLength" : 21
+        },
+        "OD_EXP" : {
+          "description" : "OD Expiry",
+          "type" : "string",
+          "maxLength" : 10
+        },
+        "HOLD_VALUE" : {
+          "description" : "Hold value",
+          "type" : "string",
+          "maxLength" : 19
+        },
+        "OD_LIMIT" : {
+          "description" : "OD Limit",
+          "type" : "string",
+          "maxLength" : 14
+        },
+        "UNCLEARED_BALANCE" : {
+          "description" : "Uncleared balance",
+          "type" : "string",
+          "maxLength" : 19
+        },
+        "CR_INT_INCR" : {
+          "description" : " CR Interest Increment",
+          "type" : "string",
+          "maxLength" : 19
+        },
+        "INT_FROM" : {
+          "description" : "Interest from",
+          "type" : "string",
+          "maxLength" : 10
+        },
+        "CLS_INT" : {
+          "description" : "Cls interest",
+          "type" : "string",
+          "maxLength" : 19
+        },
+        "CR_INT_PROJ" : {
+          "description" : "CR interest project ",
+          "type" : "string",
+          "maximum" : 19
+        },
+        "INT_TO" : {
+          "format" : "date",
+          "type" : "string",
+          "description" : "Interest to",
+          "maxLength" : 10
+        },
+        "CLS_TAX" : {
+          "description" : "Cls Tax",
+          "type" : "string",
+          "maxLength" : 19
+        },
+        "INT_AVAIL" : {
+          "description" : "Interest availabilty",
+          "type" : "string",
+          "maxLength" : 21
+        },
+        "LAST_TXN" : {
+          "description" : "Last transaction",
+          "type" : "string",
+          "maxLength" : 10
+        },
+        "MATCHED_RATE" : {
+          "description" : "Matched Rate",
+          "type" : "string",
+          "maxLength" : 8
+        },
+        "LASTACC_TYPECHANGE" : {
+          "description" : "Last account type change",
+          "type" : "string",
+          "maxLength" : 10
+        },
+        "OD_INT" : {
+          "description" : "OD_INT",
+          "type" : "string",
+          "maxLength" : 20
+        },
+        "AVL_BAL" : {
+          "description" : "Available Balance",
+          "type" : "string",
+          "maxLength" : 21
+        },
+        "COMP_FREQ" : {
+          "description" : "COMP_FREQ",
+          "type" : "string",
+          "maximum" : 3
+        },
+        "COMP_AMT" : {
+          "format" : "date",
+          "type" : "string",
+          "description" : "COMP_AMT",
+          "maxLength" : 19
+        },
+        "COMP_SOP_DT" : {
+          "description" : "COMP_SOP_DT",
+          "type" : "string",
+          "maxLength" : 10
+        },
+        "COMP_EOP_DT" : {
+          "description" : "COMP_EOP_DT",
+          "type" : "string",
+          "maxLength" : 10
+        },
+        "INT_MONTHLY_BASIS" : {
+          "description" : "INT_MONTHLY_BASIS",
+          "type" : "string",
+          "maxLength" : 1
+        },
+        "RENEWAL_DATE" : {
+          "description" : "RENEWAL_DATE",
+          "type" : "string",
+          "maxLength" : 8
+        }
+      },
+      "required" : [ "RESPONSE_DATE", "REQUEST_REFERENCE_NUMBER", "RESPONSE_STATUS" ]
+    }
+  }
 }
