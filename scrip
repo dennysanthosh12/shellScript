@@ -1,14 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
-
-CREATE COMPUTE MODULE postVote_Compute2
-	CREATE FUNCTION Main() RETURNS BOOLEAN
-	BEGIN
-		CALL CopyMessageHeaders();
-		RETURN TRUE;
-	END;
-
-	CREATE PROCEDURE CopyEntireMessage() BEGIN
-		SET OutputRoot.XMLNSC.input.Name = InputRoot.JSON.Data.Name;
-		SET OutputRoot.XMLNSC.input.Age = InputRoot.JSON.Data.Age;
-	END;
-END MODULE;
+    <xsd:element name="input">
+    	<xsd:complexType>
+    		<xsd:sequence>
+    			<xsd:element name="Name" minOccurs="1" maxOccurs="1">
+    				<xsd:simpleType>
+    					<xsd:restriction base="xsd:string">
+    						<xsd:minLength value="1"></xsd:minLength>
+    						<xsd:maxLength value="100"></xsd:maxLength>
+    						<xsd:pattern value="^[A-Za-z]+[A-Za-z ]*"></xsd:pattern>
+    					</xsd:restriction>
+    				</xsd:simpleType>
+    			</xsd:element>
+    			<xsd:element name="Age" minOccurs="1" maxOccurs="1">
+    				<xsd:simpleType>
+    					<xsd:restriction base="xsd:int">
+    						<xsd:minExclusive value="1"></xsd:minExclusive>
+    						<xsd:maxExclusive value="150"></xsd:maxExclusive>
+    						<xsd:pattern value="[0-9]+"></xsd:pattern>
+    					</xsd:restriction>
+    				</xsd:simpleType>
+    			</xsd:element>
+    		</xsd:sequence>
+    	</xsd:complexType></xsd:element>
+</xsd:schema>
