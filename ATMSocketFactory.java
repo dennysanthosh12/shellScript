@@ -1,4 +1,4 @@
-/* Decompiler 556ms, total 1631ms, lines 578 */
+/* Decompiler 394ms, total 993ms, lines 579 */
 package com.tcs.sbi;
 
 import com.ibm.mq.MQException;
@@ -143,80 +143,81 @@ public class ATMSocketFactory {
             writelogger.put("REQUEST_TIMESTAMP ", getTimeStamp());
             writelogger.put("REQUEST ", request);
          } else {
-            String var9;
             try {
-               writelogger.put("LOCK IS", "Applied");
-               writelogger.put("DESTINATION_ADDRESS", IP + " " + PORT);
-               String reqheader;
-               if (encFlag.equalsIgnoreCase("Y")) {
-                  System.out.println("Inside write socket try encflag if");
-                  reqheader = requestbyte(request);
-                  System.out.println("inside ENCFLAG Y:" + reqheader);
-                  if (reqheader.substring(0, 5).equalsIgnoreCase("ERROR")) {
-                     writelogger.put("Exception", reqheader.substring(5));
-                     System.out.println("Inside write socket try encflag if error");
-                  }
-               } else {
-                  System.out.println("Inside write socket try encflag else:" + request.substring(12, 16));
-                  reqheader = null;
-                  String IsoToencrypt = null;
-                  if (request.substring(12, 16).equalsIgnoreCase("0800")) {
-                     System.out.println("REQ MTI:" + request.substring(12, 16));
-                     request = "000000" + request;
-                     reqheader = request.substring(0, 22);
-                     IsoToencrypt = request.substring(22);
-                     System.out.println("inside 800");
+               String var9;
+               try {
+                  writelogger.put("LOCK IS", "Applied");
+                  writelogger.put("DESTINATION_ADDRESS", IP + " " + PORT);
+                  String reqheader;
+                  if (encFlag.equalsIgnoreCase("Y")) {
+                     System.out.println("Inside write socket try encflag if");
+                     reqheader = requestbyte(request);
+                     System.out.println("inside ENCFLAG Y:" + reqheader);
+                     if (reqheader.substring(0, 5).equalsIgnoreCase("ERROR")) {
+                        writelogger.put("Exception", reqheader.substring(5));
+                        System.out.println("Inside write socket try encflag if error");
+                     }
                   } else {
-                     reqheader = request.substring(0, 16);
-                     IsoToencrypt = request.substring(20);
-                     System.out.println("else:" + request);
+                     System.out.println("Inside write socket try encflag else:" + request.substring(12, 16));
+                     reqheader = null;
+                     String IsoToencrypt = null;
+                     if (request.substring(12, 16).equalsIgnoreCase("0800")) {
+                        System.out.println("REQ MTI:" + request.substring(12, 16));
+                        request = "000000" + request;
+                        reqheader = request.substring(0, 22);
+                        IsoToencrypt = request.substring(22);
+                        System.out.println("inside 800");
+                     } else {
+                        reqheader = request.substring(0, 16);
+                        IsoToencrypt = request.substring(20);
+                        System.out.println("else:" + request);
+                     }
+
+                     byte[] byteIso = ISOPackager.IsoFormation("req", IsoToencrypt.getBytes());
+                     String msg = new String(byteIso);
+                     System.out.println("msg" + msg);
+                     if (msg.substring(0, 5).equalsIgnoreCase("ERROR")) {
+                        var9 = msg;
+                        return var9;
+                     }
+
+                     byte[] headerByte = reqheader.getBytes();
+                     byteIso = ISOPackager.byteAppend(headerByte, byteIso);
+                     byte[] requestwithHeader = getHeaderBytes(byteIso);
+                     writelogger.put("REQUEST_TO_ATM", Base64.getEncoder().encodeToString(requestwithHeader));
+                     socket.getOutputStream().write(requestwithHeader);
+                     socket.getOutputStream().flush();
+                     writelogger.put("REQUEST_TIMESTAMP", getTimeStamp());
                   }
 
-                  byte[] byteIso = ISOPackager.IsoFormation("req", IsoToencrypt.getBytes());
-                  String msg = new String(byteIso);
-                  System.out.println("msg" + msg);
-                  if (msg.substring(0, 5).equalsIgnoreCase("ERROR")) {
-                     var9 = msg;
-                     return var9;
+                  System.out.println("readerOn:" + readerOn);
+                  if (readerOn) {
+                     System.out.println("inside if readerOn");
+                     writelogger.put("ASYNCHRONOUS_CALL_TO", "SOCKET_READER");
+                     (new Thread(new Runnable() {
+                        public void run() {
+                           ATMSocketFactory.readsocket();
+                        }
+                     })).start();
+                  } else {
+                     (new Thread(new Runnable() {
+                        public void run() {
+                           ATMSocketFactory.readsocket();
+                        }
+                     })).start();
                   }
 
-                  byte[] headerByte = reqheader.getBytes();
-                  byteIso = ISOPackager.byteAppend(headerByte, byteIso);
-                  byte[] requestwithHeader = getHeaderBytes(byteIso);
-                  writelogger.put("REQUEST_TO_ATM", Base64.getEncoder().encodeToString(requestwithHeader));
-                  socket.getOutputStream().write(requestwithHeader);
-                  socket.getOutputStream().flush();
-                  writelogger.put("REQUEST_TIMESTAMP", getTimeStamp());
+                  return writelogger.toString();
+               } catch (Exception var15) {
+                  writelogger.put("INSIDE_LOCKER_TRY_CATCH", "WRITE_SOCKET");
+                  writelogger.put("Exception", var15.toString());
+                  var9 = writelogger.toString();
+                  return var9;
                }
-
-               System.out.println("readerOn:" + readerOn);
-               if (readerOn) {
-                  System.out.println("inside if readerOn");
-                  writelogger.put("ASYNCHRONOUS_CALL_TO", "SOCKET_READER");
-                  (new Thread(new Runnable() {
-                     public void run() {
-                        ATMSocketFactory.readsocket();
-                     }
-                  })).start();
-               } else {
-                  (new Thread(new Runnable() {
-                     public void run() {
-                        ATMSocketFactory.readsocket();
-                     }
-                  })).start();
-               }
-
-               return writelogger.toString();
-            } catch (Exception var15) {
-               writelogger.put("INSIDE_LOCKER_TRY_CATCH", "WRITE_SOCKET");
-               writelogger.put("Exception", var15.toString());
-               var9 = writelogger.toString();
             } finally {
                writeLock.unlock();
                writelogger.put("LOCKER", "Unlocked");
             }
-
-            return var9;
          }
       } catch (InterruptedException | JSONException var17) {
          reqheader = var17;
