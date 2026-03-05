@@ -1,12 +1,15 @@
-sudo nmcli connection modify "System eth0" ipv4.addresses 10.177.44.80/24
-sudo nmcli connection modify "System eth0" ipv4.gateway 10.177.44.1
-sudo nmcli connection modify "System eth0" ipv4.method manual
-sudo nmcli connection down "System eth0"
-sudo nmcli connection up "System eth0"
-
-sudo hostnamectl set-hostname EISUATEXP80
-sudo rm -f /etc/machine-id
-sudo systemd-machine-id-setup
-sudo rm -f /etc/ssh/ssh_host_*
-sudo ssh-keygen -A
-sudo systemctl restart sshd
+Mar  5 16:58:55 pre-prod-exp14 sshd[29084]: Accepted password for eisuser from 10.188.28.187 port 57706 ssh2
+Mar  5 16:58:55 pre-prod-exp14 sshd[29084]: Accepted password for eisuser from 10.188.28.187 port 57706 ssh2
+Mar  5 16:58:55 pre-prod-exp14 systemd-logind[1100]: New session 1683 of user eisuser.
+Mar  5 16:58:55 pre-prod-exp14 sshd[29084]: pam_unix(sshd:session): session opened for user eisuser(uid=1001) by eisuser(uid=0)
+Mar  5 16:58:55 pre-prod-exp14 sshd[29084]: pam_unix(sshd:session): session opened for user eisuser(uid=1001) by eisuser(uid=0)
+Mar  5 16:59:00 pre-prod-exp14 unix_chkpwd[29451]: password check failed for user (root)
+Mar  5 16:59:00 pre-prod-exp14 unix_chkpwd[29451]: password check failed for user (root)
+Mar  5 16:59:00 pre-prod-exp14 su[29412]: pam_unix(su:auth): authentication failure; logname=eisuser uid=1001 euid=0 tty=/dev/pts/1 ruser=eisuser rhost=  user=root
+Mar  5 16:59:00 pre-prod-exp14 su[29412]: pam_unix(su:auth): authentication failure; logname=eisuser uid=1001 euid=0 tty=/dev/pts/1 ruser=eisuser rhost=  user=root
+Mar  5 16:59:03 pre-prod-exp14 su[29412]: FAILED SU (to root) eisuser on pts/1
+Mar  5 16:59:04 pre-prod-exp14 sshd[29136]: Received disconnect from 10.188.28.187 port 57706:11: Session closed
+Mar  5 16:59:04 pre-prod-exp14 sshd[29136]: Received disconnect from 10.188.28.187 port 57706:11: Session closed
+Mar  5 16:59:04 pre-prod-exp14 sshd[29136]: Disconnected from user eisuser 10.188.28.187 port 57706
+Mar  5 16:59:04 pre-prod-exp14 sshd[29084]: pam_unix(sshd:session): session closed for user eisuser
+Mar  5 16:59:04 pre-prod-exp14 sshd[29136]: Disconnected from user eisuser 10.188.28.187 port 57706
