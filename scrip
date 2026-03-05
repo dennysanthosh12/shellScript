@@ -1,15 +1,151 @@
-Mar  5 16:58:55 pre-prod-exp14 sshd[29084]: Accepted password for eisuser from 10.188.28.187 port 57706 ssh2
-Mar  5 16:58:55 pre-prod-exp14 sshd[29084]: Accepted password for eisuser from 10.188.28.187 port 57706 ssh2
-Mar  5 16:58:55 pre-prod-exp14 systemd-logind[1100]: New session 1683 of user eisuser.
-Mar  5 16:58:55 pre-prod-exp14 sshd[29084]: pam_unix(sshd:session): session opened for user eisuser(uid=1001) by eisuser(uid=0)
-Mar  5 16:58:55 pre-prod-exp14 sshd[29084]: pam_unix(sshd:session): session opened for user eisuser(uid=1001) by eisuser(uid=0)
-Mar  5 16:59:00 pre-prod-exp14 unix_chkpwd[29451]: password check failed for user (root)
-Mar  5 16:59:00 pre-prod-exp14 unix_chkpwd[29451]: password check failed for user (root)
-Mar  5 16:59:00 pre-prod-exp14 su[29412]: pam_unix(su:auth): authentication failure; logname=eisuser uid=1001 euid=0 tty=/dev/pts/1 ruser=eisuser rhost=  user=root
-Mar  5 16:59:00 pre-prod-exp14 su[29412]: pam_unix(su:auth): authentication failure; logname=eisuser uid=1001 euid=0 tty=/dev/pts/1 ruser=eisuser rhost=  user=root
-Mar  5 16:59:03 pre-prod-exp14 su[29412]: FAILED SU (to root) eisuser on pts/1
-Mar  5 16:59:04 pre-prod-exp14 sshd[29136]: Received disconnect from 10.188.28.187 port 57706:11: Session closed
-Mar  5 16:59:04 pre-prod-exp14 sshd[29136]: Received disconnect from 10.188.28.187 port 57706:11: Session closed
-Mar  5 16:59:04 pre-prod-exp14 sshd[29136]: Disconnected from user eisuser 10.188.28.187 port 57706
-Mar  5 16:59:04 pre-prod-exp14 sshd[29084]: pam_unix(sshd:session): session closed for user eisuser
-Mar  5 16:59:04 pre-prod-exp14 sshd[29136]: Disconnected from user eisuser 10.188.28.187 port 57706
+05/03/2026 17:52 : Password change process initiated from 10.188.28.187 server.
+05/03/2026 17:52 : Verifying Pre Password Change Action(s) On Current Service.....
+05/03/2026 17:52 : No Pre Password Change Action(s) Available.....
+05/03/2026 17:52 : Password change process initialized.
+05/03/2026 17:52 : Connecting to server 10.177.44.115@root:pre-prod-exp14.
+05/03/2026 17:52 : Connected to server.
+05/03/2026 17:52 : Lock to console user validating.
+05/03/2026 17:52 : Lock to console user validated.
+05/03/2026 17:52 : Changing password.
+05/03/2026 17:52 : User login for SU user (root).
+05/03/2026 17:53 : Entering New Password.
+05/03/2026 17:53 : Retype New Password.
+05/03/2026 17:53 : APC Error 11 : Did not received Success response from Server
+05/03/2026 17:53 : APC Info : Unable to get valid response. In this case password may be updated on server but not valuted in ARCON PAM
+05/03/2026 17:53 : ****** Terminal Details Start : ******
+05/03/2026 17:53 : Terminal Details : Web console: https://pre-prod-exp14:9090/ or https://10.177.44.115:9090/
+05/03/2026 17:53 : Terminal Details : Register this system with Red Hat Insights: rhc connect
+05/03/2026 17:53 : Terminal Details : Example:
+05/03/2026 17:53 : Terminal Details : # rhc connect --activation-key <key> --organization <org>
+05/03/2026 17:53 : Terminal Details : The rhc client and Red Hat Insights will enable analytics and additional
+05/03/2026 17:53 : Terminal Details : management capabilities on your system.
+05/03/2026 17:53 : Terminal Details : View your connected systems at https://console.redhat.com/insights
+05/03/2026 17:53 : Terminal Details : You can learn more about how to register your system
+05/03/2026 17:53 : Terminal Details : using rhc at https://red.ht/registration
+05/03/2026 17:53 : Terminal Details : Last login: Thu Mar 5 17:51:07 2026 from 10.177.44.58
+05/03/2026 17:53 : Terminal Details : MQSI 13.0.5.0
+05/03/2026 17:53 : Terminal Details : /opt/IBM/ace/server
+05/03/2026 17:53 : Terminal Details : mqsiprofile repetition disallowed
+05/03/2026 17:53 : Terminal Details : [eisuser@pre-prod-exp14 ~]$ PS1=">"
+05/03/2026 17:53 : Terminal Details : >LANG=en_US.UTF-8 uname -a
+05/03/2026 17:53 : Terminal Details : Linux pre-prod-exp14 5.14.0-611.30.1.el9_7.x86_64 #1 SMP PREEMPT_DYNAMIC Thu Jan 29 05:25:20 EST 2026 x86_64 x86_64 x86_64 GNU/Linux
+05/03/2026 17:53 : Terminal Details : >
+05/03/2026 17:53 : Terminal Details : >LANG=en_US.UTF-8 date
+05/03/2026 17:53 : Terminal Details : Thu Mar 5 17:52:57 IST 2026
+05/03/2026 17:53 : Terminal Details : >LANG=en_US.UTF-8 su root
+05/03/2026 17:53 : Terminal Details : Password:
+05/03/2026 17:53 : Terminal Details : [root@pre-prod-exp14 eisuser]# LANG=en_US.UTF-8 passwd
+05/03/2026 17:53 : Terminal Details : Changing ****** for user root.
+05/03/2026 17:53 : Terminal Details : New ******:
+05/03/2026 17:53 : Terminal Details : Retype new ******:
+05/03/2026 17:53 : Terminal Details : passwd: all authentication tokens updated successfully.
+05/03/2026 17:53 : Terminal Details : [root@pre-prod-exp14 eisuser]# ******
+05/03/2026 17:53 : Terminal Details : bash: ******: command not found
+05/03/2026 17:53 : Terminal Details : [root@pre-prod-exp14 eisuser]#
+05/03/2026 17:53 : ****** Terminal Details End ******
+
+
+
+
+
+Mar  5 17:30:30 pre-prod-exp14 sshd[103713]: pam_unix(sshd:session): session opened for user eisuser(uid=1001) by eisuser(uid=0)
+Mar  5 17:30:34 pre-prod-exp14 sudo[103989]: eisuser : TTY=pts/0 ; PWD=/home/eisuser ; USER=root ; COMMAND=/bin/su -
+Mar  5 17:30:34 pre-prod-exp14 sudo[103989]: eisuser : TTY=pts/0 ; PWD=/home/eisuser ; USER=root ; COMMAND=/bin/su -
+Mar  5 17:30:34 pre-prod-exp14 sudo[103989]: pam_unix(sudo:session): session opened for user root(uid=0) by eisuser(uid=1001)
+Mar  5 17:30:34 pre-prod-exp14 sudo[103989]: pam_unix(sudo:session): session opened for user root(uid=0) by eisuser(uid=1001)
+Mar  5 17:30:34 pre-prod-exp14 su[103991]: (to root) root on pts/0
+Mar  5 17:30:34 pre-prod-exp14 su[103991]: pam_unix(su-l:session): session opened for user root(uid=0) by eisuser(uid=0)
+Mar  5 17:30:34 pre-prod-exp14 su[103991]: pam_unix(su-l:session): session opened for user root(uid=0) by eisuser(uid=0)
+Mar  5 17:32:00 pre-prod-exp14 passwd[107184]: pam_unix(passwd:chauthtok): password changed for root
+Mar  5 17:32:00 pre-prod-exp14 passwd[107184]: pam_unix(passwd:chauthtok): password changed for root
+Mar  5 17:33:55 pre-prod-exp14 sshd[111878]: Accepted password for eisuser from 10.188.28.187 port 58993 ssh2
+Mar  5 17:33:55 pre-prod-exp14 sshd[111878]: Accepted password for eisuser from 10.188.28.187 port 58993 ssh2
+Mar  5 17:33:55 pre-prod-exp14 systemd-logind[1100]: New session 1690 of user eisuser.
+Mar  5 17:33:55 pre-prod-exp14 sshd[111878]: pam_unix(sshd:session): session opened for user eisuser(uid=1001) by eisuser(uid=0)
+Mar  5 17:33:55 pre-prod-exp14 sshd[111878]: pam_unix(sshd:session): session opened for user eisuser(uid=1001) by eisuser(uid=0)
+Mar  5 17:34:00 pre-prod-exp14 su[112196]: (to root) eisuser on pts/1
+Mar  5 17:34:00 pre-prod-exp14 su[112196]: pam_unix(su:session): session opened for user root(uid=0) by eisuser(uid=1001)
+Mar  5 17:34:00 pre-prod-exp14 su[112196]: pam_unix(su:session): session opened for user root(uid=0) by eisuser(uid=1001)
+Mar  5 17:34:03 pre-prod-exp14 passwd[112299]: pam_unix(passwd:chauthtok): password changed for root
+Mar  5 17:34:03 pre-prod-exp14 passwd[112299]: pam_unix(passwd:chauthtok): password changed for root
+Mar  5 17:34:06 pre-prod-exp14 sshd[111901]: Received disconnect from 10.188.28.187 port 58993:11: Session closed
+Mar  5 17:34:06 pre-prod-exp14 sshd[111901]: Received disconnect from 10.188.28.187 port 58993:11: Session closed
+Mar  5 17:34:06 pre-prod-exp14 sshd[111901]: Disconnected from user eisuser 10.188.28.187 port 58993
+Mar  5 17:34:06 pre-prod-exp14 sshd[111878]: pam_unix(sshd:session): session closed for user eisuser
+Mar  5 17:34:06 pre-prod-exp14 sshd[111901]: Disconnected from user eisuser 10.188.28.187 port 58993
+Mar  5 17:34:06 pre-prod-exp14 sshd[111878]: pam_unix(sshd:session): session closed for user eisuser
+Mar  5 17:34:06 pre-prod-exp14 systemd-logind[1100]: Session 1690 logged out. Waiting for processes to exit.
+Mar  5 17:34:06 pre-prod-exp14 su[112196]: pam_unix(su:session): session closed for user root
+Mar  5 17:34:06 pre-prod-exp14 su[112196]: pam_unix(su:session): session closed for user root
+Mar  5 17:34:06 pre-prod-exp14 systemd-logind[1100]: Removed session 1690.
+Mar  5 17:34:55 pre-prod-exp14 su[103991]: pam_unix(su-l:session): session closed for user root
+Mar  5 17:34:55 pre-prod-exp14 su[103991]: pam_unix(su-l:session): session closed for user root
+Mar  5 17:34:55 pre-prod-exp14 sudo[103989]: pam_unix(sudo:session): session closed for user root
+Mar  5 17:34:55 pre-prod-exp14 sudo[103989]: pam_unix(sudo:session): session closed for user root
+Mar  5 17:34:56 pre-prod-exp14 sshd[103733]: Received disconnect from 10.177.44.58 port 36772:11: disconnected by user
+Mar  5 17:34:56 pre-prod-exp14 sshd[103733]: Received disconnect from 10.177.44.58 port 36772:11: disconnected by user
+Mar  5 17:34:56 pre-prod-exp14 sshd[103733]: Disconnected from user eisuser 10.177.44.58 port 36772
+Mar  5 17:34:56 pre-prod-exp14 sshd[103713]: pam_unix(sshd:session): session closed for user eisuser
+Mar  5 17:34:56 pre-prod-exp14 sshd[103733]: Disconnected from user eisuser 10.177.44.58 port 36772
+Mar  5 17:34:56 pre-prod-exp14 sshd[103713]: pam_unix(sshd:session): session closed for user eisuser
+Mar  5 17:34:56 pre-prod-exp14 systemd-logind[1100]: Session 1689 logged out. Waiting for processes to exit.
+Mar  5 17:34:56 pre-prod-exp14 systemd-logind[1100]: Removed session 1689.
+Mar  5 17:44:53 pre-prod-exp14 sshd[137460]: Accepted password for eisuser from 10.188.28.187 port 59301 ssh2
+Mar  5 17:44:53 pre-prod-exp14 sshd[137460]: Accepted password for eisuser from 10.188.28.187 port 59301 ssh2
+Mar  5 17:44:53 pre-prod-exp14 systemd-logind[1100]: New session 1691 of user eisuser.
+Mar  5 17:44:53 pre-prod-exp14 sshd[137460]: pam_unix(sshd:session): session opened for user eisuser(uid=1001) by eisuser(uid=0)
+Mar  5 17:44:53 pre-prod-exp14 sshd[137460]: pam_unix(sshd:session): session opened for user eisuser(uid=1001) by eisuser(uid=0)
+Mar  5 17:44:59 pre-prod-exp14 unix_chkpwd[137844]: password check failed for user (root)
+Mar  5 17:44:59 pre-prod-exp14 unix_chkpwd[137844]: password check failed for user (root)
+Mar  5 17:44:59 pre-prod-exp14 su[137797]: pam_unix(su:auth): authentication failure; logname=eisuser uid=1001 euid=0 tty=/dev/pts/0 ruser=eisuser rhost=  user=root
+Mar  5 17:44:59 pre-prod-exp14 su[137797]: pam_unix(su:auth): authentication failure; logname=eisuser uid=1001 euid=0 tty=/dev/pts/0 ruser=eisuser rhost=  user=root
+Mar  5 17:45:00 pre-prod-exp14 su[137797]: FAILED SU (to root) eisuser on pts/0
+Mar  5 17:45:02 pre-prod-exp14 sshd[137511]: Received disconnect from 10.188.28.187 port 59301:11: Session closed
+Mar  5 17:45:02 pre-prod-exp14 sshd[137511]: Received disconnect from 10.188.28.187 port 59301:11: Session closed
+Mar  5 17:45:02 pre-prod-exp14 sshd[137511]: Disconnected from user eisuser 10.188.28.187 port 59301
+Mar  5 17:45:02 pre-prod-exp14 sshd[137511]: Disconnected from user eisuser 10.188.28.187 port 59301
+Mar  5 17:45:02 pre-prod-exp14 sshd[137460]: pam_unix(sshd:session): session closed for user eisuser
+Mar  5 17:45:02 pre-prod-exp14 sshd[137460]: pam_unix(sshd:session): session closed for user eisuser
+Mar  5 17:45:02 pre-prod-exp14 systemd-logind[1100]: Session 1691 logged out. Waiting for processes to exit.
+Mar  5 17:45:02 pre-prod-exp14 systemd-logind[1100]: Removed session 1691.
+Mar  5 17:49:54 pre-prod-exp14 sshd[149502]: Received disconnect from 10.188.28.187 port 59533:11: Session closed [preauth]
+Mar  5 17:49:54 pre-prod-exp14 sshd[149502]: Received disconnect from 10.188.28.187 port 59533:11: Session closed [preauth]
+Mar  5 17:49:54 pre-prod-exp14 sshd[149502]: Disconnected from 10.188.28.187 port 59533 [preauth]
+Mar  5 17:49:54 pre-prod-exp14 sshd[149502]: Disconnected from 10.188.28.187 port 59533 [preauth]
+Mar  5 17:50:55 pre-prod-exp14 sshd[151767]: Connection closed by authenticating user eisuser 10.177.44.50 port 52990 [preauth]
+Mar  5 17:50:55 pre-prod-exp14 sshd[151767]: Connection closed by authenticating user eisuser 10.177.44.50 port 52990 [preauth]
+Mar  5 17:51:07 pre-prod-exp14 sshd[152341]: Accepted publickey for eisuser from 10.177.44.58 port 40306 ssh2: RSA SHA256:IdWPp+ci7gaWgWIAF3Q2qcl/WNSJW16G+H0zHuB625A
+Mar  5 17:51:07 pre-prod-exp14 sshd[152341]: Accepted publickey for eisuser from 10.177.44.58 port 40306 ssh2: RSA SHA256:IdWPp+ci7gaWgWIAF3Q2qcl/WNSJW16G+H0zHuB625A
+Mar  5 17:51:07 pre-prod-exp14 systemd-logind[1100]: New session 1692 of user eisuser.
+Mar  5 17:51:07 pre-prod-exp14 sshd[152341]: pam_unix(sshd:session): session opened for user eisuser(uid=1001) by eisuser(uid=0)
+Mar  5 17:51:07 pre-prod-exp14 sshd[152341]: pam_unix(sshd:session): session opened for user eisuser(uid=1001) by eisuser(uid=0)
+Mar  5 17:51:10 pre-prod-exp14 sudo[152594]: eisuser : TTY=pts/0 ; PWD=/home/eisuser ; USER=root ; COMMAND=/bin/su -
+Mar  5 17:51:10 pre-prod-exp14 sudo[152594]: eisuser : TTY=pts/0 ; PWD=/home/eisuser ; USER=root ; COMMAND=/bin/su -
+Mar  5 17:51:10 pre-prod-exp14 sudo[152594]: pam_unix(sudo:session): session opened for user root(uid=0) by eisuser(uid=1001)
+Mar  5 17:51:10 pre-prod-exp14 sudo[152594]: pam_unix(sudo:session): session opened for user root(uid=0) by eisuser(uid=1001)
+Mar  5 17:51:10 pre-prod-exp14 su[152596]: (to root) root on pts/0
+Mar  5 17:51:10 pre-prod-exp14 su[152596]: pam_unix(su-l:session): session opened for user root(uid=0) by eisuser(uid=0)
+Mar  5 17:51:10 pre-prod-exp14 su[152596]: pam_unix(su-l:session): session opened for user root(uid=0) by eisuser(uid=0)
+Mar  5 17:51:26 pre-prod-exp14 passwd[152888]: pam_unix(passwd:chauthtok): password changed for root
+Mar  5 17:51:26 pre-prod-exp14 passwd[152888]: pam_unix(passwd:chauthtok): password changed for root
+Mar  5 17:52:53 pre-prod-exp14 sshd[156654]: Accepted password for eisuser from 10.188.28.187 port 59642 ssh2
+Mar  5 17:52:53 pre-prod-exp14 sshd[156654]: Accepted password for eisuser from 10.188.28.187 port 59642 ssh2
+Mar  5 17:52:53 pre-prod-exp14 systemd-logind[1100]: New session 1693 of user eisuser.
+Mar  5 17:52:53 pre-prod-exp14 sshd[156654]: pam_unix(sshd:session): session opened for user eisuser(uid=1001) by eisuser(uid=0)
+Mar  5 17:52:53 pre-prod-exp14 sshd[156654]: pam_unix(sshd:session): session opened for user eisuser(uid=1001) by eisuser(uid=0)
+Mar  5 17:52:59 pre-prod-exp14 su[156955]: (to root) eisuser on pts/1
+Mar  5 17:52:59 pre-prod-exp14 su[156955]: pam_unix(su:session): session opened for user root(uid=0) by eisuser(uid=1001)
+Mar  5 17:52:59 pre-prod-exp14 su[156955]: pam_unix(su:session): session opened for user root(uid=0) by eisuser(uid=1001)
+Mar  5 17:53:02 pre-prod-exp14 passwd[157060]: pam_unix(passwd:chauthtok): password changed for root
+Mar  5 17:53:02 pre-prod-exp14 passwd[157060]: pam_unix(passwd:chauthtok): password changed for root
+Mar  5 17:53:05 pre-prod-exp14 sshd[156671]: Received disconnect from 10.188.28.187 port 59642:11: Session closed
+Mar  5 17:53:05 pre-prod-exp14 sshd[156671]: Received disconnect from 10.188.28.187 port 59642:11: Session closed
+Mar  5 17:53:05 pre-prod-exp14 sshd[156671]: Disconnected from user eisuser 10.188.28.187 port 59642
+Mar  5 17:53:05 pre-prod-exp14 sshd[156671]: Disconnected from user eisuser 10.188.28.187 port 59642
+Mar  5 17:53:05 pre-prod-exp14 sshd[156654]: pam_unix(sshd:session): session closed for user eisuser
+Mar  5 17:53:05 pre-prod-exp14 sshd[156654]: pam_unix(sshd:session): session closed for user eisuser
+Mar  5 17:53:05 pre-prod-exp14 systemd-logind[1100]: Session 1693 logged out. Waiting for processes to exit.
+Mar  5 17:53:05 pre-prod-exp14 su[156955]: pam_unix(su:session): session closed for user root
+Mar  5 17:53:05 pre-prod-exp14 su[156955]: pam_unix(su:session): session closed for user root
+Mar  5 17:53:05 pre-prod-exp14 systemd-logind[1100]: Removed session 1693.
+
