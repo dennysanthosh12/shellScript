@@ -1,39 +1,8 @@
-ansible-playbook -i hosts.ini SCD14.yml -t FILE --limit 10.177.44.180
-ERROR! conflicting action statements: ansible.builtin.file, tag
+Create /etc/audit/rules.d/MAC-policy.rules with rules for /etc/selinux and /usr/share/selinux; reload auditd.
 
-The error appears to be in '/home/eisuser/Denny/SCD14.yml': line 8, column 7, but may
-be elsewhere in the file depending on the exact syntax problem.
+Ensure MAC policy directories are audited
+Log writes/attribute changes to SELinux policy directories.
+sudo cat /etc/audit/rules.d/MAC-policy.rules
+-w /etc/apparmor/ -p wa -k MAC-policy
 
-The offending line appears to be:
-
-  tasks:
-    - name: 3.1  Set permissions and ownership for multiple files
-      ^ here
-[eisuser@ansiblecontrolnodeDenny]$ cat SCD14.yml
----
-- name: LINUX_SCD
-  hosts: 'Server_Group_3'
-  become: true
-  gather_facts: no
-
-  tasks:
-    - name: 3.1  Set permissions and ownership for multiple files
-      ansible.builtin.file:
-        path: "{{ item.path }}"
-        owner: "{{ item.owner }}"
-        group: "{{ item.group }}"
-        mode: "{{ item.mode }}"
-        recurse: true
-      loop:
-        - { path: "/etc/passwd", owner: "root", group: "root", mode: "0644" }
-        - { path: "/etc/group", owner: "root", group: "root", mode: "0644" }
-        - { path: "/etc/shadow", owner: "root", group: "root", mode: "0000" }
-        - { path: "/etc/gshadow", owner: "root", group: "root", mode: "0000" }
-      register: output_file
-      tag:
-        - FILE
-
-    - name: Output of Set permissions and ownership for multiple file
-      debug:
-        msg: "{{ output_file }}"
-      tag: FILE
+-w /etc/apparmor.d/ -p wa -k MAC-policy
