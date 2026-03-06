@@ -1,8 +1,12 @@
-Create /etc/audit/rules.d/MAC-policy.rules with rules for /etc/selinux and /usr/share/selinux; reload auditd.
+- name: Configure MAC policy audit rules
+  copy:
+    dest: /etc/audit/rules.d/MAC-policy.rules
+    content: |
+      -w /etc/selinux/ -p wa -k MAC-policy
+      -w /usr/share/selinux/ -p wa -k MAC-policy
+    owner: root
+    group: root
+    mode: "0640"
 
-Ensure MAC policy directories are audited
-Log writes/attribute changes to SELinux policy directories.
-sudo cat /etc/audit/rules.d/MAC-policy.rules
--w /etc/apparmor/ -p wa -k MAC-policy
-
--w /etc/apparmor.d/ -p wa -k MAC-policy
+- name: Reload audit rules
+  command: augenrules --load
