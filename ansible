@@ -1,11 +1,39 @@
+ansible-playbook -i hosts.ini SCD14.yml -t FILE --limit 10.177.44.180
+ERROR! conflicting action statements: ansible.builtin.file, tag
 
-- name: Set permissions and ownership for multiple files
-  ansible.builtin.file:
-    path: "{{ item.path }}"
-    owner: "{{ item.owner }}"
-    group: "{{ item.group }}"
-    mode: "{{ item.mode }}"
-  loop:
-    - { path: "/etc/myapp/config.conf", owner: "myuser", group: "mygroup", mode: "0644" }
-    - { path: "/var/log/myapp.log", owner: "appuser", group: "appgroup", mode: "0755" }
-    - { path: "/opt/myapp/script.sh", owner: "root", group: "root", mode: "0700" }
+The error appears to be in '/home/eisuser/Denny/SCD14.yml': line 8, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+  tasks:
+    - name: 3.1  Set permissions and ownership for multiple files
+      ^ here
+[eisuser@ansiblecontrolnodeDenny]$ cat SCD14.yml
+---
+- name: LINUX_SCD
+  hosts: 'Server_Group_3'
+  become: true
+  gather_facts: no
+
+  tasks:
+    - name: 3.1  Set permissions and ownership for multiple files
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+        mode: "{{ item.mode }}"
+        recurse: true
+      loop:
+        - { path: "/etc/passwd", owner: "root", group: "root", mode: "0644" }
+        - { path: "/etc/group", owner: "root", group: "root", mode: "0644" }
+        - { path: "/etc/shadow", owner: "root", group: "root", mode: "0000" }
+        - { path: "/etc/gshadow", owner: "root", group: "root", mode: "0000" }
+      register: output_file
+      tag:
+        - FILE
+
+    - name: Output of Set permissions and ownership for multiple file
+      debug:
+        msg: "{{ output_file }}"
+      tag: FILE
