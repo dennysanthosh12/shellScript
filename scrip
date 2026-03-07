@@ -1,24 +1,20 @@
-- name: 2.1.1 Find all *.conf file in /etc/modprobe.d
-      ansible.builtin.find:
-        path: /etc/modprobe.d
-        patterns: "*.conf"
-      register: outputfiles
-      tags:
-        - AUTH
-- name: 2.1.1 Ensure mounting of the unused filesystems is disabled and separate partitions are created.
-      ansible.builtin.lineinfile:
-        path: "{{ item.path }}"
-        line: 'install fs /bin/true'
-        regex: '^install\s+fs\s+/bin/true'
-        state: present
-      loop: "{{ outputfiles.files }}"
-      loop_control:
-        label: "{{ item.path }}"
-      register: output1
-      tags:
-        - AUTH
+- name: 2.1.1 Find all *.conf files in /etc/modprobe.d
+  ansible.builtin.find:
+    paths: /etc/modprobe.d
+    patterns: "*.conf"
+  register: outputfiles
+  tags:
+    - AUTH
 
-
-
-
-Add 'install dccp/sctp/rds/tipc /bin/true' lines to a .conf in /etc/modprobe.d/
+- name: Ensure unused filesystem modules are disabled
+  ansible.builtin.lineinfile:
+    path: "{{ item.0.path }}"
+    line: "install {{ item.1 }} /bin/true"
+    regexp: "^install\\s+{{ item.1 }}\\s+/bin/true"
+    state: present
+  loop: "{{ outputfiles.files | product(['dccp','sctp','rds','tipc']) | list }}"
+  loop_control:
+    label: "{{ item.0.path }} -> {{ item.1 }}"
+  register: output1
+  tags:
+    - AUTH
