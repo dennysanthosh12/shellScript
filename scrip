@@ -1,20 +1,77 @@
-- name: 2.1.1 Find all *.conf files in /etc/modprobe.d
-  ansible.builtin.find:
-    paths: /etc/modprobe.d
-    patterns: "*.conf"
-  register: outputfiles
-  tags:
-    - AUTH
+---
+- name: LINUX_SCD
+  hosts: 'Server_Group_3'
+  become: true
+  gather_facts: no
 
-- name: Ensure unused filesystem modules are disabled
-  ansible.builtin.lineinfile:
-    path: "{{ item.0.path }}"
-    line: "install {{ item.1 }} /bin/true"
-    regexp: "^install\\s+{{ item.1 }}\\s+/bin/true"
-    state: present
-  loop: "{{ outputfiles.files | product(['dccp','sctp','rds','tipc']) | list }}"
-  loop_control:
-    label: "{{ item.0.path }} -> {{ item.1 }}"
-  register: output1
-  tags:
-    - AUTH
+  vars:
+    ssh_config:
+      - { regex: '^#?Protocol', line: 'Protocol 2' }
+      - { regex: '^#?PermitRootLogin', line: 'PermitRootLogin no' }
+      - { regex: '^#?PermitEmptyPasswords', line: 'PermitEmptyPasswords no' }
+      - { regex: '^#?X11Forwarding', line: 'X11Forwarding no' }
+      - { regex: '^#?MaxAuthTries', line: 'MaxAuthTries 4' }
+      - { regex: '^#?ClientAliveInterval', line: 'ClientAliveInterval 300' }
+      - { regex: '^#?ClientAliveCountMax', line: 'ClientAliveCountMax 0' }
+      - { regex: '^#?LoginGraceTime', line: 'LoginGraceTime 60' }
+      - { regex: '^#?Banner', line: 'Banner /etc/issue.net' }
+  tasks:
+    - name: Set ownership and permission for sshd_config
+      file:
+        path: /etc/ssh/sshd_config
+        owner: root
+        group: root
+        mode: '0600'
+      register: output1
+      tags: SSH_SUP
+
+    - name: Configure SSH parameters
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "{{ item.regex }}"
+        line: "{{ item.line }}"
+        state: present
+      loop: "{{ ssh_config }}"
+      register: output2
+      tags: SSH_SUP
+
+    - name: Restrict SSH users
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        line: "AllowUsers admin"
+      register: output3
+      tags: SSH_SUP
+
+    - name: Restart SSH service
+      service:
+        name: sshd
+        state: restarted
+      register: output4
+      tags: SSH_SUP
+
+    - name: Output of All Tags SSH_SUP
+      debug:
+        msg:
+          -"Output1: {{ output1 }}"
+          -"Output2: {{ output2 }}"
+          -"Output3: {{ output3 }}"
+          -"Output4: {{ output4 }}"
+
+
+
+
+[eisuser@ansiblecontrolnodeDenny]$ ansible-playbook -i hosts.ini SCD14.yml -t SSH_SUP --limit 10.177.44.68
+ERROR! We were unable to read either as JSON nor YAML, these are the errors we got from each:
+JSON: Expecting value: line 1 column 1 (char 0)
+
+Syntax Error while loading YAML.
+  found a tab character that violates indentation
+
+The error appears to be in '/home/eisuser/Denny/SCD14.yml': line 51, column 1, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+      register: output4
+      tags: SSH_SUP
+^ here
