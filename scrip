@@ -1,77 +1,53 @@
----
-- name: LINUX_SCD
-  hosts: 'Server_Group_3'
-  become: true
-  gather_facts: no
+[eisuser@EISUATEXP09 ~]$ ssh root@10.177.44.67
 
-  vars:
-    ssh_config:
-      - { regex: '^#?Protocol', line: 'Protocol 2' }
-      - { regex: '^#?PermitRootLogin', line: 'PermitRootLogin no' }
-      - { regex: '^#?PermitEmptyPasswords', line: 'PermitEmptyPasswords no' }
-      - { regex: '^#?X11Forwarding', line: 'X11Forwarding no' }
-      - { regex: '^#?MaxAuthTries', line: 'MaxAuthTries 4' }
-      - { regex: '^#?ClientAliveInterval', line: 'ClientAliveInterval 300' }
-      - { regex: '^#?ClientAliveCountMax', line: 'ClientAliveCountMax 0' }
-      - { regex: '^#?LoginGraceTime', line: 'LoginGraceTime 60' }
-      - { regex: '^#?Banner', line: 'Banner /etc/issue.net' }
-  tasks:
-    - name: Set ownership and permission for sshd_config
-      file:
-        path: /etc/ssh/sshd_config
-        owner: root
-        group: root
-        mode: '0600'
-      register: output1
-      tags: SSH_SUP
+Kernel  on an
+root@10.177.44.67: Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+[eisuser@EISUATEXP09 ~]$ ssh addmitam@10.177.44.67
 
-    - name: Configure SSH parameters
-      lineinfile:
-        path: /etc/ssh/sshd_config
-        regexp: "{{ item.regex }}"
-        line: "{{ item.line }}"
-        state: present
-      loop: "{{ ssh_config }}"
-      register: output2
-      tags: SSH_SUP
+Kernel  on an
+addmitam@10.177.44.67: Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+[eisuser@EISUATEXP09 ~]$ ssh splunk@10.177.44.67
 
-    - name: Restrict SSH users
-      lineinfile:
-        path: /etc/ssh/sshd_config
-        line: "AllowUsers admin"
-      register: output3
-      tags: SSH_SUP
+Kernel  on an
+splunk@10.177.44.67: Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+[eisuser@EISUATEXP09 ~]$ sudo su - addmitam
+Last login: Wed Mar  4 20:02:24 IST 2026 from 10.191.149.129 on pts/0
+[addmitam@EISUATEXP09 ~]$
+[addmitam@EISUATEXP09 ~]$
+[addmitam@EISUATEXP09 ~]$ ssh SOCVA@10.177.44.67
+The authenticity of host '10.177.44.67 (10.177.44.67)' can't be established.
+ED25519 key fingerprint is SHA256:AeWAH1nlT/xMeCu70aZKAU/WNnP+DncpddrVAJwcIVw.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '10.177.44.67' (ED25519) to the list of known hosts.
 
-    - name: Restart SSH service
-      service:
-        name: sshd
-        state: restarted
-      register: output4
-      tags: SSH_SUP
+Kernel  on an
+SOCVA@10.177.44.67: Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+[addmitam@EISUATEXP09 ~]$
+logout
+[eisuser@EISUATEXP09 ~]$ ssh 10.177.44.67
 
-    - name: Output of All Tags SSH_SUP
-      debug:
-        msg:
-          -"Output1: {{ output1 }}"
-          -"Output2: {{ output2 }}"
-          -"Output3: {{ output3 }}"
-          -"Output4: {{ output4 }}"
+Kernel  on an
+Activate the web console with: systemctl enable --now cockpit.socket
 
+Register this system with Red Hat Insights: rhc connect
 
+Example:
+# rhc connect --activation-key <key> --organization <org>
 
+The rhc client and Red Hat Insights will enable analytics and additional
+management capabilities on your system.
+View your connected systems at https://console.redhat.com/insights
 
-[eisuser@ansiblecontrolnodeDenny]$ ansible-playbook -i hosts.ini SCD14.yml -t SSH_SUP --limit 10.177.44.68
-ERROR! We were unable to read either as JSON nor YAML, these are the errors we got from each:
-JSON: Expecting value: line 1 column 1 (char 0)
+You can learn more about how to register your system
+using rhc at https://red.ht/registration
+Last login: Tue Mar 10 19:50:01 2026
 
-Syntax Error while loading YAML.
-  found a tab character that violates indentation
+MQSI 13.0.5.0
+/opt/IBM/ace/server
 
-The error appears to be in '/home/eisuser/Denny/SCD14.yml': line 51, column 1, but may
-be elsewhere in the file depending on the exact syntax problem.
-
-The offending line appears to be:
-
-      register: output4
-      tags: SSH_SUP
-^ here
+mqsiprofile repetition disallowed
+[eisuser@EISUATSYS09 ~]$ ip r
+default via 10.177.44.1 dev eth0 proto dhcp src 10.177.44.67 metric 100
+10.177.44.0/24 dev eth0 proto kernel scope link src 10.177.44.67 metric 100
+[eisuser@EISUATSYS09 ~]$
