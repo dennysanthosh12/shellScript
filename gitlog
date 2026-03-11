@@ -1,245 +1,763 @@
-pool:
-  name: TFS-RH-1
-
-stages:
-# ============== Validation and Initilization ============
-- stage: Validation_Stage
-  displayName: Validation and Intialization
-  jobs:
-    - job: Validation_Job
-      displayName: Validation
-      env:
-            BRANCH: $(Build.SourceBranchName)
-      steps:
-
-        - checkout: self
-
-        - task: CmdLine@2
-          name: val_task
-          displayName: Validating repository
-          inputs:
-            script: |
-              set -e
-
-              config_path=$(Build.SourcesDirectory)/Config/config.yml
-              if [ -z "$config_path" ] || [ ! -f "$config_path" ]; then
-                echo "ERROR: config.yml not found"
-                exit 1
-              fi
-
-              REQUIRED_FIELDS=(
-                "ApplicationName",
-                "IntegrationNode",
-                "IntegrationServer"
-              )
-              for field in "${REQUIRED_FIELDS[@]}"; do
-                value=$(yq e ".$BRANCH.$field // \"\"" "$config_path" | tr -d '[:space:]')
-                if [ -z "$value" ]; then
-                  echo " ERROR: $field is missing or empty for branch $BRANCH in config.yml"
-                  exit 1
-                fi
-              done
-
-              DEPLOY=$(yq e ".$BRANCH.Deploy // true" "$config_path" | tr -d '[:space:]')
-              CACHE_PRESENT=$(yq e ".$BRANCH.Cache // [] | length > 0" "$config_path")
-
-              if [ "$DEPLOY" != true ] && [ "$DEPLOY" != false ]; then
-                echo "Invalid Deploy flag in config.yml"
-                exit 1
-              fi
-
-              echo "##vso[task.setvariable variable=DeployFlag;isOutput=true]$DEPLOY"
-              echo "##vso[task.setvariable variable=CacheFlag;isOutput=true]$CACHE_PRESENT"
-
-        - task: PublishBuildArtifacts@1
-          condition: eq(variables['val_task.DeployFlag'], 'false')
-          inputs:
-            PathtoPublish: $(build.sourcesDirectory)/Config/
-            ArtifactName: drop
-                   
-
-# ================= BUILD STAGE =================
-- stage: Build
-  displayName: Build Stage
-  dependsOn: Validation_Stage
-  condition: |
-    and(
-      succeeded('Validation_Stage'),
-      eq(
-        stageDependencies.Validation_Stage.Validation_Job.outputs['val_task.DeployFlag'],
-       'true' 
-      )
-    )
-  jobs:
-    - job: Build_Job
-      displayName: Agent Build job 
-      env:
-            BRANCH: $(Build.SourceBranchName)
-      steps:
-
-        - checkout: self
-
-        - task: CmdLine@2
-          displayName: Building Bar file
-          inputs:
-            script: |
-              set -e
-              . /opt/IBM/ace/server/bin/mqsiprofile
-
-              config_path=$(Build.SourcesDirectory)/Config/config.yml
-              applicationName=$(yq e ".$BRANCH.ApplicationName" "$config_path")
-              override_path=$(find . -iname "override.properties")
-
-              if [ -f "$override_path" ]; then
-                ibmint package --input-path $(Build.SourcesDirectory) \
-                               --output-bar-file $(Build.BinariesDirectory)/$applicationName.bar \
-                               --java-version 8 \
-                               --overrides-file "$override_path"
-              else
-                ibmint package --input-path $(Build.SourcesDirectory) \
-                               --output-bar-file $(Build.BinariesDirectory)/$applicationName.bar \
-                               --java-version 8
-              fi
-
-              yq ".$BRANCH.Overrides | to_entries[] | \"\(.key) \(.value)\"" "$config_path" | while read key value;
-              do [ -z "$key" ] && continue;
-              mqsiapplybaroverride  -b $(Build.BinariesDirectory)/"$applicationName".bar -k "$applicationName" -m "gen.$applicationName#$key=$value";
-              done
-
-              cp "$config_path" $(Build.BinariesDirectory)
-        
-        - task: CopyFiles@2
-          inputs:
-            SourceFolder: $(Build.BinariesDirectory)
-            TargetFolder: $(Build.ArtifactStagingDirectory)
-            OverWrite: true
-
-        - task: PublishBuildArtifacts@1
-          inputs:
-            PathtoPublish: $(Build.ArtifactStagingDirectory)
-            ArtifactName: drop
-
-
-# ================= RELEASE STAGE =================
-- stage: Release
-  displayName: Deploy Stage
-  dependsOn: Build
-  condition: |
-    and(
-      succeeded('Build  '),
-      eq(
-        stageDependencies.Validation_Stage.Validation_Job.outputs['val_task.DeployFlag'],
-       'true' 
-      )
-    )
-  jobs:
-    - deployment: DeployApp
-      displayName: Deployment Job
-      environment: $(Build.SourceBranchName)
-      env:
-            BRANCH: $(Build.SourceBranchName)
-      strategy:
-        runOnce:
-          deploy:
-            steps:
-
-              - download: current
-                artifact: drop
-
-              - task: CmdLine@2
-                displayName: Deploying Bar File
-                inputs:
-                  workingDirectory: $(Pipeline.Workspace)/drop
-                  script: |
-                    set -e
-                    . /opt/IBM/ace/server/bin/mqsiprofile
-
-                    IntegrationNode=$(yq e ".$BRANCH.IntegrationNode" config.yml)
-                    ApplicationName=$(yq e ".$BRANCH.ApplicationName" config.yml)
-                    IntegrationServer=$(yq e ".$BRANCH.IntegrationServer" config.yml)
-
-                    for broker_file in /home/devops/broker/$BRANCH/$IntegrationNode*; do
-                      cat "$broker_file" |grep host| awk -F"\"" '{print "HOST: " $4 " , " "IntegrationNode: " $6}'
-                      ibmint deploy \
-                        --input-bar-file "$ApplicationName.bar" \
-                        --integration-node-file "$broker_file" \
-                        --output-server "$IntegrationServer"
-                    done
-
-# ================= CACHE STAGE =================
-- stage: Cache
-  displayName: CACHE
-  dependsOn: 
-    - Validation_Stage
-    - Build
-  condition: |
-    and(
-      succeeded('Validation_Stage'),
-      eq(
-        stageDependencies.Validation_Stage.Validation_Job.outputs['val_task.CacheFlag'],
-        'true'
-      ),
-      or(
-        eq(
-          stageDependencies.Validation_Stage.Validation_Job.outputs['val_task.DeployFlag'],
-          'false'
-        ),
-        succeeded('Build')
-      )
-    )
-  jobs:
-    - job: Cache_Job
-      displayName: Agent Build job 
-      env:
-            BRANCH: $(Build.SourceBranchName)
-      steps:
-        
-        - download: current
-          artifact: drop
-
-        - task: CmdLine@2
-          displayName: Update cache in Database
-          inputs:
-            workingDirectory: $(Pipeline.Workspace)/drop/
-            script: |
-              source ~/.bashrc
-              set -e
-              if [ ! -f config.yml ];
-              then echo "config.yml file was not found !!"; exit 1;
-              fi
-              yq ".$BRANCH.Cache[].Query" config.yml | while  IFS= read -r SQL;
-              do echo "---------------------------------------------------------";
-              echo "Executing SQL Cache Query";
-              echo "$SQL";
-              echo "---------------------------------------------------------";
-              OUTPUT=$(echo "$SQL" | isql "$BRANCH" "$DB_USER" "$DB_PASS" 2>&1);
-              STATUS=$?;
-              if [[ $STATUS -eq 0 ]] && echo "$OUTPUT" | grep -qi "SQLRowCount";
-              then echo "SUCCESS: Query executed";
-              else echo "FAILED: Query did not execute"; exit 1;
-              fi;
-              echo " ";
-              done
-
-        - task: CmdLine@2
-          displayName: Update Cache in Server
-          inputs:
-            workingDirectory: $(Pipeline.Workspace)/drop/
-            script: |
-              set -e
-
-              IntegrationNode=$(yq ".$BRANCH.IntegrationNode" config.yml)
-              for broker_file in /home/devops/broker/$BRANCH/$IntegrationNode*; do
-                host=$(cat "$broker_file" | grep host | cut -d"\"" -f4)
-                if yq -e ".$BRANCH.Cache" config.yml >/dev/null 2>&1; then
-                  response=$(curl -s -k -X POST http://"$host":8002/cache/v1/loadCache \
-                  -H "Content-Type: application/json" \
-                  -d "$(yq -o=json ".$BRANCH.Cache | map({\"FIELD_NAME\": .FIELD_NAME, \"FIELD_VALUE\": .FIELD_VALUE})" config.yml)")
-                  if [[ "$response" != *'"RESPONSE":"success"'* ]]; then
-                    echo "Cache load failed: $response"
-                    exit 1
-                  fi
-                  echo "Cache load successful on $host"
-                  echo "$(yq -o=json ".$BRANCH.Cache | map({\"FIELD_NAME\": .FIELD_NAME, \"FIELD_VALUE\": .FIELD_VALUE})" config.yml)"
-                fi
-              done
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" xmlns:map="default" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0">
+    <inlinedXMLSchema>
+        <![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?> 
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"> 
+                                 
+         
+  <xsd:element name="CHECKER_ID_2" type="xsd:string"/> 
+              
+     
+  <xsd:element name="CHECKER_ID_1" type="xsd:string"/> 
+              
+     
+  <xsd:element name="SUPERVISOR_ID" type="xsd:string"/> 
+              
+     
+  <xsd:element name="CHECKER_FLAG" type="xsd:string"/> 
+              
+     
+  <xsd:element name="SUP_FLAG" type="xsd:string"/> 
+              
+     
+  <xsd:element name="FEJNumber" type="xsd:string"/> 
+                                 
+ 
+</xsd:schema> 
+]]>
+    </inlinedXMLSchema>
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/assembly/Environment.xsd" var="var103"/>
+    <input derivedFrom="MB:JSON_schema_in_swagger_document" path="/fundTransfer_CToC_Swagger_V1.0.0.json" var="var1"/>
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/JsonDomainMsg.xsd" var="var4"/>
+    <input derivedFrom="MB:JSON_schema_in_swagger_document" path="/fundTransfer_CToC_Swagger_V1.0.0.json" var="var7"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var6"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var10"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var12"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var14"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var16"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var20"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var70"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var2"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var91"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var93"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var99"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var101"/>
+    <input inlinedXMLSchema="true" path="../schema_0.xsd" var="var102"/>
+    <input inlinedXMLSchema="true" path="../schema_0.xsd" var="var104"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var24"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var25"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var27"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var31"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var33"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var35"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var37"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var39"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var45"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var47"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var49"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var51"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var55"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var57"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var22"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var18"/>
+    <output path="jar:file://!com/ibm/etools/mft/map/xsds/assembly/Environment.xsd" var="var105"/>
+    <output path="/fundTransfer.xsd" var="var8"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var5"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var9"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var11"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var13"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var15"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var19"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var69"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var86"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var92"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var98"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var100"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var23"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var3"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var26"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var28"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var32"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var34"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var36"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var38"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var44"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var46"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var48"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var50"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var54"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var56"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var21"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var17"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="io" uri="http://www.ibm.com/iib/msl/json"/>
+        <namespace kind="supplement" prefix="io2" uri="http://www.ibm.com/msl/cache/1.0"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="fundTransfer_Mapping">
+        <input path="$var103/mb:env(Environment)" var="Environment">
+            <cast castType="userDefined" path="$Environment/any" qualifier="FEJNumber" ref="var102" var="any"/>
+            <cast castType="userDefined" path="$Environment/any" qualifier="SUP_FLAG" ref="var102" var="any2"/>
+            <cast castType="userDefined" path="$Environment/any" qualifier="CHECKER_FLAG" ref="var102" var="any3"/>
+            <cast castType="userDefined" path="$Environment/any" qualifier="SUPERVISOR_ID" ref="var102" var="any4"/>
+            <cast castType="userDefined" path="$Environment/any" qualifier="CHECKER_ID_1" ref="var102" var="any5"/>
+            <cast castType="userDefined" path="$Environment/any" qualifier="CHECKER_ID_2" ref="var102" var="any6"/>
+        </input>
+        <input namespace="http://www.ibm.com/iib/msl/json" path="$var4/mb:msg(JSON,assembly,JSON,Properties)" var="MessageAssembly">
+            <cast derivedFrom="MB:JSON_operation_request" path="$MessageAssembly/JSON/Data/type('anyType')" qualifier="{http://www.ibm.com/iib/msl/json}PlainJSONRequest" ref="var1" var="anyType"/>
+        </input>
+        <output path="$var105/mb:env(Environment)" var="Environment1">
+            <cast castType="userDefined" path="$Environment1/any" qualifier="FEJNumber" ref="var102" var="any1"/>
+            <cast castType="userDefined" path="$Environment1/any" qualifier="SUP_FLAG" ref="var102" var="any7"/>
+            <cast castType="userDefined" path="$Environment1/any" qualifier="CHECKER_FLAG" ref="var102" var="any8"/>
+            <cast castType="userDefined" path="$Environment1/any" qualifier="SUPERVISOR_ID" ref="var102" var="any9"/>
+            <cast castType="userDefined" path="$Environment1/any" qualifier="CHECKER_ID_1" ref="var102" var="any10"/>
+            <cast castType="userDefined" path="$Environment1/any" qualifier="CHECKER_ID_2" ref="var102" var="any11"/>
+        </output>
+        <output path="$var8/mb:msg(fundTransferReq,assembly,DFDL,Properties)" var="MessageAssembly1"/>
+        <passthrough>
+            <input path="$Environment/."/>
+            <output path="$Environment1/."/>
+            <updates/>
+        </passthrough>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/FROM_ACCOUNT_NUMBER"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/FROM_ACCOUNT"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/TO_ACCOUNT_NUMBER"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/TO_ACCOUNT"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/REQUEST_TELLER_ID"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/REQUEST_TELLERID"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/BRANCH_CODE"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/BRANCH_CODE"/>
+        </move>
+        <transaction>
+            <cacheGet>
+                <input path="$MessageAssembly/JSON/spath('Data',2)/SOURCE_ID"/>
+                <output path="$var5/CacheGet"/>
+                <move>
+                    <input path="."/>
+                    <output path="Key"/>
+                </move>
+            </cacheGet>
+            <cacheReturn>
+                <input path="$var6/CacheGetReturn"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/BATCHTANDEM"/>
+                <move>
+                    <input path="Value"/>
+                    <output path="."/>
+                </move>
+            </cacheReturn>
+        </transaction>
+        <transaction>
+            <cacheGet>
+                <output path="$var9/CacheGet"/>
+                <assign value="FT001_MSGLength">
+                    <output path="Key"/>
+                </assign>
+            </cacheGet>
+            <cacheReturn>
+                <input path="$var10/CacheGetReturn"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/MESSAGE_LENGTH"/>
+                <move>
+                    <input path="Value"/>
+                    <output path="."/>
+                </move>
+            </cacheReturn>
+        </transaction>
+        <transaction>
+            <cacheGet>
+                <output path="$var11/CacheGet"/>
+                <assign value="reqMetaData1">
+                    <output path="Key"/>
+                </assign>
+            </cacheGet>
+            <cacheReturn>
+                <input path="$var12/CacheGetReturn"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/REQUEST_METADATA1"/>
+                <move>
+                    <input path="Value"/>
+                    <output path="."/>
+                </move>
+            </cacheReturn>
+        </transaction>
+        <transaction>
+            <cacheGet>
+                <output path="$var13/CacheGet"/>
+                <assign value="reqMetaData2">
+                    <output path="Key"/>
+                </assign>
+            </cacheGet>
+            <cacheReturn>
+                <input path="$var14/CacheGetReturn"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/REQUEST_METADATA2"/>
+                <move>
+                    <input path="Value"/>
+                    <output path="."/>
+                </move>
+            </cacheReturn>
+        </transaction>
+        <transaction>
+            <cacheGet>
+                <output path="$var15/CacheGet"/>
+                <assign value="FT001_tranCode">
+                    <output path="Key"/>
+                </assign>
+            </cacheGet>
+            <cacheReturn>
+                <input path="$var16/CacheGetReturn"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/TRANSACTION_CODE"/>
+                <move>
+                    <input path="Value"/>
+                    <output path="."/>
+                </move>
+            </cacheReturn>
+        </transaction>
+        <transaction>
+            <cacheGet>
+                <output path="$var19/CacheGet"/>
+                <assign value="reqMetaData4_MultipleResponse">
+                    <output path="Key"/>
+                </assign>
+            </cacheGet>
+            <cacheReturn>
+                <input path="$var20/CacheGetReturn"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/REQUEST_META_DATA4"/>
+                <move>
+                    <input path="Value"/>
+                    <output path="."/>
+                </move>
+            </cacheReturn>
+        </transaction>
+        <transaction>
+            <cacheGet>
+                <output path="$var69/CacheGet"/>
+                <assign value="FT001_reqMetaData13">
+                    <output path="Key"/>
+                </assign>
+            </cacheGet>
+            <cacheReturn>
+                <input path="$var70/CacheGetReturn"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/REQUEST_META_DATA13"/>
+                <move>
+                    <input path="Value"/>
+                    <output path="."/>
+                </move>
+            </cacheReturn>
+        </transaction>
+        <transaction>
+            <cacheGet>
+                <output path="$var/CacheGet"/>
+                <assign value="reqMetaData9">
+                    <output path="Key"/>
+                </assign>
+            </cacheGet>
+            <cacheReturn>
+                <input path="$var2/CacheGetReturn"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/AMOUNT_META_DATA"/>
+                <move>
+                    <input path="Value"/>
+                    <output path="."/>
+                </move>
+            </cacheReturn>
+        </transaction>
+        <transaction>
+            <cacheGet>
+                <output path="$var86/CacheGet"/>
+                <assign value="reqMetaData9">
+                    <output path="Key"/>
+                </assign>
+            </cacheGet>
+            <cacheReturn>
+                <input path="$var91/CacheGetReturn"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/AMOUNT2_META_DATA"/>
+                <move>
+                    <input path="Value"/>
+                    <output path="."/>
+                </move>
+            </cacheReturn>
+        </transaction>
+        <transaction>
+            <cacheGet>
+                <output path="$var92/CacheGet"/>
+                <assign value="reqMetaData9">
+                    <output path="Key"/>
+                </assign>
+            </cacheGet>
+            <cacheReturn>
+                <input path="$var93/CacheGetReturn"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/BASEAMOUNT_METADATA"/>
+                <move>
+                    <input path="Value"/>
+                    <output path="."/>
+                </move>
+            </cacheReturn>
+        </transaction>
+        <transaction>
+            <cacheGet>
+                <output path="$var98/CacheGet"/>
+                <assign value="reqMetaData9">
+                    <output path="Key"/>
+                </assign>
+            </cacheGet>
+            <cacheReturn>
+                <input path="$var99/CacheGetReturn"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/CHANGE_METADATA"/>
+                <move>
+                    <input path="Value"/>
+                    <output path="."/>
+                </move>
+            </cacheReturn>
+        </transaction>
+        <transaction>
+            <cacheGet>
+                <output path="$var100/CacheGet"/>
+                <assign value="reqMetaData9">
+                    <output path="Key"/>
+                </assign>
+            </cacheGet>
+            <cacheReturn>
+                <input path="$var101/CacheGetReturn"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/COMMISSION_METADATA"/>
+                <move>
+                    <input path="Value"/>
+                    <output path="."/>
+                </move>
+            </cacheReturn>
+        </transaction>
+        <move>
+            <input path="$Environment/FEJNumber[1]"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/FJOURNALNUMBER"/>
+        </move>
+        <transaction>
+            <cacheGet>
+                <output path="$var23/CacheGet"/>
+                <assign value="FT001_reqMetaData11">
+                    <output path="Key"/>
+                </assign>
+            </cacheGet>
+            <cacheReturn>
+                <input path="$var24/CacheGetReturn"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/RequestMetaData1"/>
+                <move>
+                    <input path="Value"/>
+                    <output path="."/>
+                </move>
+            </cacheReturn>
+        </transaction>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/NARRATION"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/NARRATION"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/FEES_CHARGE"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/FEES_CHARGE"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/NON_VALUE_DAYS"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/NON_VALUE_DAYS"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/DEFERRED_INT_DAYS"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/DEFERRED_INT_DAYS"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/DEBIT_DEFERRED_INT_DAYS"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/DEBIT_DEFERRED_INT_DAYS"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/CURRENCY"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/CURRENCY"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/AMOUNT"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/AMOUNT"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/CURRENCY2"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/CURRENCY2"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/BASE_CURRENCY_AMOUNT"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/BASE_CURRENCY_AMOUNT"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/COMMISSION"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/COMMISSION"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/CHANGE"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/CHANGE"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/RATE_TYPE"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/RATE_TYPE"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/ORIGINALID"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/ORIGINALID"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/TYPE_OF_EXPENSES"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/TYPE_OF_EXPENSES"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/SOURCE_OF_RECOVERY"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/SOURCE_OF_RECOVERY"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/SC_DP_NUMBER"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/SC_DP_NUMBER"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/TYPE"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/TYPE"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/MODE_OF_RECOVERY"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/MODE_OF_RECOVERY"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/BOOKINGNUMBER"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/BOOKINGNUMBER"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/GOVT_TREASURY_BILL_NO"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/GOVT_TREASURY_BILL_NO"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/DEALING_BRANCH_CODE"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/DEALING_BRANCH_CODE"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/SCROLL_NUMBER"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/SCROLL_NUMBER"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/NO_OF_CHALLANS"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/NO_OF_CHALLANS"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/TXN_DATE_AT_DEALING_BRANCH"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/TXN_DATE_AT_DEALING_BRANCH"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/ICOLLECT"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/ICOLLECT"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/AMOUNT1"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/AMOUNT1"/>
+        </move>
+        <transaction>
+            <cacheGet>
+                <output path="$var3/CacheGet"/>
+                <assign value="SingleSpace">
+                    <output path="Key"/>
+                </assign>
+            </cacheGet>
+            <cacheReturn>
+                <input path="$var25/CacheGetReturn"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/Offset1"/>
+                <move>
+                    <input path="Value"/>
+                    <output path="."/>
+                </move>
+            </cacheReturn>
+        </transaction>
+        <transaction>
+            <cacheGet>
+                <output path="$var26/CacheGet"/>
+                <assign value="SingleSpace">
+                    <output path="Key"/>
+                </assign>
+            </cacheGet>
+            <cacheReturn>
+                <input path="$var27/CacheGetReturn"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/Offset2"/>
+                <move>
+                    <input path="Value"/>
+                    <output path="."/>
+                </move>
+            </cacheReturn>
+        </transaction>
+        <transaction>
+            <cacheGet>
+                <output path="$var28/CacheGet"/>
+                <assign value="SingleSpace">
+                    <output path="Key"/>
+                </assign>
+            </cacheGet>
+            <cacheReturn>
+                <input path="$var31/CacheGetReturn"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/Offset3"/>
+                <move>
+                    <input path="Value"/>
+                    <output path="."/>
+                </move>
+            </cacheReturn>
+        </transaction>
+        <transaction>
+            <cacheGet>
+                <output path="$var32/CacheGet"/>
+                <assign value="SingleSpace">
+                    <output path="Key"/>
+                </assign>
+            </cacheGet>
+            <cacheReturn>
+                <input path="$var33/CacheGetReturn"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/Offset4"/>
+                <move>
+                    <input path="Value"/>
+                    <output path="."/>
+                </move>
+            </cacheReturn>
+        </transaction>
+        <transaction>
+            <cacheGet>
+                <output path="$var34/CacheGet"/>
+                <assign value="SingleSpace">
+                    <output path="Key"/>
+                </assign>
+            </cacheGet>
+            <cacheReturn>
+                <input path="$var35/CacheGetReturn"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/Offset5"/>
+                <move>
+                    <input path="Value"/>
+                    <output path="."/>
+                </move>
+            </cacheReturn>
+        </transaction>
+        <transaction>
+            <cacheGet>
+                <output path="$var36/CacheGet"/>
+                <assign value="SingleSpace">
+                    <output path="Key"/>
+                </assign>
+            </cacheGet>
+            <cacheReturn>
+                <input path="$var37/CacheGetReturn"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/Offset6"/>
+                <move>
+                    <input path="Value"/>
+                    <output path="."/>
+                </move>
+            </cacheReturn>
+        </transaction>
+        <transaction>
+            <cacheGet>
+                <output path="$var38/CacheGet"/>
+                <assign value="SingleSpace">
+                    <output path="Key"/>
+                </assign>
+            </cacheGet>
+            <cacheReturn>
+                <input path="$var39/CacheGetReturn"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/Offset7"/>
+                <move>
+                    <input path="Value"/>
+                    <output path="."/>
+                </move>
+            </cacheReturn>
+        </transaction>
+        <condition>
+            <if>
+                <input path="$MessageAssembly/JSON/spath('Data',2)/REQUEST_AUTH_ID" var="REQUEST_AUTH_ID1"/>
+                <input path="$Environment/SUP_FLAG" var="SUP_FLAG"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/REQUEST_METADATA3"/>
+                <test lang="xpath">$SUP_FLAG = '1'</test>
+                <transaction>
+                    <cacheGet>
+                        <output path="$var56/CacheGet"/>
+                        <assign value="SUP_reqMetaData3">
+                            <output path="Key"/>
+                        </assign>
+                    </cacheGet>
+                    <cacheReturn>
+                        <input path="$var57/CacheGetReturn"/>
+                        <output path="."/>
+                        <move>
+                            <input path="Value" var="Value5"/>
+                            <output path="."/>
+                        </move>
+                    </cacheReturn>
+                </transaction>
+            </if>
+            <else>
+                <output path="$MessageAssembly1/fundTransferReq/body/REQUEST_METADATA3"/>
+                <transaction>
+                    <cacheGet>
+                        <output path="$var54/CacheGet"/>
+                        <assign value="reqMetaData3">
+                            <output path="Key"/>
+                        </assign>
+                    </cacheGet>
+                    <cacheReturn>
+                        <input path="$var55/CacheGetReturn"/>
+                        <output path="."/>
+                        <move>
+                            <input path="Value" var="Value4"/>
+                            <output path="."/>
+                        </move>
+                    </cacheReturn>
+                </transaction>
+            </else>
+        </condition>
+        <condition>
+            <if>
+                <input path="$MessageAssembly/JSON/spath('Data',2)/REQUEST_AUTH_ID" var="REQUEST_AUTH_ID3"/>
+                <input path="$Environment/SUPERVISOR_ID" var="SUPERVISOR_ID"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/SUPERVISOR_ID"/>
+                <test lang="xpath">$SUPERVISOR_ID = '1'</test>
+                <move>
+                    <input path="$REQUEST_AUTH_ID3/."/>
+                    <output path="."/>
+                </move>
+            </if>
+            <else>
+                <output path="$MessageAssembly1/fundTransferReq/body/SUPERVISOR_ID"/>
+                <transaction>
+                    <cacheGet>
+                        <output path="$var50/CacheGet"/>
+                        <assign value="NBC_REQUEST_AUTH_ID">
+                            <output path="Key"/>
+                        </assign>
+                    </cacheGet>
+                    <cacheReturn>
+                        <input path="$var51/CacheGetReturn"/>
+                        <output path="."/>
+                        <move>
+                            <input path="Value" var="Value2"/>
+                            <output path="."/>
+                        </move>
+                    </cacheReturn>
+                </transaction>
+            </else>
+        </condition>
+        <condition>
+            <if>
+                <input path="$MessageAssembly/JSON/spath('Data',2)/REQUEST_AUTH_ID" var="REQUEST_AUTH_ID4"/>
+                <input path="$Environment/CHECKER_ID_1" var="CHECKER_ID_1"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/CHECKER_ID_1"/>
+                <test lang="xpath">$CHECKER_ID_1 = '1'</test>
+                <move>
+                    <input path="$REQUEST_AUTH_ID4/."/>
+                    <output path="."/>
+                </move>
+            </if>
+            <else>
+                <output path="$MessageAssembly1/fundTransferReq/body/CHECKER_ID_1"/>
+                <transaction>
+                    <cacheGet>
+                        <output path="$var44/CacheGet"/>
+                        <assign value="NBC_REQUEST_AUTH_ID">
+                            <output path="Key"/>
+                        </assign>
+                    </cacheGet>
+                    <cacheReturn>
+                        <input path="$var45/CacheGetReturn"/>
+                        <output path="."/>
+                        <move>
+                            <input path="Value" var="Value1"/>
+                            <output path="."/>
+                        </move>
+                    </cacheReturn>
+                </transaction>
+            </else>
+        </condition>
+        <transaction>
+            <cacheGet>
+                <output path="$var46/CacheGet"/>
+                <assign value="MIG_reqMetaData5">
+                    <output path="Key"/>
+                </assign>
+            </cacheGet>
+            <cacheReturn>
+                <input path="$var47/CacheGetReturn"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/Meta_Data_5"/>
+                <move>
+                    <input path="Value" var="Value7"/>
+                    <output path="."/>
+                </move>
+            </cacheReturn>
+        </transaction>
+        <transaction>
+            <cacheGet>
+                <output path="$var48/CacheGet"/>
+                <assign value="datetime_metadata">
+                    <output path="Key"/>
+                </assign>
+            </cacheGet>
+            <cacheReturn>
+                <input path="$var49/CacheGetReturn"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/dateandtime"/>
+                <move>
+                    <input path="Value" var="Value8"/>
+                    <output path="."/>
+                </move>
+            </cacheReturn>
+        </transaction>
+        <move>
+            <input path="$Environment/CHECKER_FLAG[1]" var="CHECKER_FLAG1"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/CHECKER_FLAG"/>
+        </move>
+        <condition>
+            <if>
+                <input path="$Environment/CHECKER_ID_2" var="CHECKER_ID_21"/>
+                <input path="$MessageAssembly/JSON/spath('Data',2)/REQUEST_AUTH_ID" var="REQUEST_AUTH_ID2"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/CHECKER_ID_2"/>
+                <test lang="xpath">$CHECKER_ID_21 = '1'</test>
+                <move>
+                    <input path="$REQUEST_AUTH_ID2/." var="REQUEST_AUTH_ID5"/>
+                    <output path="."/>
+                </move>
+            </if>
+            <else>
+                <output path="$MessageAssembly1/fundTransferReq/body/CHECKER_ID_2"/>
+                <transaction>
+                    <cacheGet>
+                        <output path="$var21/CacheGet"/>
+                        <assign value="NBC_REQUEST_AUTH_ID">
+                            <output path="Key"/>
+                        </assign>
+                    </cacheGet>
+                    <cacheReturn>
+                        <input path="$var22/CacheGetReturn"/>
+                        <output path="."/>
+                        <move>
+                            <input path="Value" var="Value"/>
+                            <output path="."/>
+                        </move>
+                    </cacheReturn>
+                </transaction>
+            </else>
+        </condition>
+        <transaction>
+            <cacheGet>
+                <output path="$var17/CacheGet"/>
+                <assign value="SingleSpace">
+                    <output path="Key"/>
+                </assign>
+            </cacheGet>
+            <cacheReturn>
+                <input path="$var18/CacheGetReturn"/>
+                <output path="$MessageAssembly1/fundTransferReq/body/Offset5_1"/>
+                <move>
+                    <input path="Value"/>
+                    <output path="."/>
+                </move>
+            </cacheReturn>
+        </transaction>
+        <move>
+            <input path="$MessageAssembly/JSON/spath('Data',2)/CHANNEL_IDENTIFIER"/>
+            <output path="$MessageAssembly1/fundTransferReq/body/CHANNEL_IDENTIFIER"/>
+        </move>
+    </mappingDeclaration>
+</mappingRoot>
