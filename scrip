@@ -1,1 +1,38 @@
+CREATE COMPUTE MODULE postVote_Compute1
+CREATE FUNCTION Main() RETURNS BOOLEAN
+BEGIN
 
+    CREATE LASTCHILD OF OutputRoot DOMAIN 'JSON';
+    SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 400;
+
+    DECLARE ref REFERENCE TO InputExceptionList.*[1];
+    DECLARE i INTEGER 1;
+
+    WHILE ref IS NOT NULL DO
+        
+        IF ref.Number IS NOT NULL THEN
+            SET OutputRoot.JSON.Data.Error[i].errCode =
+            'BIP' || CAST(ref.Number AS CHARACTER);
+        END IF;
+
+        IF ref.Text IS NOT NULL THEN
+            SET OutputRoot.JSON.Data.Error[i].errMsg = ref.Text;
+        END IF;
+
+        IF ref.Insert[1].Text IS NOT NULL THEN
+            SET OutputRoot.JSON.Data.Error[i].details =
+            ref.Insert[1].Text;
+        END IF;
+
+        SET i = i + 1;
+
+        MOVE ref FIRSTCHILD NAME 'ParserException';
+
+    END WHILE;
+
+    SET OutputRoot.JSON.Data.status = 400;
+
+    RETURN TRUE;
+
+END;
+END MODULE;
