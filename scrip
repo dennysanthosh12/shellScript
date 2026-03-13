@@ -16,3 +16,19 @@ CREATE COMPUTE MODULE postVote_Compute2
 		SET OutputRoot.XMLNSC.input.Age = InputRoot.JSON.Data.Age;
 	END;
 END MODULE;
+
+
+
+
+CREATE COMPUTE MODULE postVote_Compute1
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE env REFERENCE TO InputExceptionList;
+		SET OutputRoot.JSON.Data.error = env;
+		SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 400;
+		
+		DECLARE msg CHARACTER CAST(ASBITSTREAM(env ENCODING InputProperties.Encoding CCSID InputProperties.CodedCharSetId) AS CHARACTER CCSID InputProperties.CodedCharSetId);
+		SET OutputRoot.JSON.Data.Errormsg = msg; 
+		RETURN TRUE;
+	END;
+END MODULE;
