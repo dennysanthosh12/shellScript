@@ -1,38 +1,66 @@
-CREATE COMPUTE MODULE postVote_Compute1
-CREATE FUNCTION Main() RETURNS BOOLEAN
-BEGIN
-
-    CREATE LASTCHILD OF OutputRoot DOMAIN 'JSON';
-    SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 400;
-
-    DECLARE ref REFERENCE TO InputExceptionList.*[1];
-    DECLARE i INTEGER 1;
-
-    WHILE ref IS NOT NULL DO
-        
-        IF ref.Number IS NOT NULL THEN
-            SET OutputRoot.JSON.Data.Error[i].errCode =
-            'BIP' || CAST(ref.Number AS CHARACTER);
-        END IF;
-
-        IF ref.Text IS NOT NULL THEN
-            SET OutputRoot.JSON.Data.Error[i].errMsg = ref.Text;
-        END IF;
-
-        IF ref.Insert[1].Text IS NOT NULL THEN
-            SET OutputRoot.JSON.Data.Error[i].details =
-            ref.Insert[1].Text;
-        END IF;
-
-        SET i = i + 1;
-
-        MOVE ref FIRSTCHILD NAME 'ParserException';
-
-    END WHILE;
-
-    SET OutputRoot.JSON.Data.status = 400;
-
-    RETURN TRUE;
-
-END;
-END MODULE;
+ExceptionList
+	RecoverableException
+			File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/MessageServices/ImbDataFlowNode.cpp
+			Line:INTEGER:1886
+			Function:CHARACTER:ImbDataFlowNode::createExceptionList
+			Type:CHARACTER:ComIbmValidateNode
+			Name:CHARACTER:gen.testApi#FCMComposite_1_6.postVote#FCMComposite_1_5
+			Label:CHARACTER:gen.testApi.postVote (Implementation).Validate
+			Catalog:CHARACTER:BIPmsgs
+			Severity:INTEGER:3
+			Number:INTEGER:2230
+			Text:CHARACTER:Node throwing exception
+			Insert
+					Type:INTEGER:14
+					Text:CHARACTER:gen.testApi.postVote (Implementation).Validate
+			ParserException
+					File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/MTI/MTIforBroker/GenXmlParser4/ImbXMLNSCParser.cpp
+					Line:INTEGER:957
+					Function:CHARACTER:ImbXMLNSCParser::refreshBitStreamFromElementsCommon
+					Type:CHARACTER:ComIbmWSInputNode
+					Name:CHARACTER:gen.testApi#FCMComposite_1_1
+					Label:CHARACTER:gen.testApi.HTTP Input
+					Catalog:CHARACTER:BIPmsgs
+					Severity:INTEGER:3
+					Number:INTEGER:5010
+					Text:CHARACTER:XML Writing Errors have occurred
+					ParserException
+							File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/MTI/MTIforBroker/GenXmlParser4/ImbXMLNSCDocHandler.cpp
+							Line:INTEGER:810
+							Function:CHARACTER:ImbXMLNSCDocHandler::handleParseErrors
+							Type:CHARACTER:ComIbmWSInputNode
+							Name:CHARACTER:gen.testApi#FCMComposite_1_1
+							Label:CHARACTER:gen.testApi.HTTP Input
+							Catalog:CHARACTER:BIPmsgs
+							Severity:INTEGER:3
+							Number:INTEGER:5393
+							Text:CHARACTER:One or more message validation failures have occurred.
+							ParserException
+									File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/MTI/MTIforBroker/GenXmlParser4/ImbXMLNSCDocHandler.cpp
+									Line:INTEGER:819
+									Function:CHARACTER:ImbXMLNSCDocHandler::handleParseErrors
+									Type:CHARACTER:ComIbmWSInputNode
+									Name:CHARACTER:gen.testApi#FCMComposite_1_1
+									Label:CHARACTER:gen.testApi.HTTP Input
+									Catalog:CHARACTER:BIPmsgs
+									Severity:INTEGER:3
+									Number:INTEGER:5026
+									Text:CHARACTER:A schema validation error has occurred while validating the message tree
+									Insert
+											Type:INTEGER:2
+											Text:CHARACTER:6000
+									Insert
+											Type:INTEGER:2
+											Text:CHARACTER:1
+									Insert
+											Type:INTEGER:2
+											Text:CHARACTER:1
+									Insert
+											Type:INTEGER:2
+											Text:CHARACTER:42
+									Insert
+											Type:INTEGER:5
+											Text:CHARACTER:cvc-datatype-valid.1.2: The value "hello" is not a valid value for the "#Anonymous" datatype.
+									Insert
+											Type:INTEGER:5
+											Text:CHARACTER:/Root/XMLNSC/input/Age
