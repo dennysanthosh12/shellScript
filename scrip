@@ -1,43 +1,27 @@
-curl -k -X POST http://10.177.44.58:4422/testapi/v1/vote -d'{"Name":"Denny","Age":20}'
-{"error":{"RecoverableException":{"File":"\/build\/jenkins_swg\/slot0\/product-build\/WMB\/src\/DataFlowEngine\/MessageServices\/ImbDataFlowNode.cpp","Line":1886,"Function":"ImbDataFlowNode::createExceptionList","Type":"ComIbmValidateNode","Name":"gen.testApi#FCMComposite_1_6.postVote#FCMComposite_1_5","Label":"gen.testApi.postVote (Implementation).Validate","Catalog":"BIPmsgs","Severity":3,"Number":2230,"Text":"Node throwing exception","Insert":{"Type":14,"Text":"gen.testApi.postVote (Implementation).Validate"},"RecoverableException":{"File":"\/build\/jenkins_swg\/slot0\/product-build\/WMB\/src\/DataFlowEngine\/BasicNodes\/lib\/ImbCheckNode.cpp","Line":272,"Function":"ImbValidateNode::evaluate","Type":"ComIbmValidateNode","Name":"gen.testApi#FCMComposite_1_6.postVote#FCMComposite_1_5","Label":"gen.testApi.postVote (Implementation).Validate","Catalog":"BIPmsgs","Severity":3,"Number":4162,"Text":"Domain, set or type check failed","Insert":{"Type":5,"Text":"XMLNSC"},"Insert":{"Type":5,"Text":""},"Insert":{"Type":5,"Text":""},"Insert":{"Type":5,"Text":"XMLNSC"},"Insert":{"Type":5,"Text":"Validation.xsd"},"Insert":{"Type":5,"Text":""},"Insert":{"Type":5,"Text":"gen.testApi.postVote (Implementation).Validate"}}}},"Errormsg":""}[eisuser@EISUATEXP09 ~]$
 
 
-
-CREATE COMPUTE MODULE postVote_Compute2
+CREATE COMPUTE MODULE postVote_Compute1
 	CREATE FUNCTION Main() RETURNS BOOLEAN
 	BEGIN
-		CALL CopyEntireMessage();
+		DECLARE exp REFERENCE TO InputExceptionList.*[1];
+		DECLARE ErrorNum CHARACTER ;
+		DECLARE ErrorText CHARACTER ;
+		CREATE LASTCHILD OF OutputRoot DOMAIN 'JSON';
+
+    	SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 400;
+
+		WHILE LASTMOVE(exp) DO
+			SET ErrorNum = exp.Number;
+    		SET ErrorText = exp.Text; 
+    		MOVE exp LASTCHILD;
+		END WHILE;
+    	SET OutputRoot.JSON.Data.error = 'BIP' || CAST(ErrorNum AS CHARACTER) || ': ' || ErrorText;
+
+    RETURN TRUE; 
 		RETURN TRUE;
 	END;
-
-	CREATE PROCEDURE CopyEntireMessage() BEGIN
-		SET OutputRoot = InputRoot;
-		SET OutputRoot.XMLNSC.input.Name = InputRoot.JSON.Data.Name;
-		SET OutputRoot.XMLNSC.input.Age = InputRoot.JSON.Data.Age;
-	END;
 END MODULE;
 
-	
-		
-CREATE COMPUTE MODULE ErrorHandler
 
-CREATE FUNCTION Main() RETURNS BOOLEAN
-BEGIN
-
-    CREATE LASTCHILD OF OutputRoot DOMAIN 'JSON';
-
-    SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 400;
-
-    DECLARE ref REFERENCE TO InputExceptionList.*[1].*[1];
-
-    DECLARE bipNumber INTEGER ref.Number;
-    DECLARE bipText CHARACTER ref.Text;
-
-    SET OutputRoot.JSON.Data.error =
-    'BIP' || CAST(bipNumber AS CHARACTER) || ': ' || bipText;
-
-    RETURN TRUE;
-
-END;
-
-END MODULE;
+curl -k -X POST http://10.177.44.58:4422/testapi/v1/vote -d'{"Name":"Denny","Age":"hello"}'
+{}
