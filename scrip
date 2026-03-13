@@ -1,1 +1,3 @@
-
+DECLARE ref REFERENCE TO InputExceptionList.*[1].*[1];
+SET OutputRoot.JSON.Data.error =
+'BIP' || ref.Number || ': ' || ref.Text;
