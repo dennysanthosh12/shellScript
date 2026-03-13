@@ -1,1 +1,42 @@
+CREATE COMPUTE MODULE ErrorHandler
 
+CREATE FUNCTION Main() RETURNS BOOLEAN
+BEGIN
+
+    CREATE LASTCHILD OF OutputRoot DOMAIN 'JSON';
+
+    SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 400;
+
+    DECLARE ref REFERENCE TO InputExceptionList.*[1];
+    DECLARE errCode CHARACTER '';
+    DECLARE errMsg CHARACTER '';
+    DECLARE details CHARACTER '';
+
+    WHILE ref IS NOT NULL DO
+        
+        IF ref.Number IS NOT NULL THEN
+            SET errCode = 'BIP' || CAST(ref.Number AS CHARACTER);
+        END IF;
+
+        IF ref.Text IS NOT NULL THEN
+            SET errMsg = ref.Text;
+        END IF;
+
+        IF ref.Insert[1].Text IS NOT NULL THEN
+            SET details = ref.Insert[1].Text;
+        END IF;
+
+        MOVE ref LASTCHILD;
+        
+    END WHILE;
+
+    SET OutputRoot.JSON.Data.status = 400;
+    SET OutputRoot.JSON.Data.errorCode = errCode;
+    SET OutputRoot.JSON.Data.message = errMsg;
+    SET OutputRoot.JSON.Data.details = details;
+
+    RETURN TRUE;
+
+END;
+
+END MODULE;
