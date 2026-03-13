@@ -1,3 +1,5 @@
+bEFORE COMPUTE NODE 
+
 
 
 CREATE COMPUTE MODULE postVote_Compute1
@@ -10,9 +12,289 @@ CREATE COMPUTE MODULE postVote_Compute1
 
     	SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 400;
 
-		SET OutputRoot.JSON.Data.error = 'BIP' || ref.Number || ': ' || ref.Text;;
+		SET OutputRoot.JSON.Data.error = 'BIP' || ref.Number || ': ' || ref.Text;
 
 
 	RETURN TRUE;
 	END;
 END MODULE;
+
+
+Message
+	Properties
+			MessageSet:UNKNOWN:null
+			MessageType:UNKNOWN:null
+			MessageFormat:UNKNOWN:null
+			Encoding:UNKNOWN:null
+			CodedCharSetId:UNKNOWN:null
+			Transactional:UNKNOWN:null
+			Persistence:UNKNOWN:null
+			CreationTime:UNKNOWN:null
+			ExpirationTime:UNKNOWN:null
+			Priority:UNKNOWN:null
+			ReplyIdentifier:UNKNOWN:null
+			ReplyProtocol:CHARACTER:SOAP-HTTP
+			Topic:UNKNOWN:null
+			ContentType:UNKNOWN:null
+			IdentitySourceType:UNKNOWN:null
+			IdentitySourceToken:UNKNOWN:null
+			IdentitySourcePassword:UNKNOWN:null
+			IdentitySourceIssuedBy:UNKNOWN:null
+			IdentityMappedType:UNKNOWN:null
+			IdentityMappedToken:UNKNOWN:null
+			IdentityMappedPassword:UNKNOWN:null
+			IdentityMappedIssuedBy:UNKNOWN:null
+	XMLNSC
+			input
+					Name:CHARACTER:Denny
+					Age:CHARACTER:hello
+LocalEnvironment
+	WrittenDestination
+			Label
+					label:CHARACTER:postVote
+	Destination
+			HTTP
+					RequestIdentifier:BLOB:[B@de8b6f49
+			RouterList
+	HTTP
+			Input
+					Path
+							Segment:CHARACTER:testapi
+							Segment:CHARACTER:v1
+							Segment:CHARACTER:vote
+	REST
+			Input
+					Method:CHARACTER:POST
+					Operation:CHARACTER:postVote
+					Path:CHARACTER:/testapi/v1/vote
+					URI:CHARACTER:http://10.177.44.58:4422/testapi/v1/vote
+					Parameters
+WrittenDestination
+	Label
+			label:CHARACTER:postVote
+Destination
+	HTTP
+			RequestIdentifier:BLOB:[B@de8b6f49
+	RouterList
+HTTP
+	Input
+			Path
+					Segment:CHARACTER:testapi
+					Segment:CHARACTER:v1
+					Segment:CHARACTER:vote
+REST
+	Input
+			Method:CHARACTER:POST
+			Operation:CHARACTER:postVote
+			Path:CHARACTER:/testapi/v1/vote
+			URI:CHARACTER:http://10.177.44.58:4422/testapi/v1/vote
+			Parameters
+
+ExceptionList
+	RecoverableException
+			File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/MessageServices/ImbDataFlowNode.cpp
+			Line:INTEGER:1886
+			Function:CHARACTER:ImbDataFlowNode::createExceptionList
+			Type:CHARACTER:ComIbmValidateNode
+			Name:CHARACTER:gen.testApi#FCMComposite_1_6.postVote#FCMComposite_1_5
+			Label:CHARACTER:gen.testApi.postVote (Implementation).Validate
+			Catalog:CHARACTER:BIPmsgs
+			Severity:INTEGER:3
+			Number:INTEGER:2230
+			Text:CHARACTER:Node throwing exception
+			Insert
+					Type:INTEGER:14
+					Text:CHARACTER:gen.testApi.postVote (Implementation).Validate
+			ParserException
+					File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/MTI/MTIforBroker/GenXmlParser4/ImbXMLNSCParser.cpp
+					Line:INTEGER:957
+					Function:CHARACTER:ImbXMLNSCParser::refreshBitStreamFromElementsCommon
+					Type:CHARACTER:ComIbmWSInputNode
+					Name:CHARACTER:gen.testApi#FCMComposite_1_1
+					Label:CHARACTER:gen.testApi.HTTP Input
+					Catalog:CHARACTER:BIPmsgs
+					Severity:INTEGER:3
+					Number:INTEGER:5010
+					Text:CHARACTER:XML Writing Errors have occurred
+					ParserException
+							File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/MTI/MTIforBroker/GenXmlParser4/ImbXMLNSCDocHandler.cpp
+							Line:INTEGER:810
+							Function:CHARACTER:ImbXMLNSCDocHandler::handleParseErrors
+							Type:CHARACTER:ComIbmWSInputNode
+							Name:CHARACTER:gen.testApi#FCMComposite_1_1
+							Label:CHARACTER:gen.testApi.HTTP Input
+							Catalog:CHARACTER:BIPmsgs
+							Severity:INTEGER:3
+							Number:INTEGER:5393
+							Text:CHARACTER:One or more message validation failures have occurred.
+							ParserException
+									File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/MTI/MTIforBroker/GenXmlParser4/ImbXMLNSCDocHandler.cpp
+									Line:INTEGER:819
+									Function:CHARACTER:ImbXMLNSCDocHandler::handleParseErrors
+									Type:CHARACTER:ComIbmWSInputNode
+									Name:CHARACTER:gen.testApi#FCMComposite_1_1
+									Label:CHARACTER:gen.testApi.HTTP Input
+									Catalog:CHARACTER:BIPmsgs
+									Severity:INTEGER:3
+									Number:INTEGER:5026
+									Text:CHARACTER:A schema validation error has occurred while validating the message tree
+									Insert
+											Type:INTEGER:2
+											Text:CHARACTER:6000
+									Insert
+											Type:INTEGER:2
+											Text:CHARACTER:1
+									Insert
+											Type:INTEGER:2
+											Text:CHARACTER:1
+									Insert
+											Type:INTEGER:2
+											Text:CHARACTER:42
+									Insert
+											Type:INTEGER:5
+											Text:CHARACTER:cvc-datatype-valid.1.2: The value "hello" is not a valid value for the "#Anonymous" datatype.
+									Insert
+											Type:INTEGER:5
+											Text:CHARACTER:/Root/XMLNSC/input/Age
+
+aFTER COMPUTE NODE 
+
+Message
+	Properties
+			MessageSet:UNKNOWN:null
+			MessageType:UNKNOWN:null
+			MessageFormat:UNKNOWN:null
+			Encoding:UNKNOWN:null
+			CodedCharSetId:UNKNOWN:null
+			Transactional:UNKNOWN:null
+			Persistence:UNKNOWN:null
+			CreationTime:UNKNOWN:null
+			ExpirationTime:UNKNOWN:null
+			Priority:UNKNOWN:null
+			ReplyIdentifier:UNKNOWN:null
+			ReplyProtocol:CHARACTER:SOAP-HTTP
+			Topic:UNKNOWN:null
+			ContentType:UNKNOWN:null
+			IdentitySourceType:UNKNOWN:null
+			IdentitySourceToken:UNKNOWN:null
+			IdentitySourcePassword:UNKNOWN:null
+			IdentitySourceIssuedBy:UNKNOWN:null
+			IdentityMappedType:UNKNOWN:null
+			IdentityMappedToken:UNKNOWN:null
+			IdentityMappedPassword:UNKNOWN:null
+			IdentityMappedIssuedBy:UNKNOWN:null
+	JSON
+			Data
+LocalEnvironment
+	WrittenDestination
+			Label
+					label:CHARACTER:postVote
+	Destination
+			HTTP
+					RequestIdentifier:BLOB:[B@add9a05e
+			RouterList
+	HTTP
+			Input
+					Path
+							Segment:CHARACTER:testapi
+							Segment:CHARACTER:v1
+							Segment:CHARACTER:vote
+	REST
+			Input
+					Method:CHARACTER:POST
+					Operation:CHARACTER:postVote
+					Path:CHARACTER:/testapi/v1/vote
+					URI:CHARACTER:http://10.177.44.58:4422/testapi/v1/vote
+					Parameters
+WrittenDestination
+	Label
+			label:CHARACTER:postVote
+Destination
+	HTTP
+			RequestIdentifier:BLOB:[B@add9a05e
+	RouterList
+REST
+	Input
+			Method:CHARACTER:POST
+			Operation:CHARACTER:postVote
+			Path:CHARACTER:/testapi/v1/vote
+			URI:CHARACTER:http://10.177.44.58:4422/testapi/v1/vote
+			Parameters
+HTTP
+	Input
+			Path
+					Segment:CHARACTER:testapi
+					Segment:CHARACTER:v1
+					Segment:CHARACTER:vote
+
+ExceptionList
+	RecoverableException
+			File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/MessageServices/ImbDataFlowNode.cpp
+			Line:INTEGER:1886
+			Function:CHARACTER:ImbDataFlowNode::createExceptionList
+			Type:CHARACTER:ComIbmValidateNode
+			Name:CHARACTER:gen.testApi#FCMComposite_1_6.postVote#FCMComposite_1_5
+			Label:CHARACTER:gen.testApi.postVote (Implementation).Validate
+			Catalog:CHARACTER:BIPmsgs
+			Severity:INTEGER:3
+			Number:INTEGER:2230
+			Text:CHARACTER:Node throwing exception
+			Insert
+					Type:INTEGER:14
+					Text:CHARACTER:gen.testApi.postVote (Implementation).Validate
+			ParserException
+					File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/MTI/MTIforBroker/GenXmlParser4/ImbXMLNSCParser.cpp
+					Line:INTEGER:957
+					Function:CHARACTER:ImbXMLNSCParser::refreshBitStreamFromElementsCommon
+					Type:CHARACTER:ComIbmWSInputNode
+					Name:CHARACTER:gen.testApi#FCMComposite_1_1
+					Label:CHARACTER:gen.testApi.HTTP Input
+					Catalog:CHARACTER:BIPmsgs
+					Severity:INTEGER:3
+					Number:INTEGER:5010
+					Text:CHARACTER:XML Writing Errors have occurred
+					ParserException
+							File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/MTI/MTIforBroker/GenXmlParser4/ImbXMLNSCDocHandler.cpp
+							Line:INTEGER:810
+							Function:CHARACTER:ImbXMLNSCDocHandler::handleParseErrors
+							Type:CHARACTER:ComIbmWSInputNode
+							Name:CHARACTER:gen.testApi#FCMComposite_1_1
+							Label:CHARACTER:gen.testApi.HTTP Input
+							Catalog:CHARACTER:BIPmsgs
+							Severity:INTEGER:3
+							Number:INTEGER:5393
+							Text:CHARACTER:One or more message validation failures have occurred.
+							ParserException
+									File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/MTI/MTIforBroker/GenXmlParser4/ImbXMLNSCDocHandler.cpp
+									Line:INTEGER:819
+									Function:CHARACTER:ImbXMLNSCDocHandler::handleParseErrors
+									Type:CHARACTER:ComIbmWSInputNode
+									Name:CHARACTER:gen.testApi#FCMComposite_1_1
+									Label:CHARACTER:gen.testApi.HTTP Input
+									Catalog:CHARACTER:BIPmsgs
+									Severity:INTEGER:3
+									Number:INTEGER:5026
+									Text:CHARACTER:A schema validation error has occurred while validating the message tree
+									Insert
+											Type:INTEGER:2
+											Text:CHARACTER:6000
+									Insert
+											Type:INTEGER:2
+											Text:CHARACTER:1
+									Insert
+											Type:INTEGER:2
+											Text:CHARACTER:1
+									Insert
+											Type:INTEGER:2
+											Text:CHARACTER:42
+									Insert
+											Type:INTEGER:5
+											Text:CHARACTER:cvc-datatype-valid.1.2: The value "hello" is not a valid value for the "#Anonymous" datatype.
+									Insert
+											Type:INTEGER:5
+											Text:CHARACTER:/Root/XMLNSC/input/Age
+
+
+
+curl -k -X POST http://10.177.44.58:4422/testapi/v1/vote -d'{"Name":"Denny","Age":"hello"}'
+{}
