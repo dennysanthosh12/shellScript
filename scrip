@@ -17,18 +17,27 @@ CREATE COMPUTE MODULE postVote_Compute2
 	END;
 END MODULE;
 
-
-
-
-CREATE COMPUTE MODULE postVote_Compute1
-	CREATE FUNCTION Main() RETURNS BOOLEAN
-	BEGIN
-		DECLARE env REFERENCE TO InputExceptionList;
-		SET OutputRoot.JSON.Data.error = env;
-		SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 400;
+	
 		
-		DECLARE msg CHARACTER CAST(ASBITSTREAM(env ENCODING InputProperties.Encoding CCSID InputProperties.CodedCharSetId) AS CHARACTER CCSID InputProperties.CodedCharSetId);
-		SET OutputRoot.JSON.Data.Errormsg = msg; 
-		RETURN TRUE;
-	END;
+CREATE COMPUTE MODULE ErrorHandler
+
+CREATE FUNCTION Main() RETURNS BOOLEAN
+BEGIN
+
+    CREATE LASTCHILD OF OutputRoot DOMAIN 'JSON';
+
+    SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 400;
+
+    DECLARE ref REFERENCE TO InputExceptionList.*[1].*[1];
+
+    DECLARE bipNumber INTEGER ref.Number;
+    DECLARE bipText CHARACTER ref.Text;
+
+    SET OutputRoot.JSON.Data.error =
+    'BIP' || CAST(bipNumber AS CHARACTER) || ': ' || bipText;
+
+    RETURN TRUE;
+
+END;
+
 END MODULE;
