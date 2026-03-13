@@ -1,3 +1,18 @@
-DECLARE ref REFERENCE TO InputExceptionList.*[1].*[1];
-SET OutputRoot.JSON.Data.error =
-'BIP' || ref.Number || ': ' || ref.Text;
+
+
+CREATE COMPUTE MODULE postVote_Compute1
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE ref REFERENCE TO InputExceptionList.*[1].*[1];
+		DECLARE ErrorNum CHARACTER ;
+		DECLARE ErrorText CHARACTER ;
+		CREATE LASTCHILD OF OutputRoot DOMAIN 'JSON';
+
+    	SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 400;
+
+		SET OutputRoot.JSON.Data.error = 'BIP' || ref.Number || ': ' || ref.Text;;
+
+
+	RETURN TRUE;
+	END;
+END MODULE;
