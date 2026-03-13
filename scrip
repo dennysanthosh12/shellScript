@@ -24,6 +24,9 @@ Message
 			IdentityMappedIssuedBy:UNKNOWN:null
 	JSON
 			Data
+					Error
+							errCode:CHARACTER:BIP2230
+							errMsg:CHARACTER:Node throwing exception
 					status:INTEGER:400
 LocalEnvironment
 	WrittenDestination
@@ -31,7 +34,7 @@ LocalEnvironment
 					label:CHARACTER:postVote
 	Destination
 			HTTP
-					RequestIdentifier:BLOB:[B@3a57949a
+					RequestIdentifier:BLOB:[B@8ffc4fa0
 			RouterList
 	HTTP
 			Input
@@ -113,8 +116,11 @@ ExceptionList
 									Insert
 											Type:INTEGER:5
 											Text:CHARACTER:/Root/XMLNSC/input/Age
-
 											
+											
+											
+now i got {"Error":{"errCode":"BIP2230","errMsg":"Node throwing exception"},"status":400}
+
 
 
 CREATE COMPUTE MODULE postVote_Compute1
@@ -126,7 +132,7 @@ CREATE COMPUTE MODULE postVote_Compute1
     DECLARE ref REFERENCE TO InputExceptionList.*[1];
     DECLARE i INTEGER 1;
 
-    WHILE ref IS NOT NULL DO
+    WHILE LASTMOVE(ref) DO
         
         IF ref.Number IS NOT NULL THEN
             SET OutputRoot.JSON.Data.Error[1].errCode =
