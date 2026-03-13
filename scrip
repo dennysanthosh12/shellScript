@@ -1,3 +1,52 @@
+Message
+	Properties
+			MessageSet:UNKNOWN:null
+			MessageType:UNKNOWN:null
+			MessageFormat:UNKNOWN:null
+			Encoding:UNKNOWN:null
+			CodedCharSetId:UNKNOWN:null
+			Transactional:UNKNOWN:null
+			Persistence:UNKNOWN:null
+			CreationTime:UNKNOWN:null
+			ExpirationTime:UNKNOWN:null
+			Priority:UNKNOWN:null
+			ReplyIdentifier:UNKNOWN:null
+			ReplyProtocol:CHARACTER:SOAP-HTTP
+			Topic:UNKNOWN:null
+			ContentType:UNKNOWN:null
+			IdentitySourceType:UNKNOWN:null
+			IdentitySourceToken:UNKNOWN:null
+			IdentitySourcePassword:UNKNOWN:null
+			IdentitySourceIssuedBy:UNKNOWN:null
+			IdentityMappedType:UNKNOWN:null
+			IdentityMappedToken:UNKNOWN:null
+			IdentityMappedPassword:UNKNOWN:null
+			IdentityMappedIssuedBy:UNKNOWN:null
+	JSON
+			Data
+					status:INTEGER:400
+LocalEnvironment
+	WrittenDestination
+			Label
+					label:CHARACTER:postVote
+	Destination
+			HTTP
+					RequestIdentifier:BLOB:[B@3a57949a
+			RouterList
+	HTTP
+			Input
+					Path
+							Segment:CHARACTER:testapi
+							Segment:CHARACTER:v1
+							Segment:CHARACTER:vote
+	REST
+			Input
+					Method:CHARACTER:POST
+					Operation:CHARACTER:postVote
+					Path:CHARACTER:/testapi/v1/vote
+					URI:CHARACTER:http://10.177.44.58:4422/testapi/v1/vote
+					Parameters
+
 ExceptionList
 	RecoverableException
 			File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/MessageServices/ImbDataFlowNode.cpp
@@ -64,3 +113,37 @@ ExceptionList
 									Insert
 											Type:INTEGER:5
 											Text:CHARACTER:/Root/XMLNSC/input/Age
+
+											
+
+
+CREATE COMPUTE MODULE postVote_Compute1
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+	CREATE LASTCHILD OF OutputRoot DOMAIN 'JSON';
+    SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 400;
+
+    DECLARE ref REFERENCE TO InputExceptionList.*[1];
+    DECLARE i INTEGER 1;
+
+    WHILE ref IS NOT NULL DO
+        
+        IF ref.Number IS NOT NULL THEN
+            SET OutputRoot.JSON.Data.Error[1].errCode =
+            'BIP' || CAST(ref.Number AS CHARACTER);
+        END IF;
+
+        IF ref.Text IS NOT NULL THEN
+            SET OutputRoot.JSON.Data.Error[1].errMsg = ref.Text;
+        END IF;
+
+        MOVE ref NEXTSIBLING;
+
+    END WHILE;
+
+    SET OutputRoot.JSON.Data.status = 400;
+
+
+	RETURN TRUE;
+	END;
+END MODULE;
