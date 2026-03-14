@@ -1,85 +1,155 @@
-DECLARE TCPOutputTimeOut EXTERNAL INTEGER 5;
-DECLARE TCPReceiveTimeOut EXTERNAL INTEGER 5;
+DECLARE TCPOutputTimeOut EXTERNAL INTEGER 10;
+DECLARE TCPReceiveTimeOut EXTERNAL INTEGER 10;
+DECLARE TxnDetails EXTERNAL CHARACTER 'C';
+DECLARE TxnType EXTERNAL CHARACTER 'C';
+DECLARE TxnSubType EXTERNAL CHARACTER 'C';
 
-CREATE COMPUTE MODULE accountBalanceEnquiry_E0_MR_sys_Request
+CREATE COMPUTE MODULE inbCustomerEnquiry_sys_Compute
 	CREATE FUNCTION Main() RETURNS BOOLEAN
 	BEGIN
-		SET OutputLocalEnvironment.Destination.TCPIP.Output.Timeout = TCPOutputTimeOut;
-		SET OutputLocalEnvironment.TCPIP.Receive.Timeout = TCPOutputTimeOut;
-		SET Environment.REQUEST_REFERENCE_NUMBER = InputRoot.JSON.Data.REQUEST_REFERENCE_NUMBER;
-		SET OutputRoot = InputRoot;
+		   DECLARE Env REFERENCE TO Environment; 
+	       DECLARE inref REFERENCE TO InputRoot.JSON.Data;
+	       
+	       SET Environment.REQUEST_REFERENCE_NUMBER = inref.REQUEST_REFERENCE_NUMBER;
+	       
+	       SET OutputLocalEnvironment.Destination.TCPIP.Output.Timeout = TCPOutputTimeOut;
+	       SET OutputLocalEnvironment.TCPIP.Receive.Timeout = TCPReceiveTimeOut;
+    	   SET Environment.RESPONSE_STATUS = '0';
+    	   SET Environment.msgID = SUBSTRING(Environment.FEJNumber FROM 1 FOR 6);			   
+	   	   SET Environment.SOURCE_ID = inref.SOURCE_ID;
+	   	   SET OutputRoot.JSON.Data.SOURCE_ID = inref.SOURCE_ID;
+		   SET OutputRoot.DFDL.Request.body.MSG_LENGTH  = ' 0029'; --Utilities.getCacheValueFromWXS('SYSTEM.BROKER.DEFAULTMAP','INB400_MSGLENGTH');
+           SET OutputRoot.DFDL.Request.body.MSG_ID = Environment.msgID;
+           SET OutputRoot.DFDL.Request.body.TXN_NUMBER = '000400'; --Utilities.getCacheValueFromWXS('SYSTEM.BROKER.DEFAULTMAP','INB400_TXNNUMBER');
+           SET OutputRoot.DFDL.Request.body.ACCOUNT_NUMBER = inref.ACCOUNT_NUMBER;             
+ 		   
+ 		   DECLARE CBS_REGION CHARACTER 'Z';
+
+		SET Environment.CBSIP = '10.177.44.58' ;
+		SET Environment.INBPORT = CAST('5000' AS INTEGER) ;
 		
-			   DECLARE Env REFERENCE TO Environment; 
-		       
-		       SET Environment.RESPONSE_STATUS = '0'; 
-		        
-	           SET OutputRoot.DFDL.Request.body.MetaData1 = ' ';
-	           SET OutputRoot.DFDL.Request.body.PROTOCOL_ID = InputRoot.JSON.Data.PROTOCOL_ID;
-	           SET OutputRoot.DFDL.Request.body.TRANSACTION_TYPE = InputRoot.JSON.Data.TRANSACTION_TYPE;
-	           SET OutputRoot.DFDL.Request.body.PRODUCT_CODE =  InputRoot.JSON.Data.PRODUCT_CODE;
-	           SET OutputRoot.DFDL.Request.body.BRANCH_CODE = InputRoot.JSON.Data.BRANCH_CODE;
-	           SET OutputRoot.DFDL.Request.body.REFERENCE_NUMBER = InputRoot.JSON.Data.REQUEST_REFERENCE_NUMBER;
-	           SET OutputRoot.DFDL.Request.body.ACCOUNT_NUMBER =  InputRoot.JSON.Data.ACCOUNT_NUMBER;
-	           
-	         DECLARE CBSString CHARACTER CAST(ASBITSTREAM(OutputRoot.DFDL CCSID 1208) AS CHARACTER CCSID 1208); 
-	    	CALL Logger.LOGGER('Request Sent to CBS+' || CBSString,Env );	  
-	    
-		SET Environment."X-TxnDetails".TxnDetails='CBS';
-		SET Environment."X-TxnDetails".TxnType='MR';
-		SET Environment."X-TxnDetails".TxnSubType='E0';
-		CALL EIS_API_LOGGER.EISLOGGING('X-TxnDetails+' ,Env) ;
-	END;
-END MODULE;
-
-
-
-
-
-
-
-BROKER SCHEMA EIS_API_LOGGER
-
-
-CREATE COMPUTE MODULE MR_SourceMapper_MR_Writing
-	CREATE FUNCTION Main() RETURNS BOOLEAN
-	BEGIN
-		SET OutputRoot = InputRoot;
-		SET OutputLocalEnvironment = InputLocalEnvironment ;
-		DECLARE Env REFERENCE TO Environment;
-		--For Testing Only
-
-		DECLARE CBS_REGION CHARACTER ;
---		SET CBS_REGION = COALESCE(EIS_API_LOGGER_Utility.getCacheValueFromWXS('SYSTEM.BROKER.DEFAULTMAP',COALESCE( OutputRoot.JSON.Data.SOURCE_ID,Environment."X-InputRequest".SOURCE_ID,Environment.SOURCE_ID) || '_REGION'),NULL);
---		SET Environment.CBSIP = COALESCE(EIS_API_LOGGER_Utility.getCacheValueFromWXS('SYSTEM.BROKER.DEFAULTMAP', CBS_REGION || '_IP'),NULL);
---		SET Environment.MRPORT = COALESCE(EIS_API_LOGGER_Utility.getCacheValueFromWXS('SYSTEM.BROKER.DEFAULTMAP', 'MR' || CBS_REGION || '_PORT'),NULL);
-
-		SET CBS_REGION = COALESCE(EIS_API_LOGGER_Utility.getCacheValueFromWXS('GENERIC_LIB_CACHE',COALESCE( OutputRoot.JSON.Data.SOURCE_ID,Environment."X-InputRequest".SOURCE_ID,Environment.SOURCE_ID) || '_REGION'),EIS_API_LOGGER_Utility.getCacheValueFromWXS('SYSTEM.BROKER.DEFAULTMAP',COALESCE( OutputRoot.JSON.Data.SOURCE_ID,Environment."X-InputRequest".SOURCE_ID,Environment.SOURCE_ID) || '_REGION'),NULL);
-		SET Environment.CBSIP = COALESCE(EIS_API_LOGGER_Utility.getCacheValueFromWXS('GENERIC_LIB_CACHE', CBS_REGION || '_IP'),EIS_API_LOGGER_Utility.getCacheValueFromWXS('SYSTEM.BROKER.DEFAULTMAP', CBS_REGION || '_IP'),NULL);
-		SET Environment.MRPORT = COALESCE(EIS_API_LOGGER_Utility.getCacheValueFromWXS('GENERIC_LIB_CACHE', 'MR' || CBS_REGION || '_PORT'),EIS_API_LOGGER_Utility.getCacheValueFromWXS('SYSTEM.BROKER.DEFAULTMAP', 'MR' || CBS_REGION || '_PORT'),NULL);
-
-		IF CONTAINS(CBS_REGION,'JavaError') OR CONTAINS(Environment.CBSIP,'JavaError') OR CONTAINS(Environment.MRPORT,'JavaError')THEN
-			DELETE FIELD Environment.CBSIP;
-			DELETE FIELD Environment.MRPORT;
-		END IF;
 
 		SET OutputLocalEnvironment.Destination.TCPIP.Output.Hostname = Environment.CBSIP;
-		SET OutputLocalEnvironment.Destination.TCPIP.Output.Port = Environment.MRPORT;
-		SET Environment.CBSPORT = Environment.MRPORT;
+		SET OutputLocalEnvironment.Destination.TCPIP.Output.Port = Environment.INBPORT;
+		SET Environment.CBSPORT = Environment.INBPORT;
 
 		SET OutputLocalEnvironment.TCPIP.Receive.Hostname = Environment.CBSIP;
-		SET OutputLocalEnvironment.TCPIP.Receive.Port = Environment.MRPORT;
-
-		SET Environment."X-DestinationDetails".MR_REGION = OutputLocalEnvironment.Destination.TCPIP.Output.Hostname || ':' || OutputLocalEnvironment.Destination.TCPIP.Output.Port ;
-		--For Testing Only
-
-		DECLARE CBSString CHARACTER CAST(ASBITSTREAM(InputRoot.DFDL CCSID COALESCE(InputRoot.Properties.CodedCharSetId,5348) Encoding COALESCE(InputRoot.Properties.Encoding,546)) AS CHARACTER CCSID COALESCE(InputRoot.Properties.CodedCharSetId,5348) Encoding COALESCE(InputRoot.Properties.Encoding,546));
-		DECLARE CBSReqTranCode CHARACTER SUBSTRING(CBSString FROM 6 FOR 2);
-
-		SET Environment."X-DestinationDetails".MsgType = 'MR' ;
-		SET Environment."X-DestinationDetails"."Request TranCode" = CBSReqTranCode ;
-		CALL EISLOGGING('X-DestinationDetails+' ,Env) ;
-		CALL EISLOGGING('Request Sent to CBS+' || CBSString,Env);
+		SET OutputLocalEnvironment.TCPIP.Receive.Port = Environment.INBPORT;
+		DECLARE CBSString CHARACTER CAST(ASBITSTREAM(OutputRoot.DFDL CCSID 1208) AS CHARACTER CCSID 1208); 
+		CALL Logger.LOGGER('Request Sent to CBS+' || CBSString,Env );
+			SET Environment."X-TxnDetails".TxnDetails= TxnDetails;
+			SET Environment."X-TxnDetails".TxnType= TxnType;
+			SET Environment."X-TxnDetails".TxnSubType= TxnSubType;
+			CALL EIS_API_LOGGER.EISLOGGING('X-TxnDetails+' ,Env) ;
+			
 		RETURN TRUE;
 	END;
 
 END MODULE;
+
+
+
+
+CREATE COMPUTE MODULE inbCustomerEnquiry_sys_Compute1
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputLocalEnvironment=InputLocalEnvironment;
+		SET OutputLocalEnvironment.TCPIP.Receive.Length= LTRIM(CAST (InputRoot.BLOB.BLOB AS CHARACTER CCSID COALESCE(InputRoot.Properties.CodedCharSetId,5348)  Encoding COALESCE(InputRoot.Properties.Encoding,546)));
+		SET OutputRoot.Properties = InputRoot.Properties;
+		DECLARE Env REFERENCE TO Environment ;
+        CALL EIS_API_LOGGER.EISLOGGING('Destination+' || InputLocalEnvironment.WrittenDestination.TCPIP.Output.ConnectionDetails.Hostname || ' : ' || CAST(InputLocalEnvironment.WrittenDestination.TCPIP.Output.ConnectionDetails.Port AS CHARACTER CCSID 5348) ,Env);
+	
+		RETURN TRUE;
+	END;
+
+END MODULE;
+
+
+
+
+
+CREATE COMPUTE MODULE inbCustomerEnquiry_sys_Compute3
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+		DECLARE Env REFERENCE TO Environment;
+		SET OutputRoot =CAST(' ' AS BLOB CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding)|| CAST(InputLocalEnvironment.TCPIP.Receive.Length AS BLOB CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding)||InputRoot.BLOB.BLOB;
+		DECLARE CbsString CHARACTER ' ' || InputLocalEnvironment.TCPIP.Receive.Length || CAST(InputRoot.BLOB.BLOB AS CHARACTER CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding);
+		--SET CbsString = SUBSTRING(CbsString FROM 1 FOR 5) || '000000' || SUBSTRING(CbsString FROM 12);
+		SET Environment.CBS_MSG_ID = SUBSTRING (CbsString FROM 6 FOR 6);
+		SET Environment.MSGLength = SUBSTRING (CbsString FROM 1 FOR 5);		
+		IF Environment.MSGLength = ' 0941' OR Environment.MSGLength = ' 0165' OR Environment.MSGLength = ' 0174' OR Environment.MSGLength = ' 0179' THEN
+			SET Environment.RES_FLAG = 'Y';
+		END IF;		
+		CREATE LASTCHILD OF OutputRoot DOMAIN('DFDL')
+		PARSE(OutputRoot ENCODING InputRoot.Properties.Encoding
+		CCSID InputRoot.Properties.CodedCharSetId
+		TYPE '{}:Response');
+		RETURN TRUE;
+	END;
+
+END MODULE;
+
+
+
+
+
+
+
+CREATE COMPUTE MODULE inbCustomerEnquiry_sys_Compute2
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE Env REFERENCE TO Environment;
+		--SET OutputRoot.JSON.Data.abcfsFAS = Environment.RESP_FLAG;
+		IF Environment.RES_FLAG = 'Y' THEN
+			SET Environment.RESPONSE_STATUS = '1';
+			SET OutputRoot.JSON.Data.ERROR_CODE = COALESCE(Environment.ERROR_CODE, InputRoot.JSON.Data.ERROR_CODE);
+			SET OutputRoot.JSON.Data.ERROR_DESCRIPTION = COALESCE(Environment.ERROR_DESCRIPTION, InputRoot.JSON.Data.ERROR_DESCRIPTION);
+			SET OutputRoot.JSON.Data.RESPONSE_STATUS = '1';
+		ELSE
+			IF Environment.INBFEJNO <> Environment.CBS_MSG_ID THEN
+				SET Environment.RESPONSE_STATUS = '1';
+				SET Environment.ERROR_CODE = 'SI163';
+				SET Environment.ERROR_DESCRIPTION = 'JOURNAL NUMBER MISMATCH';
+			END IF;
+
+			IF Environment.RESPONSE_STATUS = '0' THEN
+				SET OutputRoot = InputRoot;
+				SET Environment.RESPONSE_STATUS = '0';
+				SET OutputRoot.JSON.Data.ERROR_CODE VALUE = '';
+				SET OutputRoot.JSON.Data.ERROR_DESCRIPTION VALUE = '';
+				SET OutputRoot.JSON.Data.RESPONSE_STATUS = '0';
+			ELSE
+				SET Environment.RESPONSE_STATUS = '1';
+				SET OutputRoot.JSON.Data.ERROR_CODE = COALESCE(Environment.ERROR_CODE, InputRoot.JSON.Data.ERROR_CODE);
+				SET OutputRoot.JSON.Data.ERROR_DESCRIPTION = COALESCE(Environment.ERROR_DESCRIPTION, InputRoot.JSON.Data.ERROR_DESCRIPTION);
+				SET OutputRoot.JSON.Data.RESPONSE_STATUS = '1';
+
+			END IF;
+		END IF;
+
+		SET OutputRoot.JSON.Data.RESPONSE_DATE = CAST(CURRENT_TIMESTAMP AS CHARACTER FORMAT 'dd-MM-yyyy HH:mm:ss');
+		SET OutputRoot.JSON.Data.REQUEST_REFERENCE_NUMBER = Environment.REQUEST_REFERENCE_NUMBER;
+		RETURN TRUE;
+	END;
+END MODULE;
+
+
+	BIP9320E
+Message Flow 'gen.inbAccountShortEnquiry_sys', 'gen.inbAccountShortEnquiry_sys' encountered a failure and could not start. 
+
+BIP3550E
+Invalid Connection Details property: 'INB'. 
+
+BIP3571E
+Invalid port number: 'INB'. 
+
+BIP9332I
+SharedLibrary 'EIS_API_LOGGER' has been changed successfully. 
+
+BIP9333W
+RestAPI 'inbAccountShortEnquiry_sys' has been changed but contains errors which has prevented some resources from starting. 
+
+BIP1096E
+The source 'inbAccountShortEnquiry_sysproject.generated.bar' has been deployed but there were one or more failures which may mean the deployed resources will be unable to execute. 
+
