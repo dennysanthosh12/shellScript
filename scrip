@@ -13,15 +13,15 @@ CREATE COMPUTE MODULE postVote_Compute1
     WHILE LASTMOVE(ref) DO
     	
     	IF ref.Number IS NOT NULL THEN
-    		SET OutputRoot.Json.Data.ErrorCode = CAST(ref.Numebr AS CHARACTER CCSID COALESCE(InputRoot.Properties.CodedCharSetId ,1208));
+    		SET OutputRoot.Json.Data.ErrorCode = CAST(ref.Number AS CHARACTER CCSID COALESCE(InputRoot.Properties.CodedCharSetId ,1208));
     	END IF;
     	
-        IF ref.Inser[5].Text IS NOT NULL THEN
+        IF ref.Insert[5].Text IS NOT NULL THEN
             SET OutputRoot.JSON.Data.Error[1].errMsg =
             'BIP' || CAST(ref.Number AS CHARACTER);
         END IF;
 
-        IF ref.Inser[6].Text IS NOT NULL THEN
+        IF ref.Insert[6].Text IS NOT NULL THEN
             SET OutputRoot.JSON.Data.Error[1].errField = ref.Text;
         END IF;
 
