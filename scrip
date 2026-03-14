@@ -1,155 +1,85 @@
+DECLARE TCPOutputTimeOut EXTERNAL INTEGER 5;
+DECLARE TCPReceiveTimeOut EXTERNAL INTEGER 5;
 
-
-CREATE COMPUTE MODULE postVote_Compute1
+CREATE COMPUTE MODULE accountBalanceEnquiry_E0_MR_sys_Request
 	CREATE FUNCTION Main() RETURNS BOOLEAN
 	BEGIN
-	CREATE LASTCHILD OF OutputRoot DOMAIN 'JSON';
-    SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 400;
-
-    DECLARE ref REFERENCE TO InputExceptionList.*[1];
-    DECLARE i INTEGER 1;
-
-    WHILE LASTMOVE(ref) DO
-        MOVE ref LASTCHILD;
-    END WHILE;
-	
-	IF ref.Number IS NOT NULL THEN
-		SET OutputRoot.Json.Data.ErrorCode = CAST(ref.Number AS CHARACTER CCSID COALESCE(InputRoot.Properties.CodedCharSetId ,1208));
-    END IF;
-    	
-    IF ref.Insert[5].Text IS NOT NULL THEN
-        SET OutputRoot.JSON.Data.Error[1].errMsg = 'BIP' || CAST(ref.Number AS CHARACTER);
-    END IF;
-
-    IF ref.Insert[6].Text IS NOT NULL THEN
-        SET OutputRoot.JSON.Data.Error[1].errField = ref.Text;
-    END IF;
-	
-    SET OutputRoot.JSON.Data.status = 400;
-
-
-	RETURN TRUE;
+		SET OutputLocalEnvironment.Destination.TCPIP.Output.Timeout = TCPOutputTimeOut;
+		SET OutputLocalEnvironment.TCPIP.Receive.Timeout = TCPOutputTimeOut;
+		SET Environment.REQUEST_REFERENCE_NUMBER = InputRoot.JSON.Data.REQUEST_REFERENCE_NUMBER;
+		SET OutputRoot = InputRoot;
+		
+			   DECLARE Env REFERENCE TO Environment; 
+		       
+		       SET Environment.RESPONSE_STATUS = '0'; 
+		        
+	           SET OutputRoot.DFDL.Request.body.MetaData1 = ' ';
+	           SET OutputRoot.DFDL.Request.body.PROTOCOL_ID = InputRoot.JSON.Data.PROTOCOL_ID;
+	           SET OutputRoot.DFDL.Request.body.TRANSACTION_TYPE = InputRoot.JSON.Data.TRANSACTION_TYPE;
+	           SET OutputRoot.DFDL.Request.body.PRODUCT_CODE =  InputRoot.JSON.Data.PRODUCT_CODE;
+	           SET OutputRoot.DFDL.Request.body.BRANCH_CODE = InputRoot.JSON.Data.BRANCH_CODE;
+	           SET OutputRoot.DFDL.Request.body.REFERENCE_NUMBER = InputRoot.JSON.Data.REQUEST_REFERENCE_NUMBER;
+	           SET OutputRoot.DFDL.Request.body.ACCOUNT_NUMBER =  InputRoot.JSON.Data.ACCOUNT_NUMBER;
+	           
+	         DECLARE CBSString CHARACTER CAST(ASBITSTREAM(OutputRoot.DFDL CCSID 1208) AS CHARACTER CCSID 1208); 
+	    	CALL Logger.LOGGER('Request Sent to CBS+' || CBSString,Env );	  
+	    
+		SET Environment."X-TxnDetails".TxnDetails='CBS';
+		SET Environment."X-TxnDetails".TxnType='MR';
+		SET Environment."X-TxnDetails".TxnSubType='E0';
+		CALL EIS_API_LOGGER.EISLOGGING('X-TxnDetails+' ,Env) ;
 	END;
 END MODULE;
 
-Still i am getting 
 
-curl -k -X POST http://10.177.44.58:4422/testapi/v1/vote -d'{"Name":"Denny","Age":"hello"}'
-{"status":400}
 
-This is the tree after the above compute node 
-Message
-	Properties
-			MessageSet:UNKNOWN:null
-			MessageType:UNKNOWN:null
-			MessageFormat:UNKNOWN:null
-			Encoding:UNKNOWN:null
-			CodedCharSetId:UNKNOWN:null
-			Transactional:UNKNOWN:null
-			Persistence:UNKNOWN:null
-			CreationTime:UNKNOWN:null
-			ExpirationTime:UNKNOWN:null
-			Priority:UNKNOWN:null
-			ReplyIdentifier:UNKNOWN:null
-			ReplyProtocol:CHARACTER:SOAP-HTTP
-			Topic:UNKNOWN:null
-			ContentType:UNKNOWN:null
-			IdentitySourceType:UNKNOWN:null
-			IdentitySourceToken:UNKNOWN:null
-			IdentitySourcePassword:UNKNOWN:null
-			IdentitySourceIssuedBy:UNKNOWN:null
-			IdentityMappedType:UNKNOWN:null
-			IdentityMappedToken:UNKNOWN:null
-			IdentityMappedPassword:UNKNOWN:null
-			IdentityMappedIssuedBy:UNKNOWN:null
-	JSON
-			Data
-					status:INTEGER:400
 
-LocalEnvironment
-	WrittenDestination
-			Label
-					label:CHARACTER:postVote
-	Destination
-			HTTP
-					RequestIdentifier:BLOB:[B@12b6d34a
-			RouterList
-	HTTP
-			Input
-					Path
-							Segment:CHARACTER:testapi
-							Segment:CHARACTER:v1
-							Segment:CHARACTER:vote
-	REST
-			Input
-					Method:CHARACTER:POST
-					Operation:CHARACTER:postVote
-					Path:CHARACTER:/testapi/v1/vote
-					URI:CHARACTER:http://10.177.44.58:4422/testapi/v1/vote
-					Parameters
-ExceptionList
-	RecoverableException
-			File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/MessageServices/ImbDataFlowNode.cpp
-			Line:INTEGER:1886
-			Function:CHARACTER:ImbDataFlowNode::createExceptionList
-			Type:CHARACTER:ComIbmValidateNode
-			Name:CHARACTER:gen.testApi#FCMComposite_1_6.postVote#FCMComposite_1_5
-			Label:CHARACTER:gen.testApi.postVote (Implementation).Validate
-			Catalog:CHARACTER:BIPmsgs
-			Severity:INTEGER:3
-			Number:INTEGER:2230
-			Text:CHARACTER:Node throwing exception
-			Insert
-					Type:INTEGER:14
-					Text:CHARACTER:gen.testApi.postVote (Implementation).Validate
-			ParserException
-					File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/MTI/MTIforBroker/GenXmlParser4/ImbXMLNSCParser.cpp
-					Line:INTEGER:957
-					Function:CHARACTER:ImbXMLNSCParser::refreshBitStreamFromElementsCommon
-					Type:CHARACTER:ComIbmWSInputNode
-					Name:CHARACTER:gen.testApi#FCMComposite_1_1
-					Label:CHARACTER:gen.testApi.HTTP Input
-					Catalog:CHARACTER:BIPmsgs
-					Severity:INTEGER:3
-					Number:INTEGER:5010
-					Text:CHARACTER:XML Writing Errors have occurred
-					ParserException
-							File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/MTI/MTIforBroker/GenXmlParser4/ImbXMLNSCDocHandler.cpp
-							Line:INTEGER:810
-							Function:CHARACTER:ImbXMLNSCDocHandler::handleParseErrors
-							Type:CHARACTER:ComIbmWSInputNode
-							Name:CHARACTER:gen.testApi#FCMComposite_1_1
-							Label:CHARACTER:gen.testApi.HTTP Input
-							Catalog:CHARACTER:BIPmsgs
-							Severity:INTEGER:3
-							Number:INTEGER:5393
-							Text:CHARACTER:One or more message validation failures have occurred.
-							ParserException
-									File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/MTI/MTIforBroker/GenXmlParser4/ImbXMLNSCDocHandler.cpp
-									Line:INTEGER:819
-									Function:CHARACTER:ImbXMLNSCDocHandler::handleParseErrors
-									Type:CHARACTER:ComIbmWSInputNode
-									Name:CHARACTER:gen.testApi#FCMComposite_1_1
-									Label:CHARACTER:gen.testApi.HTTP Input
-									Catalog:CHARACTER:BIPmsgs
-									Severity:INTEGER:3
-									Number:INTEGER:5026
-									Text:CHARACTER:A schema validation error has occurred while validating the message tree
-									Insert
-											Type:INTEGER:2
-											Text:CHARACTER:6000
-									Insert
-											Type:INTEGER:2
-											Text:CHARACTER:1
-									Insert
-											Type:INTEGER:2
-											Text:CHARACTER:1
-									Insert
-											Type:INTEGER:2
-											Text:CHARACTER:42
-									Insert
-											Type:INTEGER:5
-											Text:CHARACTER:cvc-datatype-valid.1.2: The value "hello" is not a valid value for the "#Anonymous" datatype.
-									Insert
-											Type:INTEGER:5
-											Text:CHARACTER:/Root/XMLNSC/input/Age
+
+
+
+BROKER SCHEMA EIS_API_LOGGER
+
+
+CREATE COMPUTE MODULE MR_SourceMapper_MR_Writing
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot = InputRoot;
+		SET OutputLocalEnvironment = InputLocalEnvironment ;
+		DECLARE Env REFERENCE TO Environment;
+		--For Testing Only
+
+		DECLARE CBS_REGION CHARACTER ;
+--		SET CBS_REGION = COALESCE(EIS_API_LOGGER_Utility.getCacheValueFromWXS('SYSTEM.BROKER.DEFAULTMAP',COALESCE( OutputRoot.JSON.Data.SOURCE_ID,Environment."X-InputRequest".SOURCE_ID,Environment.SOURCE_ID) || '_REGION'),NULL);
+--		SET Environment.CBSIP = COALESCE(EIS_API_LOGGER_Utility.getCacheValueFromWXS('SYSTEM.BROKER.DEFAULTMAP', CBS_REGION || '_IP'),NULL);
+--		SET Environment.MRPORT = COALESCE(EIS_API_LOGGER_Utility.getCacheValueFromWXS('SYSTEM.BROKER.DEFAULTMAP', 'MR' || CBS_REGION || '_PORT'),NULL);
+
+		SET CBS_REGION = COALESCE(EIS_API_LOGGER_Utility.getCacheValueFromWXS('GENERIC_LIB_CACHE',COALESCE( OutputRoot.JSON.Data.SOURCE_ID,Environment."X-InputRequest".SOURCE_ID,Environment.SOURCE_ID) || '_REGION'),EIS_API_LOGGER_Utility.getCacheValueFromWXS('SYSTEM.BROKER.DEFAULTMAP',COALESCE( OutputRoot.JSON.Data.SOURCE_ID,Environment."X-InputRequest".SOURCE_ID,Environment.SOURCE_ID) || '_REGION'),NULL);
+		SET Environment.CBSIP = COALESCE(EIS_API_LOGGER_Utility.getCacheValueFromWXS('GENERIC_LIB_CACHE', CBS_REGION || '_IP'),EIS_API_LOGGER_Utility.getCacheValueFromWXS('SYSTEM.BROKER.DEFAULTMAP', CBS_REGION || '_IP'),NULL);
+		SET Environment.MRPORT = COALESCE(EIS_API_LOGGER_Utility.getCacheValueFromWXS('GENERIC_LIB_CACHE', 'MR' || CBS_REGION || '_PORT'),EIS_API_LOGGER_Utility.getCacheValueFromWXS('SYSTEM.BROKER.DEFAULTMAP', 'MR' || CBS_REGION || '_PORT'),NULL);
+
+		IF CONTAINS(CBS_REGION,'JavaError') OR CONTAINS(Environment.CBSIP,'JavaError') OR CONTAINS(Environment.MRPORT,'JavaError')THEN
+			DELETE FIELD Environment.CBSIP;
+			DELETE FIELD Environment.MRPORT;
+		END IF;
+
+		SET OutputLocalEnvironment.Destination.TCPIP.Output.Hostname = Environment.CBSIP;
+		SET OutputLocalEnvironment.Destination.TCPIP.Output.Port = Environment.MRPORT;
+		SET Environment.CBSPORT = Environment.MRPORT;
+
+		SET OutputLocalEnvironment.TCPIP.Receive.Hostname = Environment.CBSIP;
+		SET OutputLocalEnvironment.TCPIP.Receive.Port = Environment.MRPORT;
+
+		SET Environment."X-DestinationDetails".MR_REGION = OutputLocalEnvironment.Destination.TCPIP.Output.Hostname || ':' || OutputLocalEnvironment.Destination.TCPIP.Output.Port ;
+		--For Testing Only
+
+		DECLARE CBSString CHARACTER CAST(ASBITSTREAM(InputRoot.DFDL CCSID COALESCE(InputRoot.Properties.CodedCharSetId,5348) Encoding COALESCE(InputRoot.Properties.Encoding,546)) AS CHARACTER CCSID COALESCE(InputRoot.Properties.CodedCharSetId,5348) Encoding COALESCE(InputRoot.Properties.Encoding,546));
+		DECLARE CBSReqTranCode CHARACTER SUBSTRING(CBSString FROM 6 FOR 2);
+
+		SET Environment."X-DestinationDetails".MsgType = 'MR' ;
+		SET Environment."X-DestinationDetails"."Request TranCode" = CBSReqTranCode ;
+		CALL EISLOGGING('X-DestinationDetails+' ,Env) ;
+		CALL EISLOGGING('Request Sent to CBS+' || CBSString,Env);
+		RETURN TRUE;
+	END;
+
+END MODULE;
