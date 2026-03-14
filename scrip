@@ -1,14 +1,2 @@
-
-CREATE COMPUTE MODULE postRequest_Compute
-	CREATE FUNCTION Main() RETURNS BOOLEAN
-	BEGIN
-		DECLARE Amount INTEGER ;
-		SET Amount = InputRoot.JSON.Data.Amount;
-		SET OutputRoot.DFDL.Request.body.Amount = LPAD(Amount,10,'0');
-		SET OutputRoot.DFDL.Request.body.Name = RPAD(InputRoot.JSON.Data.Name,15,'0');
-		
-		
-		RETURN TRUE;
-	END;
-	END;
-END MODULE;
+ curl -k -X POST http://10.177.44.58:4422/tcpapi/request -d'{"URN":"SBISC260731723010UP5ROF33","Amount":"500","Name": "Denny","Age":"10"}'
+{"error": {"code":500, "status": "Internal Server Error", "detail": "BIP2230E: Error detected whilst processing a message in node 'gen.tcpAPI.postRequest (Implementation).TCPIP Client Output'. \nBIP5831E: The DFDL serializer signalled that a processing error occurred.  The message from the DFDL serializer is:  CTDU4010E: Element '#xscd(/schemaElement::Request/type::0/model::sequence/schemaElement::body/type::0/model::sequence/schemaElement::Name)' has minOccurs '1' and no default value, but the DFDL infoset has '0' occurrences. This is not allowed when 'occursCountKind' is 'fixed' or 'implicit' or minOccurs is '1' and maxOccurs is '1'.   The element being serialized was:  /Root/DFDL/Request/body/Amount "}}
