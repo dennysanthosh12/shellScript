@@ -1,2 +1,194 @@
- curl -k -X POST http://10.177.44.58:4422/tcpapi/request -d'{"URN":"SBISC260731723010UP5ROF33","Amount":"500","Name": "Denny","Age":"10"}'
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:ibmDfdlExtn="http://www.ibm.com/dfdl/extensions" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions" xmlns:recFixLengthFieldsFmt="http://www.ibm.com/dfdl/RecordFixLengthFieldFormat" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            
+  
+  
+  
+  <xsd:import namespace="http://www.ibm.com/dfdl/RecordFixLengthFieldFormat" schemaLocation="IBMdefined/RecordFixLengthFieldFormat.xsd"/>
+            
+  
+  
+  
+  <xsd:annotation>
+                		
+    
+    
+    
+    <xsd:appinfo source="http://www.ogf.org/dfdl/">
+                        			
+      
+      
+      
+      <dfdl:format encoding="UTF-8" escapeSchemeRef="" occursCountKind="fixed" ref="recFixLengthFieldsFmt:RecordFixLengthFieldsFormat"/>
+                        		
+    
+    
+    
+    </xsd:appinfo>
+                	
+  
+  
+  
+  </xsd:annotation>
+        	
+  
+  
+  
+  <xsd:element dfdl:lengthKind="delimited" ibmSchExtn:docRoot="true" name="Request">
+                		
+    
+    
+    
+    <xsd:complexType>
+                        			
+      
+      
+      
+      <xsd:sequence dfdl:separator="%CR;%LF;%WSP*;" dfdl:separatorSuppressionPolicy="anyEmpty">
+                                				
+        
+        
+        
+        <xsd:element dfdl:initiator="[h]" dfdl:lengthKind="delimited" name="header">
+                                        					
+          
+          
+          
+          <xsd:complexType>
+                                                						
+            
+            
+            
+            <xsd:sequence>
+                                                        							
+              
+              
+              
+              <xsd:element dfdl:length="25" ibmDfdlExtn:sampleValue="head_valu1" name="RRN" type="xsd:string"/>
+                                                        						
+            
+            
+            
+            </xsd:sequence>
+                                                					
+          
+          
+          
+          </xsd:complexType>
+                                        				
+        
+        
+        
+        </xsd:element>
+                                				
+        
+        
+        
+        <xsd:element dfdl:initiator="[b]" dfdl:lengthKind="delimited" dfdl:occursCountKind="implicit" maxOccurs="unbounded" name="body">
+                                        					
+          
+          
+          
+          <xsd:complexType>
+                                                						
+            
+            
+            
+            <xsd:sequence>
+                                                        							
+              
+              
+              
+              <xsd:element dfdl:length="10" dfdl:textPadKind="padChar" ibmDfdlExtn:sampleValue="body_valu1" name="Name">
+                                                
+                
+                <xsd:simpleType>
+                                                      
+                  
+                  <xsd:restriction base="xsd:string">
+                                                            
+                    
+                    <xsd:minLength value="1"/>
+                                                            
+                    
+                    <xsd:pattern value="[A-Za-z ]+"/>
+                                                          
+                  
+                  </xsd:restriction>
+                                                    
+                
+                </xsd:simpleType>
+                                              
+              
+              </xsd:element>
+                                                        							
+              
+              
+              
+              <xsd:element dfdl:length="10" dfdl:textNumberPadCharacter="0" dfdl:textNumberPattern="0" dfdl:textPadKind="padChar" name="Amount" type="xsd:string"/>
+                                                        							
+              
+              
+              
+              <xsd:element dfdl:length="3" dfdl:textNumberPadCharacter="%SP;" dfdl:textNumberPattern="0" name="Age" type="xsd:string"/>
+                                                        						
+            
+            
+            
+            </xsd:sequence>
+                                                					
+          
+          
+          
+          </xsd:complexType>
+                                        				
+        
+        
+        
+        </xsd:element>
+                                				
+        
+                        			
+      
+      
+      
+      </xsd:sequence>
+                        		
+    
+    
+    
+    </xsd:complexType>
+                	
+  
+  
+  
+  </xsd:element>
+        
+
+
+
+</xsd:schema>
+
+
+
+
+CREATE COMPUTE MODULE postRequest_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE Amount INTEGER ;
+		CREATE LASTCHILD OF OutputRoot DOMAIN 'DFDL';
+		SET OutputRoot.DFDL.Request.header.RRN = InputRoot.JSON.Data.URN;
+		SET OutputRoot.DFDL.Request.body.Amount = InputRoot.JSON.Data.Amount;
+		SET OutputRoot.DFDL.Request.body.Name = InputRoot.JSON.Data.Name;
+		SET OutputRoot.DFDL.Request.body.Age = InputRoot.JSON.Data.Age;
+		
+		RETURN TRUE;
+
+	END;
+END MODULE;
+
+
+ curl -k -X POST http://10.177.44.58:4422/tcpapi/request -d'{"URN":"SBISC260731723010UP5ROF33","Amount":"500","Name":"Denny","Age":"10"}'
 {"error": {"code":500, "status": "Internal Server Error", "detail": "BIP2230E: Error detected whilst processing a message in node 'gen.tcpAPI.postRequest (Implementation).TCPIP Client Output'. \nBIP5831E: The DFDL serializer signalled that a processing error occurred.  The message from the DFDL serializer is:  CTDU4010E: Element '#xscd(/schemaElement::Request/type::0/model::sequence/schemaElement::body/type::0/model::sequence/schemaElement::Name)' has minOccurs '1' and no default value, but the DFDL infoset has '0' occurrences. This is not allowed when 'occursCountKind' is 'fixed' or 'implicit' or minOccurs is '1' and maxOccurs is '1'.   The element being serialized was:  /Root/DFDL/Request/body/Amount "}}
+
+
