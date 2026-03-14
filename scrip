@@ -1,155 +1,149 @@
-DECLARE TCPOutputTimeOut EXTERNAL INTEGER 10;
-DECLARE TCPReceiveTimeOut EXTERNAL INTEGER 10;
-DECLARE TxnDetails EXTERNAL CHARACTER 'C';
-DECLARE TxnType EXTERNAL CHARACTER 'C';
-DECLARE TxnSubType EXTERNAL CHARACTER 'C';
-
-CREATE COMPUTE MODULE inbCustomerEnquiry_sys_Compute
-	CREATE FUNCTION Main() RETURNS BOOLEAN
-	BEGIN
-		   DECLARE Env REFERENCE TO Environment; 
-	       DECLARE inref REFERENCE TO InputRoot.JSON.Data;
-	       
-	       SET Environment.REQUEST_REFERENCE_NUMBER = inref.REQUEST_REFERENCE_NUMBER;
-	       
-	       SET OutputLocalEnvironment.Destination.TCPIP.Output.Timeout = TCPOutputTimeOut;
-	       SET OutputLocalEnvironment.TCPIP.Receive.Timeout = TCPReceiveTimeOut;
-    	   SET Environment.RESPONSE_STATUS = '0';
-    	   SET Environment.msgID = SUBSTRING(Environment.FEJNumber FROM 1 FOR 6);			   
-	   	   SET Environment.SOURCE_ID = inref.SOURCE_ID;
-	   	   SET OutputRoot.JSON.Data.SOURCE_ID = inref.SOURCE_ID;
-		   SET OutputRoot.DFDL.Request.body.MSG_LENGTH  = ' 0029'; --Utilities.getCacheValueFromWXS('SYSTEM.BROKER.DEFAULTMAP','INB400_MSGLENGTH');
-           SET OutputRoot.DFDL.Request.body.MSG_ID = Environment.msgID;
-           SET OutputRoot.DFDL.Request.body.TXN_NUMBER = '000400'; --Utilities.getCacheValueFromWXS('SYSTEM.BROKER.DEFAULTMAP','INB400_TXNNUMBER');
-           SET OutputRoot.DFDL.Request.body.ACCOUNT_NUMBER = inref.ACCOUNT_NUMBER;             
- 		   
- 		   DECLARE CBS_REGION CHARACTER 'Z';
-
-		SET Environment.CBSIP = '10.177.44.58' ;
-		SET Environment.INBPORT = CAST('5000' AS INTEGER) ;
-		
-
-		SET OutputLocalEnvironment.Destination.TCPIP.Output.Hostname = Environment.CBSIP;
-		SET OutputLocalEnvironment.Destination.TCPIP.Output.Port = Environment.INBPORT;
-		SET Environment.CBSPORT = Environment.INBPORT;
-
-		SET OutputLocalEnvironment.TCPIP.Receive.Hostname = Environment.CBSIP;
-		SET OutputLocalEnvironment.TCPIP.Receive.Port = Environment.INBPORT;
-		DECLARE CBSString CHARACTER CAST(ASBITSTREAM(OutputRoot.DFDL CCSID 1208) AS CHARACTER CCSID 1208); 
-		CALL Logger.LOGGER('Request Sent to CBS+' || CBSString,Env );
-			SET Environment."X-TxnDetails".TxnDetails= TxnDetails;
-			SET Environment."X-TxnDetails".TxnType= TxnType;
-			SET Environment."X-TxnDetails".TxnSubType= TxnSubType;
-			CALL EIS_API_LOGGER.EISLOGGING('X-TxnDetails+' ,Env) ;
-			
-		RETURN TRUE;
-	END;
-
-END MODULE;
-
-
-
-
-CREATE COMPUTE MODULE inbCustomerEnquiry_sys_Compute1
-	CREATE FUNCTION Main() RETURNS BOOLEAN
-	BEGIN
-		SET OutputLocalEnvironment=InputLocalEnvironment;
-		SET OutputLocalEnvironment.TCPIP.Receive.Length= LTRIM(CAST (InputRoot.BLOB.BLOB AS CHARACTER CCSID COALESCE(InputRoot.Properties.CodedCharSetId,5348)  Encoding COALESCE(InputRoot.Properties.Encoding,546)));
-		SET OutputRoot.Properties = InputRoot.Properties;
-		DECLARE Env REFERENCE TO Environment ;
-        CALL EIS_API_LOGGER.EISLOGGING('Destination+' || InputLocalEnvironment.WrittenDestination.TCPIP.Output.ConnectionDetails.Hostname || ' : ' || CAST(InputLocalEnvironment.WrittenDestination.TCPIP.Output.ConnectionDetails.Port AS CHARACTER CCSID 5348) ,Env);
-	
-		RETURN TRUE;
-	END;
-
-END MODULE;
-
-
-
-
-
-CREATE COMPUTE MODULE inbCustomerEnquiry_sys_Compute3
-	CREATE FUNCTION Main() RETURNS BOOLEAN
-	BEGIN
-
-		DECLARE Env REFERENCE TO Environment;
-		SET OutputRoot =CAST(' ' AS BLOB CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding)|| CAST(InputLocalEnvironment.TCPIP.Receive.Length AS BLOB CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding)||InputRoot.BLOB.BLOB;
-		DECLARE CbsString CHARACTER ' ' || InputLocalEnvironment.TCPIP.Receive.Length || CAST(InputRoot.BLOB.BLOB AS CHARACTER CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding);
-		--SET CbsString = SUBSTRING(CbsString FROM 1 FOR 5) || '000000' || SUBSTRING(CbsString FROM 12);
-		SET Environment.CBS_MSG_ID = SUBSTRING (CbsString FROM 6 FOR 6);
-		SET Environment.MSGLength = SUBSTRING (CbsString FROM 1 FOR 5);		
-		IF Environment.MSGLength = ' 0941' OR Environment.MSGLength = ' 0165' OR Environment.MSGLength = ' 0174' OR Environment.MSGLength = ' 0179' THEN
-			SET Environment.RES_FLAG = 'Y';
-		END IF;		
-		CREATE LASTCHILD OF OutputRoot DOMAIN('DFDL')
-		PARSE(OutputRoot ENCODING InputRoot.Properties.Encoding
-		CCSID InputRoot.Properties.CodedCharSetId
-		TYPE '{}:Response');
-		RETURN TRUE;
-	END;
-
-END MODULE;
-
-
-
-
-
-
-
-CREATE COMPUTE MODULE inbCustomerEnquiry_sys_Compute2
-	CREATE FUNCTION Main() RETURNS BOOLEAN
-	BEGIN
-		DECLARE Env REFERENCE TO Environment;
-		--SET OutputRoot.JSON.Data.abcfsFAS = Environment.RESP_FLAG;
-		IF Environment.RES_FLAG = 'Y' THEN
-			SET Environment.RESPONSE_STATUS = '1';
-			SET OutputRoot.JSON.Data.ERROR_CODE = COALESCE(Environment.ERROR_CODE, InputRoot.JSON.Data.ERROR_CODE);
-			SET OutputRoot.JSON.Data.ERROR_DESCRIPTION = COALESCE(Environment.ERROR_DESCRIPTION, InputRoot.JSON.Data.ERROR_DESCRIPTION);
-			SET OutputRoot.JSON.Data.RESPONSE_STATUS = '1';
-		ELSE
-			IF Environment.INBFEJNO <> Environment.CBS_MSG_ID THEN
-				SET Environment.RESPONSE_STATUS = '1';
-				SET Environment.ERROR_CODE = 'SI163';
-				SET Environment.ERROR_DESCRIPTION = 'JOURNAL NUMBER MISMATCH';
-			END IF;
-
-			IF Environment.RESPONSE_STATUS = '0' THEN
-				SET OutputRoot = InputRoot;
-				SET Environment.RESPONSE_STATUS = '0';
-				SET OutputRoot.JSON.Data.ERROR_CODE VALUE = '';
-				SET OutputRoot.JSON.Data.ERROR_DESCRIPTION VALUE = '';
-				SET OutputRoot.JSON.Data.RESPONSE_STATUS = '0';
-			ELSE
-				SET Environment.RESPONSE_STATUS = '1';
-				SET OutputRoot.JSON.Data.ERROR_CODE = COALESCE(Environment.ERROR_CODE, InputRoot.JSON.Data.ERROR_CODE);
-				SET OutputRoot.JSON.Data.ERROR_DESCRIPTION = COALESCE(Environment.ERROR_DESCRIPTION, InputRoot.JSON.Data.ERROR_DESCRIPTION);
-				SET OutputRoot.JSON.Data.RESPONSE_STATUS = '1';
-
-			END IF;
-		END IF;
-
-		SET OutputRoot.JSON.Data.RESPONSE_DATE = CAST(CURRENT_TIMESTAMP AS CHARACTER FORMAT 'dd-MM-yyyy HH:mm:ss');
-		SET OutputRoot.JSON.Data.REQUEST_REFERENCE_NUMBER = Environment.REQUEST_REFERENCE_NUMBER;
-		RETURN TRUE;
-	END;
-END MODULE;
-
-
-	BIP9320E
-Message Flow 'gen.inbAccountShortEnquiry_sys', 'gen.inbAccountShortEnquiry_sys' encountered a failure and could not start. 
-
-BIP3550E
-Invalid Connection Details property: 'INB'. 
-
-BIP3571E
-Invalid port number: 'INB'. 
-
-BIP9332I
-SharedLibrary 'EIS_API_LOGGER' has been changed successfully. 
-
-BIP9333W
-RestAPI 'inbAccountShortEnquiry_sys' has been changed but contains errors which has prevented some resources from starting. 
-
-BIP1096E
-The source 'inbAccountShortEnquiry_sysproject.generated.bar' has been deployed but there were one or more failures which may mean the deployed resources will be unable to execute. 
-
+Message
+	Properties
+			MessageSet:CHARACTER:
+			MessageType:CHARACTER:
+			MessageFormat:CHARACTER:
+			Encoding:INTEGER:546
+			CodedCharSetId:INTEGER:1208
+			Transactional:BOOLEAN:false
+			Persistence:BOOLEAN:false
+			CreationTime:TIMESTAMP:java.util.GregorianCalendar[time=1773472045227,areFieldsSet=true,areAllFieldsSet=false,lenient=true,zone=sun.util.calendar.ZoneInfo[id="Asia/Calcutta",offset=19800000,dstSavings=0,useDaylight=false,transitions=7,lastRule=null],firstDayOfWeek=1,minimalDaysInFirstWeek=1,ERA=?,YEAR=2026,MONTH=2,WEEK_OF_YEAR=?,WEEK_OF_MONTH=?,DAY_OF_MONTH=14,DAY_OF_YEAR=?,DAY_OF_WEEK=?,DAY_OF_WEEK_IN_MONTH=?,AM_PM=1,HOUR=0,HOUR_OF_DAY=12,MINUTE=37,SECOND=25,MILLISECOND=227,ZONE_OFFSET=?,DST_OFFSET=?]
+			ExpirationTime:INTEGER:-1
+			Priority:INTEGER:0
+			ReplyIdentifier:BLOB:[B@5bbfbcb5
+			ReplyProtocol:CHARACTER:SOAP-HTTP
+			Topic:UNKNOWN:null
+			ContentType:CHARACTER:application/x-www-form-urlencoded
+			IdentitySourceType:CHARACTER:
+			IdentitySourceToken:CHARACTER:
+			IdentitySourcePassword:CHARACTER:
+			IdentitySourceIssuedBy:CHARACTER:
+			IdentityMappedType:CHARACTER:
+			IdentityMappedToken:CHARACTER:
+			IdentityMappedPassword:CHARACTER:
+			IdentityMappedIssuedBy:CHARACTER:
+	HTTPInputHeader
+			Host:CHARACTER:10.177.44.58:4422
+			User-Agent:CHARACTER:curl/7.76.1
+			Accept:CHARACTER:*/*
+			Content-Length:CHARACTER:520
+			Content-Type:CHARACTER:application/x-www-form-urlencoded
+			X-Original-HTTP-Command:CHARACTER:POST http://10.177.44.58:4422/000400/inb/cbs/accounts HTTP/1.1
+			X-Server-Name:CHARACTER:10.177.44.58
+			X-Server-Port:CHARACTER:4422
+			X-Remote-Addr:CHARACTER:::ffff:10.177.44.58
+			X-Remote-Host:CHARACTER:::ffff:10.177.44.58
+			X-Scheme:CHARACTER:http
+	JSON
+			Data
+					TRANSACTION_AMOUNT:INTEGER:122
+					CURRENCY:CHARACTER:INR
+					CUSTOMER_ACCOUNT_NUMBER:CHARACTER:30002395128
+					RECON_REFERENCE_NUMBER:CHARACTER:0000000000CE10799732
+					SOURCE_ID:CHARACTER:SC
+					BRANCH_CODE:CHARACTER:00437
+					CUSTOMER_REFERENCE_NUMBER:CHARACTER:CE10799732
+					GL_ACCOUNT_NUMBER:CHARACTER:00004697308004375
+					VALUE_DATE:CHARACTER:20092025
+					COMMISSION_AMOUNT:INTEGER:0
+					SBI_REFERENCE_NUMBER:CHARACTER:CE10799732
+					STATEMENT_NARRATIVE:CHARACTER:0000000000CE10799732 IntChargesFor CE10799704
+					REQUEST_REFERENCE_NUMBER:CHARACTER:SBISC260711831007EU69WVTF
+					ProtocolID:CHARACTER:0243
+					Transactiontype:CHARACTER:A1
+					productCode:CHARACTER:SC
+Environment
+	REQUEST_REFERENCE_NUMBER:CHARACTER:SBISC260711831007EU69WVTF
+	RESPONSE_STATUS:CHARACTER:0
+	SOURCE_ID:CHARACTER:SC
+	CBSIP:CHARACTER:10.177.44.58
+	INBPORT:INTEGER:5000
+	CBSPORT:INTEGER:5000
+LocalEnvironment
+	WrittenDestination
+			Label
+					label:CHARACTER:inbAccountShortEnquiry_sys
+	Destination
+			HTTP
+					RequestIdentifier:BLOB:[B@ea581d10
+			RouterList
+	HTTP
+			Input
+					Path
+							Segment:CHARACTER:000400
+							Segment:CHARACTER:inb
+							Segment:CHARACTER:cbs
+							Segment:CHARACTER:accounts
+	REST
+			Input
+					Method:CHARACTER:POST
+					Operation:CHARACTER:inbAccountShortEnquiry_sys
+					Path:CHARACTER:/000400/inb/cbs/accounts
+					URI:CHARACTER:http://10.177.44.58:4422/000400/inb/cbs/accounts
+					Parameters
+ExceptionList
+	RecoverableException
+			File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/MessageServices/ImbDataFlowNode.cpp
+			Line:INTEGER:1886
+			Function:CHARACTER:ImbDataFlowNode::createExceptionList
+			Type:CHARACTER:InputNode
+			Name:CHARACTER:gen.inbAccountShortEnquiry_sys#FCMComposite_1_8.inbAccountShortEnquiry_sys#InTerminal.Input_1
+			Label:CHARACTER:gen.inbAccountShortEnquiry_sys.inbAccountShortEnquiry_sys (Implementation).inbAccountShortEnquiry_sys#InTerminal.Input_1
+			Catalog:CHARACTER:BIPmsgs
+			Severity:INTEGER:3
+			Number:INTEGER:2230
+			Text:CHARACTER:Node throwing exception
+			Insert
+					Type:INTEGER:14
+					Text:CHARACTER:gen.inbAccountShortEnquiry_sys.inbAccountShortEnquiry_sys (Implementation).inbAccountShortEnquiry_sys#InTerminal.Input_1
+			RecoverableException
+					File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/SQLNodeLibrary/ImbComputeNode.cpp
+					Line:INTEGER:343
+					Function:CHARACTER:ImbComputeNode::evaluate
+					Type:CHARACTER:ComIbmComputeNode
+					Name:CHARACTER:gen.inbAccountShortEnquiry_sys#FCMComposite_1_8.inbAccountShortEnquiry_sys#FCMComposite_1_13
+					Label:CHARACTER:gen.inbAccountShortEnquiry_sys.inbAccountShortEnquiry_sys (Implementation).Compute3
+					Catalog:CHARACTER:BIPmsgs
+					Severity:INTEGER:3
+					Number:INTEGER:2230
+					Text:CHARACTER:Caught exception and rethrowing
+					Insert
+							Type:INTEGER:14
+							Text:CHARACTER:gen.inbAccountShortEnquiry_sys.inbAccountShortEnquiry_sys (Implementation).Compute3
+					RecoverableException
+							File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/ImbRdl/ImbRdlStatementGroup.cpp
+							Line:INTEGER:784
+							Function:CHARACTER:SqlStatementGroup::execute
+							Type:CHARACTER:
+							Name:CHARACTER:
+							Label:CHARACTER:
+							Catalog:CHARACTER:BIPmsgs
+							Severity:INTEGER:3
+							Number:INTEGER:2488
+							Text:CHARACTER:Error detected, rethrowing
+							Insert
+									Type:INTEGER:5
+									Text:CHARACTER:.inbCustomerEnquiry_sys_Compute.Main
+							Insert
+									Type:INTEGER:5
+									Text:CHARACTER:31.3
+							Insert
+									Type:INTEGER:5
+									Text:CHARACTER:DECLARE CBSString CHARACTER CAST(ASBITSTREAM(OutputRoot.DFDL CCSID 1208) AS CHARACTER CCSID 1208);
+							ParserException
+									File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/MTI/MTIforBroker/DfdlParser/ImbDFDLErrorHandler.cpp
+									Line:INTEGER:329
+									Function:CHARACTER:ImbDFDLErrorHandler::handleSerializerErrors
+									Type:CHARACTER:ComIbmWSInputNode
+									Name:CHARACTER:gen.inbAccountShortEnquiry_sys#FCMComposite_1_1
+									Label:CHARACTER:gen.inbAccountShortEnquiry_sys.HTTP Input
+									Catalog:CHARACTER:BIPmsgs
+									Severity:INTEGER:3
+									Number:INTEGER:5831
+									Text:CHARACTER:An error occurred whilst serializing with DFDL
+									Insert
+											Type:INTEGER:5
+											Text:CHARACTER:CTDU4010E: Element '#xscd(/schemaElement::Request/type::0/model::sequence/schemaElement::body/type::0/model::sequence/schemaElement::MSG_ID)' has minOccurs '1' and no default value, but the DFDL infoset has '0' occurrences. This is not allowed when 'occursCountKind' is 'fixed' or 'implicit' or minOccurs is '1' and maxOccurs is '1'. 
+									Insert
+											Type:INTEGER:5
+											Text:CHARACTER:/Root/DFDL/Request/body/TXN_NUMBER
