@@ -1,194 +1,103 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<xsd:schema xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:ibmDfdlExtn="http://www.ibm.com/dfdl/extensions" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions" xmlns:recFixLengthFieldsFmt="http://www.ibm.com/dfdl/RecordFixLengthFieldFormat" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-            
-  
-  
-  
-  <xsd:import namespace="http://www.ibm.com/dfdl/RecordFixLengthFieldFormat" schemaLocation="IBMdefined/RecordFixLengthFieldFormat.xsd"/>
-            
-  
-  
-  
-  <xsd:annotation>
-                		
-    
-    
-    
-    <xsd:appinfo source="http://www.ogf.org/dfdl/">
-                        			
-      
-      
-      
-      <dfdl:format encoding="UTF-8" escapeSchemeRef="" occursCountKind="fixed" ref="recFixLengthFieldsFmt:RecordFixLengthFieldsFormat"/>
-                        		
-    
-    
-    
-    </xsd:appinfo>
-                	
-  
-  
-  
-  </xsd:annotation>
-        	
-  
-  
-  
-  <xsd:element dfdl:lengthKind="delimited" ibmSchExtn:docRoot="true" name="Request">
-                		
-    
-    
-    
-    <xsd:complexType>
-                        			
-      
-      
-      
-      <xsd:sequence dfdl:separator="%CR;%LF;%WSP*;" dfdl:separatorSuppressionPolicy="anyEmpty">
-                                				
-        
-        
-        
-        <xsd:element dfdl:initiator="[h]" dfdl:lengthKind="delimited" name="header">
-                                        					
-          
-          
-          
-          <xsd:complexType>
-                                                						
-            
-            
-            
-            <xsd:sequence>
-                                                        							
-              
-              
-              
-              <xsd:element dfdl:length="25" ibmDfdlExtn:sampleValue="head_valu1" name="RRN" type="xsd:string"/>
-                                                        						
-            
-            
-            
-            </xsd:sequence>
-                                                					
-          
-          
-          
-          </xsd:complexType>
-                                        				
-        
-        
-        
-        </xsd:element>
-                                				
-        
-        
-        
-        <xsd:element dfdl:initiator="[b]" dfdl:lengthKind="delimited" dfdl:occursCountKind="implicit" maxOccurs="unbounded" name="body">
-                                        					
-          
-          
-          
-          <xsd:complexType>
-                                                						
-            
-            
-            
-            <xsd:sequence>
-                                                        							
-              
-              
-              
-              <xsd:element dfdl:length="10" dfdl:textPadKind="padChar" ibmDfdlExtn:sampleValue="body_valu1" name="Name">
-                                                
-                
-                <xsd:simpleType>
-                                                      
-                  
-                  <xsd:restriction base="xsd:string">
-                                                            
-                    
-                    <xsd:minLength value="1"/>
-                                                            
-                    
-                    <xsd:pattern value="[A-Za-z ]+"/>
-                                                          
-                  
-                  </xsd:restriction>
-                                                    
-                
-                </xsd:simpleType>
-                                              
-              
-              </xsd:element>
-                                                        							
-              
-              
-              
-              <xsd:element dfdl:length="10" dfdl:textNumberPadCharacter="0" dfdl:textNumberPattern="0" dfdl:textPadKind="padChar" name="Amount" type="xsd:string"/>
-                                                        							
-              
-              
-              
-              <xsd:element dfdl:length="3" dfdl:textNumberPadCharacter="%SP;" dfdl:textNumberPattern="0" name="Age" type="xsd:string"/>
-                                                        						
-            
-            
-            
-            </xsd:sequence>
-                                                					
-          
-          
-          
-          </xsd:complexType>
-                                        				
-        
-        
-        
-        </xsd:element>
-                                				
-        
-                        			
-      
-      
-      
-      </xsd:sequence>
-                        		
-    
-    
-    
-    </xsd:complexType>
-                	
-  
-  
-  
-  </xsd:element>
-        
-
-
-
-</xsd:schema>
-
-
-
-
-CREATE COMPUTE MODULE postRequest_Compute
+CREATE COMPUTE MODULE CBS_Response
 	CREATE FUNCTION Main() RETURNS BOOLEAN
-	BEGIN
-		DECLARE Amount INTEGER ;
-		CREATE LASTCHILD OF OutputRoot DOMAIN 'DFDL';
-		SET OutputRoot.DFDL.Request.header.RRN = InputRoot.JSON.Data.URN;
-		SET OutputRoot.DFDL.Request.body.Amount = InputRoot.JSON.Data.Amount;
-		SET OutputRoot.DFDL.Request.body.Name = InputRoot.JSON.Data.Name;
-		SET OutputRoot.DFDL.Request.body.Age = InputRoot.JSON.Data.Age;
+	BEGIN	
+	 DECLARE Env REFERENCE TO Environment;	
+	 
+	 DECLARE afterRecvTime TIMESTAMP CURRENT_TIMESTAMP;
 		
+		DECLARE timeDiff INTERVAL;
+		
+		
+		SET timeDiff = (afterRecvTime - Environment.afterRemLength) SECOND;		
+				
+		DECLARE DynTimeLog CHARACTER;
+		SET DynTimeLog = 
+		'{ afterLenRecvTime: ' || CAST(Environment.afterRemLength AS CHARACTER FORMAT 'dd-MM-yyyy HH:mm:ss:SSSSSS') ||  
+		', afterRecvTime: ' || CAST(afterRecvTime AS CHARACTER FORMAT 'dd-MM-yyyy HH:mm:ss:SSSSSS')|| 
+		', timeDiff: ' || CAST(timeDiff AS CHARACTER)|| 
+	   '}' ;
+		
+		CALL Logger.LOGGER(CAST('DynamicTimer3+' || DynTimeLog AS CHARACTER CCSID 5348) ,Env) ;
+        
+		IF(Environment.CBS_errorFlag = 1)  THEN
+		
+	    SET OutputRoot =CAST(' ' AS BLOB CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding)|| CAST(InputLocalEnvironment.TCPIP.Receive.Length AS BLOB CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding)||InputRoot.BLOB.BLOB;
+	    
+	    DECLARE CBSRESPString CHARACTER ' ' || CAST(InputLocalEnvironment.TCPIP.Receive.Length AS CHARACTER CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding) || CAST(InputRoot.BLOB.BLOB AS CHARACTER CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding); 
+        CALL EIS_API_LOGGER.EISLOGGING('Response from CBS+' || CBSRESPString,Env);	
+        
+	 END IF;
+	 
+		
+	 IF(Environment.CBS_errorFlag = 1)  THEN
+	 DECLARE CBSString CHARACTER ' ' || InputLocalEnvironment.TCPIP.Receive.Length || CAST(InputRoot.BLOB.BLOB AS CHARACTER CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding);
+	 DECLARE CBSReqTranCode CHARACTER SUBSTRING(CBSString FROM 58 FOR 6);
+	 CALL Logger.LOGGER('Response TranCode+' || CBSReqTranCode,Env ) ;
+	 CALL Logger.LOGGER('Response From CBS+' || CBSString,Env );	
+	 
+	 
+		
+	   SET OutputRoot = CAST(' ' AS BLOB CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding)|| CAST(InputLocalEnvironment.TCPIP.Receive.Length AS BLOB CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding)||InputRoot.BLOB.BLOB;
+		CREATE LASTCHILD OF OutputRoot DOMAIN('DFDL')
+ 		PARSE(OutputRoot ENCODING InputRoot.Properties.Encoding 
+ 				CCSID InputRoot.Properties.CodedCharSetId 
+     					TYPE '{}:customerDetailResponse');
+     					
+     		SET Environment.SUPER_FLAG = SUBSTRING ( CBSString FROM 136 FOR 3 );
+       SET Environment.CAPABILITY_LEVEL = SUBSTRING ( CBSString FROM 145 FOR 2 );
+     	  		IF Environment.SUPER_FLAG = 'SUP' THEN
+     	  			SET OutputRoot.JSON.Data.SUPERVISORY_FLAG = 'Y';
+     	  			SET Environment.CAPABILITY_VALUE = Environment.CAPABILITY_LEVEL ;
+     	  			SET Environment.ERROR_CODE = SUBSTRING ( CBSString FROM 140 FOR 4 );
+     	  			SET Environment.ERROR_DESCRIPTION = SUBSTRING ( CBSString FROM 148 FOR 37 );
+     	  		END IF;
+					
+	ELSEIF(Environment.CBS_errorFlag = 2)  THEN
+		DECLARE CBSString CHARACTER ' 1022' || CAST(InputRoot.BLOB.BLOB AS CHARACTER CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding);
+		DECLARE CBSReqTranCode CHARACTER SUBSTRING(CBSString FROM 58 FOR 6);
+		CALL Logger.LOGGER('Response TranCode+' || CBSReqTranCode,Env ) ;
+		CALL Logger.LOGGER('Response From CBS+' || CBSString,Env );	
+		
+		SET OutputRoot = CAST(' ' AS BLOB CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding)|| CAST('1022' AS BLOB CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding)||InputRoot.BLOB.BLOB;
+		CREATE LASTCHILD OF OutputRoot DOMAIN('DFDL')
+ 		PARSE(OutputRoot ENCODING InputRoot.Properties.Encoding 
+ 				CCSID InputRoot.Properties.CodedCharSetId 
+     					TYPE '{}:customerDetailResponse');	
+     					
+     	SET Environment.SUPER_FLAG = SUBSTRING ( CBSString FROM 136 FOR 3 );
+       SET Environment.CAPABILITY_LEVEL = SUBSTRING ( CBSString FROM 145 FOR 2 );
+     	  		IF Environment.SUPER_FLAG = 'SUP' THEN
+     	  			SET OutputRoot.JSON.Data.SUPERVISORY_FLAG = 'Y';
+     	  			SET Environment.CAPABILITY_VALUE = Environment.CAPABILITY_LEVEL ;
+     	  			SET Environment.ERROR_CODE = SUBSTRING ( CBSString FROM 140 FOR 4 );
+     	  			SET Environment.ERROR_DESCRIPTION = SUBSTRING ( CBSString FROM 148 FOR 37 );
+     	  		END IF;				
+				
+	ELSE
+		DECLARE CBSString CHARACTER ' 1022    0892' || CAST(InputRoot.BLOB.BLOB AS CHARACTER CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding) || CAST(Environment.Response1 AS CHARACTER CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding);
+		DECLARE CBSReqTranCode CHARACTER SUBSTRING(CBSString FROM 58 FOR 6);
+		CALL Logger.LOGGER('Response TranCode+' || CBSReqTranCode,Env ) ;
+		CALL Logger.LOGGER('Response From CBS+' || CBSString,Env );
+		
+		DECLARE PARSE_STRING CHARACTER ' 1022    0892' || CAST(InputRoot.BLOB.BLOB AS CHARACTER CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding) || ' 0367' || CAST(Environment.Response1 AS CHARACTER CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding);		
+		SET OutputRoot = CAST(' 1022    0892' AS BLOB CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding)||InputRoot.BLOB.BLOB|| CAST(' 0367' AS BLOB CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding) || Environment.Response1;		
+		SET Environment.Response = OutputRoot;
+		CREATE LASTCHILD OF OutputRoot DOMAIN('DFDL')
+ 		PARSE(OutputRoot ENCODING InputRoot.Properties.Encoding 
+ 				CCSID InputRoot.Properties.CodedCharSetId 
+     					TYPE '{}:customerDetailResponse');  
+     					
+     	SET Environment.SUPER_FLAG = SUBSTRING ( CBSString FROM 136 FOR 3 );
+       SET Environment.CAPABILITY_LEVEL = SUBSTRING ( CBSString FROM 145 FOR 2 );
+     	  		IF Environment.SUPER_FLAG = 'SUP' THEN
+     	  			SET OutputRoot.JSON.Data.SUPERVISORY_FLAG = 'Y';
+     	  			SET Environment.CAPABILITY_VALUE = Environment.CAPABILITY_LEVEL ;
+     	  			SET Environment.ERROR_CODE = SUBSTRING ( CBSString FROM 140 FOR 4 );
+     	  			SET Environment.ERROR_DESCRIPTION = SUBSTRING ( CBSString FROM 148 FOR 37 );
+     	  		END IF;
+     		   										
+     	END IF;				
+     					
 		RETURN TRUE;
-
 	END;
 END MODULE;
-
-
- curl -k -X POST http://10.177.44.58:4422/tcpapi/request -d'{"URN":"SBISC260731723010UP5ROF33","Amount":"500","Name":"Denny","Age":"10"}'
-{"error": {"code":500, "status": "Internal Server Error", "detail": "BIP2230E: Error detected whilst processing a message in node 'gen.tcpAPI.postRequest (Implementation).TCPIP Client Output'. \nBIP5831E: The DFDL serializer signalled that a processing error occurred.  The message from the DFDL serializer is:  CTDU4010E: Element '#xscd(/schemaElement::Request/type::0/model::sequence/schemaElement::body/type::0/model::sequence/schemaElement::Name)' has minOccurs '1' and no default value, but the DFDL infoset has '0' occurrences. This is not allowed when 'occursCountKind' is 'fixed' or 'implicit' or minOccurs is '1' and maxOccurs is '1'.   The element being serialized was:  /Root/DFDL/Request/body/Amount "}}
-
-
