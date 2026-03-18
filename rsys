@@ -1,1 +1,32 @@
-Mar 18 15:56:57  INFO    100002220 ClientIP=10.191.96.225;Host=eispri.sbi.co.in:443;VIP=10.191.171.90:443;RealServer=10.176.1.122:2444;RespCode=200;httpVersio=1.1;URL=https://eispri.sbi.co.in:443/gen5/gateway/depositAccountShort_th/details; TimeTaken=159;ElapsedTime=158#000#000<134>2026 Mar 18 15:56:57  INFO    100002220 ClientIP=10.191.96.216;Host=eispri.sbi.co.in:443;VIP=10.191.171.90:443;RealServer=10.176.1.120:2444;RespCode=200;httpVersio=1.1;URL=https://eispri.sbi.co.in:443/gen5/gateway/customers/AgentCode_th/enquire; TimeTaken=127;ElapsedTime=127#000#000<134>2026 Mar 18 15:56:57  INFO    100002220 ClientIP=10.191.96.224;Host=eispri.sbi.co.in:443;VIP=10.191.171.90:443;RealServer=10.176.1.122:2443;RespCode=200;httpVersio=1.1;URL=https://eispri.sbi.co.in:443/gen5/gateway/aadharVault/refKeyEnq; TimeTaken=120;ElapsedTime=120#000#000<134>2026 Mar 18 15:56:57  INFO    100002220 ClientIP=10.191.96.227;Host=eispri.sbi.co.in:443;VIP=10.191.171.90:443;RealServer=10.176.1.122:2443;RespCode=200;httpVersio=1.1;URL=https://eispri.sbi.co.in:443/gen5/gateway/customerDetails_th/enquiry; TimeTaken=231;ElapsedTime=230#000#000<134>2026 Mar 18 15:56:57  INFO    100002220 ClientIP=10.191.96.223;Host=eispri.sbi.co.in:443;VIP=10.191.171.90:443;RealServer=10.176.1.122:2444;RespCode=200;httpVersio=1.1;URL=https://eispri.sbi.co.in:443/gen5/gateway/accounts/nomineeMaintanance_th/enquiry; TimeTaken=142;ElapsedTime=142#000#000<134>2026 
+module(load="imtcp")
+
+# Important for large/broken logs
+$MaxMessageSize 64k
+$EscapeControlCharactersOnReceive off
+
+input(type="imtcp" port="514" ruleset="remote")
+
+ruleset(name="remote") {
+
+    # Split logs using delimiter from ArrayLB
+    set $!logs = split($msg, "#000#000");
+
+    foreach ($!logs) do {
+
+        if re_match($!, "RespCode=200") then {
+            action(type="omfile" file="/var/log/resp_200.log")
+        }
+
+        else if re_match($!, "RespCode=4[0-9][0-9]") then {
+            action(type="omfile" file="/var/log/resp_400.log")
+        }
+
+        else if re_match($!, "RespCode=5[0-9][0-9]") then {
+            action(type="omfile" file="/var/log/resp_500.log")
+        }
+
+        else {
+            action(type="omfile" file="/var/log/others.log")
+        }
+    }
+}
