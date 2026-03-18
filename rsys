@@ -1,20 +1,14 @@
 ruleset(name="remote") {
 
-    if ($msg contains "RespCode=200") then {
-        action(type="omfile" file="/var/log/resp_200.log")
+    # Exclude 200 and 100
+    if not re_match($msg, "RespCode=(200|100)") then {
+        action(type="omfile" file="/var/log/non_success.log")
         stop
     }
 
-    if ($msg contains "RespCode=4") then {
-        action(type="omfile" file="/var/log/resp_400.log")
+    # Optional: log success separately
+    if re_match($msg, "RespCode=(200|100)") then {
+        action(type="omfile" file="/var/log/success.log")
         stop
     }
-
-    if ($msg contains "RespCode=5") then {
-        action(type="omfile" file="/var/log/resp_500.log")
-        stop
-    }
-
-    # बाकी logs
-    action(type="omfile" file="/var/log/others.log")
 }
