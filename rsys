@@ -1,6 +1,20 @@
-Mar 18 16:13:34 10.191.171.77  INFO    100002220 ClientIP=10.191.96.222;Host=eispri.sbi.co.in:443;VIP=10.191.171.90:443;RealServer=10.176.1.120:2443;RespCode=200;httpVersio=1.1;URL=https://eispri.sbi.co.in:443/gen5/gateway/depositAccountShort_th/details; TimeTaken=170;ElapsedTime=169
-Mar 18 16:13:34 10.191.171.77  INFO    100002220 ClientIP=10.190.239.100;Host=eispri.sbi.co.in:443;VIP=10.191.171.90:443;RealServer=10.176.1.122:2444;RespCode=200;httpVersio=1.1;URL=https://eispri.sbi.co.in:443/gen5/gateway/accounts/aepsDetails_th/enquiry; TimeTaken=119;ElapsedTime=119
-Mar 18 16:13:34 10.191.171.77  INFO    100002220 ClientIP=10.190.239.100;Host=eispri.sbi.co.in:443;VIP=10.191.171.90:443;RealServer=10.176.1.120:2443;RespCode=200;httpVersio=1.1;URL=https://eispri.sbi.co.in:443/gen5/gateway/aadharVault/refKeyEnq; TimeTaken=118;ElapsedTime=118
-Mar 18 16:13:34 10.191.171.77  INFO    100002220 ClientIP=10.190.239.100;Host=eispri.sbi.co.in:443;VIP=10.191.171.90:443;RealServer=10.176.1.122:2444;RespCode=200;httpVersio=1.1;URL=https://eispri.sbi.co.in:443/gen5/gateway/aadharVault/refKeyEnq; TimeTaken=120;ElapsedTime=120
-Mar 18 16:13:34 10.191.171.77  INFO    100002220 ClientIP=10.191.96.203;Host=eispri.sbi.co.in:443;VIP=10.191.171.90:443;RealServer=10.176.1.120:2443;RespCode=200;httpVersio=1.1;URL=https://eispri.sbi.co.in:443/gen5/gateway/aadharVault/fetchAadhar; TimeTaken=122;ElapsedTime=121
-Mar 18 16:13:34 10.191.171.77  INFO    100002220 ClientIP=10.191.96.224;Host=eispri.sbi.co.in:443;VIP=10.191.171.90:443;RealServer=10.176.1.122:2443;RespCode=200;httpVersio=1.1;URL=https://eispri.sbi.co.in:443/gen6/gateway/customers/AOF2/customerNormalDetails_th/enquiry; TimeTaken=220;ElapsedTime=219
+ruleset(name="remote") {
+
+    if ($msg contains "RespCode=200") then {
+        action(type="omfile" file="/var/log/resp_200.log")
+        stop
+    }
+
+    if ($msg contains "RespCode=4") then {
+        action(type="omfile" file="/var/log/resp_400.log")
+        stop
+    }
+
+    if ($msg contains "RespCode=5") then {
+        action(type="omfile" file="/var/log/resp_500.log")
+        stop
+    }
+
+    # बाकी logs
+    action(type="omfile" file="/var/log/others.log")
+}
