@@ -1,103 +1,18 @@
-CREATE COMPUTE MODULE CBS_Response
+CREATE COMPUTE MODULE postHit_Compute
 	CREATE FUNCTION Main() RETURNS BOOLEAN
-	BEGIN	
-	 DECLARE Env REFERENCE TO Environment;	
-	 
-	 DECLARE afterRecvTime TIMESTAMP CURRENT_TIMESTAMP;
+	BEGIN
+
+		CALL CopyEntireMessage();
+		DECLARE env REFERENCE TO Environment;
 		
-		DECLARE timeDiff INTERVAL;
+		SET env.mgsint = ASBITSTREAM(InputRoot.JSON.Data ENCODING InputRoot.Properties.Encoding CCSID COALESCE(InputRoot.Properties.CodedCharSetId,1208));
+		SET env.msgstr = CAST(env.mgsint AS CHARACTER ENCODING InputRoot.Properties.Encoding CCSID COALESCE(InputRoot.Properties.CodedCharSetId,1208));
 		
-		
-		SET timeDiff = (afterRecvTime - Environment.afterRemLength) SECOND;		
-				
-		DECLARE DynTimeLog CHARACTER;
-		SET DynTimeLog = 
-		'{ afterLenRecvTime: ' || CAST(Environment.afterRemLength AS CHARACTER FORMAT 'dd-MM-yyyy HH:mm:ss:SSSSSS') ||  
-		', afterRecvTime: ' || CAST(afterRecvTime AS CHARACTER FORMAT 'dd-MM-yyyy HH:mm:ss:SSSSSS')|| 
-		', timeDiff: ' || CAST(timeDiff AS CHARACTER)|| 
-	   '}' ;
-		
-		CALL Logger.LOGGER(CAST('DynamicTimer3+' || DynTimeLog AS CHARACTER CCSID 5348) ,Env) ;
-        
-		IF(Environment.CBS_errorFlag = 1)  THEN
-		
-	    SET OutputRoot =CAST(' ' AS BLOB CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding)|| CAST(InputLocalEnvironment.TCPIP.Receive.Length AS BLOB CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding)||InputRoot.BLOB.BLOB;
-	    
-	    DECLARE CBSRESPString CHARACTER ' ' || CAST(InputLocalEnvironment.TCPIP.Receive.Length AS CHARACTER CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding) || CAST(InputRoot.BLOB.BLOB AS CHARACTER CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding); 
-        CALL EIS_API_LOGGER.EISLOGGING('Response from CBS+' || CBSRESPString,Env);	
-        
-	 END IF;
-	 
-		
-	 IF(Environment.CBS_errorFlag = 1)  THEN
-	 DECLARE CBSString CHARACTER ' ' || InputLocalEnvironment.TCPIP.Receive.Length || CAST(InputRoot.BLOB.BLOB AS CHARACTER CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding);
-	 DECLARE CBSReqTranCode CHARACTER SUBSTRING(CBSString FROM 58 FOR 6);
-	 CALL Logger.LOGGER('Response TranCode+' || CBSReqTranCode,Env ) ;
-	 CALL Logger.LOGGER('Response From CBS+' || CBSString,Env );	
-	 
-	 
-		
-	   SET OutputRoot = CAST(' ' AS BLOB CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding)|| CAST(InputLocalEnvironment.TCPIP.Receive.Length AS BLOB CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding)||InputRoot.BLOB.BLOB;
-		CREATE LASTCHILD OF OutputRoot DOMAIN('DFDL')
- 		PARSE(OutputRoot ENCODING InputRoot.Properties.Encoding 
- 				CCSID InputRoot.Properties.CodedCharSetId 
-     					TYPE '{}:customerDetailResponse');
-     					
-     		SET Environment.SUPER_FLAG = SUBSTRING ( CBSString FROM 136 FOR 3 );
-       SET Environment.CAPABILITY_LEVEL = SUBSTRING ( CBSString FROM 145 FOR 2 );
-     	  		IF Environment.SUPER_FLAG = 'SUP' THEN
-     	  			SET OutputRoot.JSON.Data.SUPERVISORY_FLAG = 'Y';
-     	  			SET Environment.CAPABILITY_VALUE = Environment.CAPABILITY_LEVEL ;
-     	  			SET Environment.ERROR_CODE = SUBSTRING ( CBSString FROM 140 FOR 4 );
-     	  			SET Environment.ERROR_DESCRIPTION = SUBSTRING ( CBSString FROM 148 FOR 37 );
-     	  		END IF;
-					
-	ELSEIF(Environment.CBS_errorFlag = 2)  THEN
-		DECLARE CBSString CHARACTER ' 1022' || CAST(InputRoot.BLOB.BLOB AS CHARACTER CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding);
-		DECLARE CBSReqTranCode CHARACTER SUBSTRING(CBSString FROM 58 FOR 6);
-		CALL Logger.LOGGER('Response TranCode+' || CBSReqTranCode,Env ) ;
-		CALL Logger.LOGGER('Response From CBS+' || CBSString,Env );	
-		
-		SET OutputRoot = CAST(' ' AS BLOB CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding)|| CAST('1022' AS BLOB CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding)||InputRoot.BLOB.BLOB;
-		CREATE LASTCHILD OF OutputRoot DOMAIN('DFDL')
- 		PARSE(OutputRoot ENCODING InputRoot.Properties.Encoding 
- 				CCSID InputRoot.Properties.CodedCharSetId 
-     					TYPE '{}:customerDetailResponse');	
-     					
-     	SET Environment.SUPER_FLAG = SUBSTRING ( CBSString FROM 136 FOR 3 );
-       SET Environment.CAPABILITY_LEVEL = SUBSTRING ( CBSString FROM 145 FOR 2 );
-     	  		IF Environment.SUPER_FLAG = 'SUP' THEN
-     	  			SET OutputRoot.JSON.Data.SUPERVISORY_FLAG = 'Y';
-     	  			SET Environment.CAPABILITY_VALUE = Environment.CAPABILITY_LEVEL ;
-     	  			SET Environment.ERROR_CODE = SUBSTRING ( CBSString FROM 140 FOR 4 );
-     	  			SET Environment.ERROR_DESCRIPTION = SUBSTRING ( CBSString FROM 148 FOR 37 );
-     	  		END IF;				
-				
-	ELSE
-		DECLARE CBSString CHARACTER ' 1022    0892' || CAST(InputRoot.BLOB.BLOB AS CHARACTER CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding) || CAST(Environment.Response1 AS CHARACTER CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding);
-		DECLARE CBSReqTranCode CHARACTER SUBSTRING(CBSString FROM 58 FOR 6);
-		CALL Logger.LOGGER('Response TranCode+' || CBSReqTranCode,Env ) ;
-		CALL Logger.LOGGER('Response From CBS+' || CBSString,Env );
-		
-		DECLARE PARSE_STRING CHARACTER ' 1022    0892' || CAST(InputRoot.BLOB.BLOB AS CHARACTER CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding) || ' 0367' || CAST(Environment.Response1 AS CHARACTER CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding);		
-		SET OutputRoot = CAST(' 1022    0892' AS BLOB CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding)||InputRoot.BLOB.BLOB|| CAST(' 0367' AS BLOB CCSID InputRoot.Properties.CodedCharSetId Encoding InputRoot.Properties.Encoding) || Environment.Response1;		
-		SET Environment.Response = OutputRoot;
-		CREATE LASTCHILD OF OutputRoot DOMAIN('DFDL')
- 		PARSE(OutputRoot ENCODING InputRoot.Properties.Encoding 
- 				CCSID InputRoot.Properties.CodedCharSetId 
-     					TYPE '{}:customerDetailResponse');  
-     					
-     	SET Environment.SUPER_FLAG = SUBSTRING ( CBSString FROM 136 FOR 3 );
-       SET Environment.CAPABILITY_LEVEL = SUBSTRING ( CBSString FROM 145 FOR 2 );
-     	  		IF Environment.SUPER_FLAG = 'SUP' THEN
-     	  			SET OutputRoot.JSON.Data.SUPERVISORY_FLAG = 'Y';
-     	  			SET Environment.CAPABILITY_VALUE = Environment.CAPABILITY_LEVEL ;
-     	  			SET Environment.ERROR_CODE = SUBSTRING ( CBSString FROM 140 FOR 4 );
-     	  			SET Environment.ERROR_DESCRIPTION = SUBSTRING ( CBSString FROM 148 FOR 37 );
-     	  		END IF;
-     		   										
-     	END IF;				
-     					
 		RETURN TRUE;
+	END;
+
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		SET OutputRoot = InputRoot;
 	END;
 END MODULE;
