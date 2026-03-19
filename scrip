@@ -9,3 +9,38 @@
 CTDP3062E: An unexpected non-postfix separator ',' occurs in a postfix position at offset '109' in 'sequence' group contained within element 'record', xpath: '/record[1]'.
 			ParsedDataRegion[SimpleContent, startOffset = 70, length = 39, scd = #xscd(/schemaElement::record/type::0/model::sequence/schemaElement::Time)]
 			
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns:csv="http://www.ibm.com/dfdl/CommaSeparatedFormat" xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:ibmDfdlExtn="http://www.ibm.com/dfdl/extensions" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+        
+  
+  <xsd:import namespace="http://www.ibm.com/dfdl/CommaSeparatedFormat" schemaLocation="IBMdefined/CommaSeparatedFormat.xsd"/>
+        
+    
+  <xsd:element ibmSchExtn:docRoot="true" name="record">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element dfdl:length="13" dfdl:lengthKind="explicit" name="id" type="xsd:string"/>
+        <xsd:element name="Property" type="xsd:string"/>
+        <xsd:element name="AssignedTo" type="xsd:string"/>
+        <xsd:element name="Status" type="xsd:string"/>
+        <xsd:element name="Time" type="xsd:string"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+      
+  <xsd:annotation>
+        		
+    
+    <xsd:appinfo source="http://www.ogf.org/dfdl/">
+            			
+      
+      <dfdl:format documentFinalTerminatorCanBeMissing="yes" encoding="{$dfdl:encoding}" escapeSchemeRef="csv:CSVEscapeScheme" ref="csv:CommaSeparatedFormat"/>
+            		
+    
+    </xsd:appinfo>
+        	
+  
+  </xsd:annotation>
+    
+
+</xsd:schema>
