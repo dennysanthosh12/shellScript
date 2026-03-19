@@ -1,18 +1,6 @@
-CREATE COMPUTE MODULE postHit_Compute
-	CREATE FUNCTION Main() RETURNS BOOLEAN
-	BEGIN
-
-		CALL CopyEntireMessage();
-		DECLARE env REFERENCE TO Environment;
-		
-		SET env.mgsint = ASBITSTREAM(InputRoot.JSON.Data ENCODING InputRoot.Properties.Encoding CCSID COALESCE(InputRoot.Properties.CodedCharSetId,1208));
-		SET env.msgstr = CAST(env.mgsint AS CHARACTER ENCODING InputRoot.Properties.Encoding CCSID COALESCE(InputRoot.Properties.CodedCharSetId,1208));
-		
-		RETURN TRUE;
-	END;
-
-
-	CREATE PROCEDURE CopyEntireMessage() BEGIN
-		SET OutputRoot = InputRoot;
-	END;
-END MODULE;
+1771315698779,Getting error from EIS - Card issuance,Farhin,completed,2026-02-17T08:08:18.779Z
+1760516944002,Swagger Doc 1,Yamini,completed,2025-10-15T08:29:04.002Z
+1766127868094,SBI - API Call Back services,Rajasri,completed,2025-12-19T07:04:28.094Z
+1773645614792,swagger and UAT URL of existing API,Farhin,completed,2026-03-16T07:20:14.792Z
+1762921424214,Production Promotion 24/10/2025,Yamini,completed,2025-11-12T04:23:44.214Z
+1765967008131,DM2025101119 PM2025125793 Integration of INL with Loan Processing Application - DEV,Rajasri,completed,2025-12-17T10:23:28.131Z
