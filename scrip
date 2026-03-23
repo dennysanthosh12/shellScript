@@ -1,183 +1,86 @@
-BROKER SCHEMA EIS_API_LOGGER
-
-
-
-CREATE COMPUTE MODULE Start_Logger_DPG_Compute1
-	CREATE FUNCTION Main() RETURNS BOOLEAN
-	BEGIN
-		DECLARE continueflow BOOLEAN TRUE;
-		DECLARE Env REFERENCE TO Environment;
-		
-		SET Environment."X-OPERATION" = InputLocalEnvironment.REST.Input;
-		SET Environment."X-OPERATION".Operation = COALESCE(InputRoot.HTTPInputHeader.Request_code,Environment."X-OPERATION".Operation) ;
-		
-		SET Environment.LogIndex      = CARDINALITY(Environment.Logger[])+1 ;
-			
-		SET Environment."X-InputRequest"  = InputRoot.JSON.Data ;	 		 
-		SET Environment.SOURCE_ID 	= Environment."X-InputRequest".SOURCE_ID;
-		SET Environment.API_Name = COALESCE(SUBSTRING(MessageFlowLabel AFTER '.'),MessageFlowLabel);
-		SET Environment.REQUEST_REFERENCE_NUMBER = Environment."X-InputRequest".REQUEST_REFERENCE_NUMBER; 
-		
-		SET Environment.ENDPOINT = Environment."X-InputRequest".DESTINATION;
-		
-		CALL EISLOGGING('Start_of_Transaction+' || '----------------' || Environment.API_Name || ' API ----------------',Env);
-        
-                -------------  Ankit------------------------
-        SET Environment.INITIATE_TIME = CAST(EIS_API_LOGGER_Utility.getCurrentTimestamp() AS CHARACTER FORMAT 'dd-MM-yyyy HH:mm:ss:SSSSSS');
-        CALL EISLOGGING('SYS_REQUEST_DATE_TIME+' || CAST(EIS_API_LOGGER_Utility.getCurrentTimestamp() AS CHARACTER FORMAT 'dd-MM-yyyy HH:mm:ss:SSSSSS'),Env);
-        SET Environment.EXP_TIME = COALESCE(InputRoot.HTTPInputHeader."Dpg_request_time",CAST(EIS_API_LOGGER_Utility.getCurrentTimestamp() AS CHARACTER FORMAT 'dd-MM-yyyy HH:mm:ss:SSSSSS'));
-         CALL EISLOGGING('EXP_TIME_DATE_TIME+' || Environment.EXP_TIME,Env);
-        SET Environment.VALID_TIME = COALESCE(EIS_API_LOGGER_Utility.getCacheValueFromWXS('SYSTEM.BROKER.DEFAULTMAP','EXP_SYS_VALIDITY_TIME'),'20');
-        SET Environment.VALIDITY =  timeDiff(Environment.EXP_TIME,Environment.INITIATE_TIME,Environment.VALID_TIME);
-        CALL EISLOGGING('SECONDS_VALID+' || Environment.VALIDITY ,Env);
-        
-        IF Environment.VALIDITY = 'false' THEN
-        	SET Environment.ERROR_CODE = 'SI015';
-        	SET continueflow = FALSE;
-        ELSE
-        ----------------------------------
-		
-		SET Environment.CCSID = InputRoot.Properties.CodedCharSetId	;
-		SET Environment.Encoding = InputRoot.Properties.Encoding ;	
-		SET Environment."X-OPERATION".Egroup = COALESCE(BrokerName || ' - ' || ExecutionGroupLabel,'');
-				
-		SET Environment.Clientid             = InputRoot.HTTPInputHeader.Clientid;
-		
-		SET Environment.HttpHeader = InputRoot.HTTPInputHeader;
-		CALL EISLOGGING('HttpHeader+'  ,Env);
-		
-		
-		
-		CALL EISLOGGING('X-InputRequest+',Env) ;
-		
-		
-		SET Environment.expindex = 1;
-		SET Environment.refireindex = 1;
-		
-		IF SERVER_IP IS NULL OR SERVER_IP = '' THEN
-		  SET SERVER_IP = getServerIP_Address();
-		  IF CONTAINS(SERVER_IP,'X-JavaError') THEN
-        	SET SERVER_IP = '';
-          END IF ;
-		END IF;
-		
-		IF DS_FLAG IS NULL OR DS_FLAG = 'X-JavaError' THEN
-		  SET DS_FLAG = COALESCE(EIS_API_LOGGER_Utility.getCacheValueFromWXS('GENERIC_LIB_CACHE','FEJNO_FLAG'),EIS_API_LOGGER_Utility.getCacheValueFromWXS('SYSTEM.BROKER.DEFAULTMAP','FEJNO_FLAG'),'Y');
-		END IF;
-		
---		IF QueueLog IS NULL OR CONTAINS(QueueLog,'X-JavaError')THEN
---           SET QueueLog = getqueuelogCache();
---        END IF;
-        
-        --For Enabling and Disabling Queue Logs and DB logs---
---        SET DPG_Queue_Log_Flag  = COALESCE(EIS_API_LOGGER_Utility.getCacheValueFromWXS('GENERIC_LIB_CACHE','LOCAL_QUEUE_LOG'),EIS_API_LOGGER_Utility.getCacheValueFromWXS('SYSTEM.BROKER.DEFAULTMAP','LOCAL_QUEUE_LOG'),'Y');
---        SET DPG_DB_log_Flag		= COALESCE(EIS_API_LOGGER_Utility.getCacheValueFromWXS('GENERIC_LIB_CACHE','DPG_QUEUE_LOG'),EIS_API_LOGGER_Utility.getCacheValueFromWXS('SYSTEM.BROKER.DEFAULTMAP','DPG_QUEUE_LOG'),'Y');
-        --NEW QUEUE FLAG
-        SET DPG_QUEUE_SELECTOR = COALESCE(EIS_API_LOGGER_Utility.getCacheValueFromWXS('GENERIC_LIB_CACHE','DPG_SYS_QUEUE_SELECTOR'),EIS_API_LOGGER_Utility.getCacheValueFromWXS('SYSTEM.BROKER.DEFAULTMAP','DPG_SYS_QUEUE_SELECTOR'),'YY');
-        CALL EISLOGGING('DPG_QUEUE_SELECTOR+'||DPG_QUEUE_SELECTOR,Env);
-        ---------------------------------------------------
-         	
-		DECLARE SourceIP,URI CHARACTER ;
-		SET SourceIP = COALESCE(InputRoot.HTTPInputHeader."X-Dpg-Client-Ip",InputRoot.HTTPInputHeader."X-Forwarded-For",InputRoot.HTTPInputHeader."X-Remote-Addr") || ' - ' || SERVER_IP || ' : ' || InputRoot.HTTPInputHeader."X-Server-Port" ;
-		SET Environment."X-OPERATION".Egroup = COALESCE(BrokerName || ' - ' || ExecutionGroupLabel,'');
-		SET Environment."X-RequestDetails".DPG_IP	       = COALESCE(InputRoot.HTTPInputHeader."X-Forwarded-For",'');
-		SET Environment."X-RequestDetails".DPG_PORT	       = COALESCE(SUBSTRING(InputRoot.HTTPInputHeader."X-Dp_ip_port" AFTER ':'),''); 
-		SET Environment."X-RequestDetails".SOURCE_IP       = SourceIP ;
-		SET Environment."X-RequestDetails".BROKER_EG       = Environment."X-OPERATION".Egroup ;
-        SET Environment."X-RequestDetails".SERVICE_NAME    = Environment."X-OPERATION".Operation ;
-        SET Environment."X-RequestDetails".URI             = InputLocalEnvironment.REST.Input.URI;
-        CALL EISLOGGING('X-RequestDetails+' ,Env) ;
-        SET URI = InputLocalEnvironment.REST.Input.URI;
-		
-		SET Environment.BRKN = COALESCE(BrokerName,getBrokerName(),'');
-		SET Environment.BRKEG = COALESCE(ExecutionGroupLabel,'');
-		CALL EISLOGGING('BKUP_BRKN+' || CAST (Environment.BRKN AS CHARACTER) ,Env) ;
-		CALL EISLOGGING('BKUP_BRKEG+' || CAST (Environment.BRKEG AS CHARACTER) ,Env) ;
-		
-		DELETE FIELD Environment."X-InputRequest";
-		
-		CALL Logger.LOGGER(CAST('URI+' || Environment."X-RequestDetails".URI AS CHARACTER CCSID 5348) ,Env) ;
-		--handling Environment."X-TxnDetails".TxnDetails not set in API
-		IF CONTAINS(Environment."X-RequestDetails".URI , 'cbs') OR CONTAINS(Environment."X-RequestDetails".URI ,'CBS') THEN
-			SET Environment.ENDPOINT_FLAG = 'CBS';
-			SET Environment."X-TxnDetails".TxnDetails = 'CBS';
-			CALL Logger.LOGGER('Endpoint_FLAG+' || Environment.ENDPOINT_FLAG, Env);
-			CALL Logger.LOGGER(CAST('Endpoint_FLAG+' || Environment.ENDPOINT_FLAG AS CHARACTER CCSID 5348) ,Env) ;
-		END IF; 
-		
-		DECLARE inputMsg BLOB;
-		SET inputMsg = ASBITSTREAM(InputRoot.JSON.Data,COALESCE(InputRoot.Properties.Encoding,546),COALESCE(InputRoot.Properties.CodedCharSetId,5348));
-		DECLARE ENCDATA CHARACTER CAST(inputMsg AS CHARACTER CCSID COALESCE(InputRoot.Properties.CodedCharSetId,5348) ENCODING COALESCE(InputRoot.Properties.Encoding,546));		
-		
-		SET Environment."X-InputRequest"  = ENCDATA;
-		 
-		IF CONTAINS(URI,'system.api') = TRUE THEN
-			IF CONTAINS(URI,'cbs')= TRUE OR CONTAINS(URI,'CBS') = TRUE THEN
-				SET Environment."X-DestinationDetails".MsgType       = 'CBS' ;
-				CALL EISLOGGING('X-DestinationDetails+' ,Env) ;
-			END IF;
-			IF CONTAINS(URI,'misc')= TRUE THEN
-				SET Environment."X-MiscCall".MiscCall = 'Y' ;
-				CALL Logger.LOGGER('X-MiscCall+' ,Env) ;
-			END IF;
-		END IF;
-		
-        SET Environment.FEJNumber = generateFEJNO_DPG();      
-        
-        IF CONTAINS(URI,'localhost')= FALSE AND CONTAINS(URI,'system.api') = FALSE THEN
-			IF LENGTH(InputRoot.JSON.Data.REQUEST_REFERENCE_NUMBER) <> 25  THEN
-	         	SET continueflow = FALSE;
-	        END IF; 
-			
-			IF  SUBSTRING(InputRoot.JSON.Data.REQUEST_REFERENCE_NUMBER FROM 1 FOR 3) <> 'SBI'  THEN
-				SET continueflow = FALSE;
-			END IF;
-			
-			IF SUBSTRING(InputRoot.JSON.Data.SOURCE_ID FROM 1 FOR 2) <> SUBSTRING(InputRoot.JSON.Data.REQUEST_REFERENCE_NUMBER FROM 4 FOR 2)  THEN
-				SET continueflow = FALSE;
-			END IF;
-		END IF;	
-		END IF;
-		
-	  IF continueflow THEN
-	  		PROPAGATE TO TERMINAL 'out';
-	  ELSE
-	  	   PROPAGATE TO TERMINAL 'failure';
-	  END IF;
-      
-      RETURN FALSE;
-      
-	  END;
-	  
-	  CREATE FUNCTION timeDiff(IN P1 CHARACTER , IN P2 CHARACTER, IN P3 CHARACTER) RETURNS CHARACTER
-BEGIN
-        DECLARE timeGap CHARACTER;
-        -- LOG EVENT VALUES('myINIT1 CALLED');
-        SET timeGap = COALESCE(EIS_API_LOGGER_Utility.getTimeDifference(P1,P2,P3),'true');
-        RETURN timeGap;
-END;
-
-CREATE FUNCTION getServerIP_Address( ) RETURNS CHARACTER 
-     BEGIN 
-         -- LOG EVENT VALUES('myINIT1 CALLED'); 
-         SET SERVER_IP = COALESCE(EIS_API_LOGGER_Utility.getServerIP(),''); 
-         RETURN SERVER_IP; 
-     END;
-
- CREATE FUNCTION generateFEJNO_DPG( ) RETURNS CHARACTER 
-     BEGIN 
-     	DECLARE FEJNO CHARACTER;
-         -- LOG EVENT VALUES('myINIT1 CALLED'); 
-         SET FEJNO = COALESCE(EIS_API_LOGGER_Utility.generateFEJNO(),''); 
-         RETURN FEJNO; 
-     END;
-     
-CREATE FUNCTION getBrokerName()
-RETURNS CHARACTER
-LANGUAGE JAVA
-EXTERNAL NAME "cache.CacheUtil.getBrokerName";
-
-END MODULE;
-
-
-
+ExceptionList
+	RecoverableException
+			File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/MessageServices/ImbDataFlowNode.cpp
+			Line:INTEGER:1886
+			Function:CHARACTER:ImbDataFlowNode::createExceptionList
+			Type:CHARACTER:ComIbmComputeNode
+			Name:CHARACTER:gen.customerToCustomerFundTransferMR_sys#FCMComposite_1_8.customerToCustomerFundTransferMR_sys#FCMComposite_1_1.EIS_API_LOGGER.Start_Logger_DPG#FCMComposite_1_6
+			Label:CHARACTER:gen.customerToCustomerFundTransferMR_sys.customerToCustomerFundTransferMR_sys (Implementation).Start_Logger_DPG.Compute1
+			Catalog:CHARACTER:BIPmsgs
+			Severity:INTEGER:3
+			Number:INTEGER:2230
+			Text:CHARACTER:Node throwing exception
+			Insert
+					Type:INTEGER:14
+					Text:CHARACTER:gen.customerToCustomerFundTransferMR_sys.customerToCustomerFundTransferMR_sys (Implementation).Start_Logger_DPG.Compute1
+			RecoverableException
+					File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/ImbRdl/ImbRdlStatementGroup.cpp
+					Line:INTEGER:784
+					Function:CHARACTER:SqlStatementGroup::execute
+					Type:CHARACTER:
+					Name:CHARACTER:
+					Label:CHARACTER:
+					Catalog:CHARACTER:BIPmsgs
+					Severity:INTEGER:3
+					Number:INTEGER:2488
+					Text:CHARACTER:Error detected, rethrowing
+					Insert
+							Type:INTEGER:5
+							Text:CHARACTER:EIS_API_LOGGER.Start_Logger_DPG_Compute1.Main
+					Insert
+							Type:INTEGER:5
+							Text:CHARACTER:138.6
+					Insert
+							Type:INTEGER:5
+							Text:CHARACTER:PROPAGATE TO TERMINAL 'out' FINALIZE DEFAULT DELETE DEFAULT;
+					RecoverableException
+							File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/SQLNodeLibrary/ImbComputeNode.cpp
+							Line:INTEGER:343
+							Function:CHARACTER:ImbComputeNode::evaluate
+							Type:CHARACTER:ComIbmComputeNode
+							Name:CHARACTER:gen.customerToCustomerFundTransferMR_sys#FCMComposite_1_8.customerToCustomerFundTransferMR_sys#FCMComposite_1_9
+							Label:CHARACTER:gen.customerToCustomerFundTransferMR_sys.customerToCustomerFundTransferMR_sys (Implementation).Input Passed
+							Catalog:CHARACTER:BIPmsgs
+							Severity:INTEGER:3
+							Number:INTEGER:2230
+							Text:CHARACTER:Caught exception and rethrowing
+							Insert
+									Type:INTEGER:14
+									Text:CHARACTER:gen.customerToCustomerFundTransferMR_sys.customerToCustomerFundTransferMR_sys (Implementation).Input Passed
+							RecoverableException
+									File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/ImbRdl/ImbRdlStatementGroup.cpp
+									Line:INTEGER:784
+									Function:CHARACTER:SqlStatementGroup::execute
+									Type:CHARACTER:
+									Name:CHARACTER:
+									Label:CHARACTER:
+									Catalog:CHARACTER:BIPmsgs
+									Severity:INTEGER:3
+									Number:INTEGER:2488
+									Text:CHARACTER:Error detected, rethrowing
+									Insert
+											Type:INTEGER:5
+											Text:CHARACTER:.Input Passed.Main
+									Insert
+											Type:INTEGER:5
+											Text:CHARACTER:22.3
+									Insert
+											Type:INTEGER:5
+											Text:CHARACTER:DECLARE CBSString CHARACTER CAST(ASBITSTREAM(OutputRoot.DFDL CCSID 1208) AS CHARACTER CCSID 1208);
+									ParserException
+											File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/MTI/MTIforBroker/DfdlParser/ImbDFDLErrorHandler.cpp
+											Line:INTEGER:329
+											Function:CHARACTER:ImbDFDLErrorHandler::handleSerializerErrors
+											Type:CHARACTER:ComIbmWSInputNode
+											Name:CHARACTER:gen.customerToCustomerFundTransferMR_sys#FCMComposite_1_1
+											Label:CHARACTER:gen.customerToCustomerFundTransferMR_sys.HTTP Input
+											Catalog:CHARACTER:BIPmsgs
+											Severity:INTEGER:3
+											Number:INTEGER:5831
+											Text:CHARACTER:An error occurred whilst serializing with DFDL
+											Insert
+													Type:INTEGER:5
+													Text:CHARACTER:CTDU4010E: Element '#xscd(/schemaElement::request_P9/type::0/model::sequence/schemaElement::body/type::0/model::sequence/schemaElement::protocolId)' has minOccurs '1' and no default value, but the DFDL infoset has '0' occurrences. This is not allowed when 'occursCountKind' is 'fixed' or 'implicit' or minOccurs is '1' and maxOccurs is '1'. 
+											Insert
+													Type:INTEGER:5
+													Text:CHARACTER:/Root/DFDL/request_P9/body
