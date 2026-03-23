@@ -6,10 +6,12 @@ DECLARE DPG_Queue_Log_Flag SHARED CHARACTER;
 DECLARE URN_SEQ SHARED CHARACTER;
 DECLARE DB_INSERT SHARED CHARACTER;
 
-CREATE FILTER MODULE Start_Logger_DPG_Filter
+
+CREATE COMPUTE MODULE Start_Logger_DPG_Compute1
 	CREATE FUNCTION Main() RETURNS BOOLEAN
 	BEGIN
-	DECLARE Env REFERENCE TO Environment;
+		DECLARE continueflow BOOLEAN TRUE;
+		DECLARE Env REFERENCE TO Environment;
 		
 		SET Environment."X-OPERATION" = LocalEnvironment.REST.Input;
 		SET Environment."X-OPERATION".Operation = COALESCE(Root.HTTPInputHeader.Request_code,Environment."X-OPERATION".Operation) ;
@@ -36,7 +38,7 @@ CREATE FILTER MODULE Start_Logger_DPG_Filter
         
         IF Environment.VALIDITY = 'false' THEN
         	SET Environment.ERROR_CODE = 'SI015';
-        	RETURN FALSE;
+        	SET continueflow = FALSE;
         ELSE
         ----------------------------------
 		
@@ -129,31 +131,30 @@ CREATE FILTER MODULE Start_Logger_DPG_Filter
         
         IF CONTAINS(URI,'localhost')= FALSE AND CONTAINS(URI,'system.api') = FALSE THEN
 			IF LENGTH(Root.JSON.Data.REQUEST_REFERENCE_NUMBER) <> 25  THEN
-	         	RETURN FALSE;
+	         	SET continueflow = FALSE;
 	        END IF; 
 			
 			IF  SUBSTRING(Root.JSON.Data.REQUEST_REFERENCE_NUMBER FROM 1 FOR 3) <> 'SBI'  THEN
-				RETURN FALSE;
+				SET continueflow = FALSE;
 			END IF;
 			
 			IF SUBSTRING(Root.JSON.Data.SOURCE_ID FROM 1 FOR 2) <> SUBSTRING(Root.JSON.Data.REQUEST_REFERENCE_NUMBER FROM 4 FOR 2)  THEN
-				RETURN FALSE;
+				SET continueflow = FALSE;
 			END IF;
 		END IF;	
 		END IF;
-      RETURN TRUE;  
-	END;
-END MODULE;
-
---CREATE FUNCTION getdpgQueueLogFlag( ) RETURNS CHARACTER 
---     BEGIN 
---         -- LOG EVENT VALUES('myINIT1 CALLED'); 
---         SET DPG_DB_log_Flag = COALESCE(EIS_API_LOGGER_Utility.getCacheValueFromWXS('SYSTEM.BROKER.DEFAULTMAP', 'DPG_QUEUE_LOG' ),'Y'); 
---         RETURN DPG_DB_log_Flag; 
---     END;
-
-
-CREATE FUNCTION timeDiff(IN P1 CHARACTER , IN P2 CHARACTER, IN P3 CHARACTER) RETURNS CHARACTER
+		
+	  IF continueflow THEN
+	  		PROPOGATE TO TERMINAL 'out';
+	  ELSE
+	  	PROPOGATE TO TERMINAL 'failure';
+	  END IF;
+      
+      RETURN FALSE;
+      
+	  END;
+	  
+	  CREATE FUNCTION timeDiff(IN P1 CHARACTER , IN P2 CHARACTER, IN P3 CHARACTER) RETURNS CHARACTER
 BEGIN
         DECLARE timeGap CHARACTER;
         -- LOG EVENT VALUES('myINIT1 CALLED');
@@ -180,3 +181,8 @@ CREATE FUNCTION getBrokerName()
 RETURNS CHARACTER
 LANGUAGE JAVA
 EXTERNAL NAME "cache.CacheUtil.getBrokerName";
+
+END MODULE;
+
+
+
