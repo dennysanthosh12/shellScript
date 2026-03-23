@@ -1,10 +1,8 @@
+BIP2432E
+(EIS_API_LOGGER.Start_Logger_DPG_Compute1.Main, 6.35) : The correlation name 'LocalEnvironment.REST.Input' is not valid. Those in scope are: SOURCE_IP, PATH_REMOTE, PATH_LOCAL, TabelLog, API_LOG_QUEUENAME, ORCH_API_QUEUENAME, DS_FLAG, DPG_QUEUE_SELECTOR, DPG_DB_log_Flag, DPG_Queue_Log_Flag, URN_SEQ, DB_INSERT, SERVER_IP, QueueLog, logFlag, apiName, Environment, InputLocalEnvironment, OutputLocalEnvironment, InputRoot, InputBody, InputProperties, OutputRoot, InputExceptionList, OutputExceptionList, InputDestinationList, OutputDestinationList, Context, CONTEXTREFERENCE, continueflow, Env. 
+
 BROKER SCHEMA EIS_API_LOGGER
 
-DECLARE DPG_QUEUE_SELECTOR SHARED CHARACTER;
-DECLARE DPG_DB_log_Flag SHARED CHARACTER;
-DECLARE DPG_Queue_Log_Flag SHARED CHARACTER;
-DECLARE URN_SEQ SHARED CHARACTER;
-DECLARE DB_INSERT SHARED CHARACTER;
 
 
 CREATE COMPUTE MODULE Start_Logger_DPG_Compute1
@@ -145,9 +143,9 @@ CREATE COMPUTE MODULE Start_Logger_DPG_Compute1
 		END IF;
 		
 	  IF continueflow THEN
-	  		PROPOGATE TO TERMINAL 'out';
+	  		PROPAGATE TO TERMINAL 'out';
 	  ELSE
-	  	PROPOGATE TO TERMINAL 'failure';
+	  	PROPAGATE TO TERMINAL 'failure';
 	  END IF;
       
       RETURN FALSE;
