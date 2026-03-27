@@ -1,86 +1,67 @@
-ExceptionLis
-	RecoverableException
-			File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/MessageServices/ImbDataFlowNode.cpp
-			Line:INTEGER:1886
-			Function:CHARACTER:ImbDataFlowNode::createExceptionList
-			Type:CHARACTER:ComIbmComputeNode
-			Name:CHARACTER:gen.customerToCustomerFundTransferMR_sys#FCMComposite_1_8.customerToCustomerFundTransferMR_sys#FCMComposite_1_1.EIS_API_LOGGER.Start_Logger_DPG#FCMComposite_1_6
-			Label:CHARACTER:gen.customerToCustomerFundTransferMR_sys.customerToCustomerFundTransferMR_sys (Implementation).Start_Logger_DPG.Compute1
-			Catalog:CHARACTER:BIPmsgs
-			Severity:INTEGER:3
-			Number:INTEGER:2230
-			Text:CHARACTER:Node throwing exception
-			Insert
-					Type:INTEGER:14
-					Text:CHARACTER:gen.customerToCustomerFundTransferMR_sys.customerToCustomerFundTransferMR_sys (Implementation).Start_Logger_DPG.Compute1
-			RecoverableException
-					File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/ImbRdl/ImbRdlStatementGroup.cpp
-					Line:INTEGER:784
-					Function:CHARACTER:SqlStatementGroup::execute
-					Type:CHARACTER:
-					Name:CHARACTER:
-					Label:CHARACTER:
-					Catalog:CHARACTER:BIPmsgs
-					Severity:INTEGER:3
-					Number:INTEGER:2488
-					Text:CHARACTER:Error detected, rethrowing
-					Insert
-							Type:INTEGER:5
-							Text:CHARACTER:EIS_API_LOGGER.Start_Logger_DPG_Compute1.Main
-					Insert
-							Type:INTEGER:5
-							Text:CHARACTER:138.6
-					Insert
-							Type:INTEGER:5
-							Text:CHARACTER:PROPAGATE TO TERMINAL 'out' FINALIZE DEFAULT DELETE DEFAULT;
-					RecoverableException
-							File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/SQLNodeLibrary/ImbComputeNode.cpp
-							Line:INTEGER:343
-							Function:CHARACTER:ImbComputeNode::evaluate
-							Type:CHARACTER:ComIbmComputeNode
-							Name:CHARACTER:gen.customerToCustomerFundTransferMR_sys#FCMComposite_1_8.customerToCustomerFundTransferMR_sys#FCMComposite_1_9
-							Label:CHARACTER:gen.customerToCustomerFundTransferMR_sys.customerToCustomerFundTransferMR_sys (Implementation).Input Passed
-							Catalog:CHARACTER:BIPmsgs
-							Severity:INTEGER:3
-							Number:INTEGER:2230
-							Text:CHARACTER:Caught exception and rethrowing
-							Insert
-									Type:INTEGER:14
-									Text:CHARACTER:gen.customerToCustomerFundTransferMR_sys.customerToCustomerFundTransferMR_sys (Implementation).Input Passed
-							RecoverableException
-									File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/ImbRdl/ImbRdlStatementGroup.cpp
-									Line:INTEGER:784
-									Function:CHARACTER:SqlStatementGroup::execute
-									Type:CHARACTER:
-									Name:CHARACTER:
-									Label:CHARACTER:
-									Catalog:CHARACTER:BIPmsgs
-									Severity:INTEGER:3
-									Number:INTEGER:2488
-									Text:CHARACTER:Error detected, rethrowing
-									Insert
-											Type:INTEGER:5
-											Text:CHARACTER:.Input Passed.Main
-									Insert
-											Type:INTEGER:5
-											Text:CHARACTER:22.3
-									Insert
-											Type:INTEGER:5
-											Text:CHARACTER:DECLARE CBSString CHARACTER CAST(ASBITSTREAM(OutputRoot.DFDL CCSID 1208) AS CHARACTER CCSID 1208);
-									ParserException
-											File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/MTI/MTIforBroker/DfdlParser/ImbDFDLErrorHandler.cpp
-											Line:INTEGER:329
-											Function:CHARACTER:ImbDFDLErrorHandler::handleSerializerErrors
-											Type:CHARACTER:ComIbmWSInputNode
-											Name:CHARACTER:gen.customerToCustomerFundTransferMR_sys#FCMComposite_1_1
-											Label:CHARACTER:gen.customerToCustomerFundTransferMR_sys.HTTP Input
-											Catalog:CHARACTER:BIPmsgs
-											Severity:INTEGER:3
-											Number:INTEGER:5831
-											Text:CHARACTER:An error occurred whilst serializing with DFDL
-											Insert
-													Type:INTEGER:5
-													Text:CHARACTER:CTDU4010E: Element '#xscd(/schemaElement::request_P9/type::0/model::sequence/schemaElement::body/type::0/model::sequence/schemaElement::protocolId)' has minOccurs '1' and no default value, but the DFDL infoset has '0' occurrences. This is not allowed when 'occursCountKind' is 'fixed' or 'implicit' or minOccurs is '1' and maxOccurs is '1'. 
-											Insert
-													Type:INTEGER:5
-													Text:CHARACTER:/Root/DFDL/request_P9/body
+After this node 
+
+
+
+CREATE COMPUTE MODULE postUpdate_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET Environment.FilePath = CAST('/var/mqsi/component/' || InputRoot.JSON.Data.IntegrationNode || '/servers/' || InputRoot.JSON.Data.IntegrationServer || '/run/' || InputRoot.JSON.Data.ApiName AS CHARACTER);
+	    SET OutputLocalEnvironment.Destination.File.Directory = Environment.FilePath;
+		RETURN TRUE;
+	END;
+
+END MODULE;
+
+
+this is the tree 
+
+
+Message
+	Properties
+			MessageSet:UNKNOWN:null
+			MessageType:UNKNOWN:null
+			MessageFormat:UNKNOWN:null
+			Encoding:UNKNOWN:null
+			CodedCharSetId:UNKNOWN:null
+			Transactional:UNKNOWN:null
+			Persistence:UNKNOWN:null
+			CreationTime:UNKNOWN:null
+			ExpirationTime:UNKNOWN:null
+			Priority:UNKNOWN:null
+			ReplyIdentifier:UNKNOWN:null
+			ReplyProtocol:CHARACTER:SOAP-HTTP
+			Topic:UNKNOWN:null
+			ContentType:UNKNOWN:null
+			IdentitySourceType:UNKNOWN:null
+			IdentitySourceToken:UNKNOWN:null
+			IdentitySourcePassword:UNKNOWN:null
+			IdentitySourceIssuedBy:UNKNOWN:null
+			IdentityMappedType:UNKNOWN:null
+			IdentityMappedToken:UNKNOWN:null
+			IdentityMappedPassword:UNKNOWN:null
+			IdentityMappedIssuedBy:UNKNOWN:null
+LocalEnvironment
+	WrittenDestination
+			Label
+					label:CHARACTER:postUpdate
+	Destination
+			HTTP
+					RequestIdentifier:BLOB:[B@d7f9a0f4
+			RouterList
+	HTTP
+			Input
+					Path
+							Segment:CHARACTER:validation
+							Segment:CHARACTER:update
+	REST
+			Input
+					Method:CHARACTER:POST
+					Operation:CHARACTER:postUpdate
+					Path:CHARACTER:/validation/update
+					URI:CHARACTER:http://10.177.44.58:4422/validation/update
+					Parameters
+Environment
+	FilePath:CHARACTER:/var/mqsi/component/PAYMENT_EXP/servers/Payment_E_01/run/depositToBGLFundTransfer_VPS_expDS
+
+
+
