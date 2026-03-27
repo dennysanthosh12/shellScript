@@ -1,2 +1,22 @@
-for i in {91,70,55,64,65}; do ssh -tq 10.177.44.$i "echo 10.177.44.$i; echo \"root:password\" | sudo chpasswd ; sudo chage -m 0 root"; done
+ssh -L 4416:localhost:4416 10.177.44.58
 
+Kernel  on an
+Activate the web console with: systemctl enable --now cockpit.socket
+
+Register this system with Red Hat Insights: rhc connect
+
+Example:
+# rhc connect --activation-key <key> --organization <org>
+
+The rhc client and Red Hat Insights will enable analytics and additional
+management capabilities on your system.
+View your connected systems at https://console.redhat.com/insights
+
+You can learn more about how to register your system
+using rhc at https://red.ht/registration
+Last login: Fri Mar 27 16:19:13 2026 from 10.177.44.20
+
+MQSI 13.0.5.0
+/opt/IBM/ace/server
+
+[eisuser@EISUATEXP09 ~]$
