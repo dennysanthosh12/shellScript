@@ -1,61 +1,49 @@
-still
-Message
-	Properties
-			MessageSet:UNKNOWN:null
-			MessageType:UNKNOWN:null
-			MessageFormat:UNKNOWN:null
-			Encoding:UNKNOWN:null
-			CodedCharSetId:UNKNOWN:null
-			Transactional:UNKNOWN:null
-			Persistence:UNKNOWN:null
-			CreationTime:UNKNOWN:null
-			ExpirationTime:UNKNOWN:null
-			Priority:UNKNOWN:null
-			ReplyIdentifier:UNKNOWN:null
-			ReplyProtocol:CHARACTER:SOAP-HTTP
-			Topic:UNKNOWN:null
-			ContentType:UNKNOWN:null
-			IdentitySourceType:UNKNOWN:null
-			IdentitySourceToken:UNKNOWN:null
-			IdentitySourcePassword:UNKNOWN:null
-			IdentitySourceIssuedBy:UNKNOWN:null
-			IdentityMappedType:UNKNOWN:null
-			IdentityMappedToken:UNKNOWN:null
-			IdentityMappedPassword:UNKNOWN:null
-			IdentityMappedIssuedBy:UNKNOWN:null
-LocalEnvironment
-	WrittenDestination
-			Label
-					label:CHARACTER:postUpdate
-	Destination
-			HTTP
-					RequestIdentifier:BLOB:[B@8d584b6a
-			RouterList
-	HTTP
-			Input
-					Path
-							Segment:CHARACTER:validation
-							Segment:CHARACTER:update
-	REST
-			Input
-					Method:CHARACTER:POST
-					Operation:CHARACTER:postUpdate
-					Path:CHARACTER:/validation/update
-					URI:CHARACTER:http://10.177.44.58:4422/validation/update
-					Parameters
-
-Environment
-	FilePath:CHARACTER:/var/mqsi/component/PAYMENT_EXP/servers/Payment_E_01/run/depositToBGLFundTransfer_VPS_expDS
-
-
-
-CREATE COMPUTE MODULE postUpdate_Compute
-	CREATE FUNCTION Main() RETURNS BOOLEAN
-	BEGIN
-		SET OutputLocalEnvironment = InputLocalEnvironment;
-		SET Environment.FilePath = CAST('/var/mqsi/component/' || InputRoot.JSON.Data.IntegrationNode || '/servers/' || InputRoot.JSON.Data.IntegrationServer || '/run/' || InputRoot.JSON.Data.ApiName AS CHARACTER);
-	    SET OutputLocalEnvironment.Destination.File.Directory = Environment.FilePath;
-		RETURN TRUE;
-	END;
-
-END MODULE;
+ExceptionList
+	RecoverableException
+			File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/MessageServices/ImbDataFlowNode.cpp
+			Line:INTEGER:1886
+			Function:CHARACTER:ImbDataFlowNode::createExceptionList
+			Type:CHARACTER:InputNode
+			Name:CHARACTER:gen.API_VALIDATION_UPDATE#FCMComposite_1_12.postUpdate#InTerminal.Input_1
+			Label:CHARACTER:gen.API_VALIDATION_UPDATE.postUpdate (Implementation).postUpdate#InTerminal.Input_1
+			Catalog:CHARACTER:BIPmsgs
+			Severity:INTEGER:3
+			Number:INTEGER:2230
+			Text:CHARACTER:Node throwing exception
+			Insert
+					Type:INTEGER:14
+					Text:CHARACTER:gen.API_VALIDATION_UPDATE.postUpdate (Implementation).postUpdate#InTerminal.Input_1
+			RecoverableException
+					File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/TemplateNodes/ImbRequestTemplateNode.cpp
+					Line:INTEGER:1148
+					Function:CHARACTER:ImbRequestTemplateNode::processMessageAssemblyToFailure
+					Type:CHARACTER:ComIbmRequestTemplateNode
+					Name:CHARACTER:gen.API_VALIDATION_UPDATE#FCMComposite_1_12.postUpdate#FCMComposite_1_2
+					Label:CHARACTER:gen.API_VALIDATION_UPDATE.postUpdate (Implementation).File Read
+					Catalog:CHARACTER:BIPmsgs
+					Severity:INTEGER:3
+					Number:INTEGER:2230
+					Text:CHARACTER:Caught exception and rethrowing
+					Insert
+							Type:INTEGER:14
+							Text:CHARACTER:gen.API_VALIDATION_UPDATE.postUpdate (Implementation).File Read
+					RecoverableException
+							File:CHARACTER:FileReadContext.java
+							Line:INTEGER:453
+							Function:CHARACTER:findLocalFile
+							Type:CHARACTER:
+							Name:CHARACTER:
+							Label:CHARACTER:
+							Catalog:CHARACTER:BIPmsgs
+							Severity:INTEGER:3
+							Number:INTEGER:4989
+							Text:CHARACTER:File pattern matched more than one file in the directory
+							Insert
+									Type:INTEGER:5
+									Text:CHARACTER:*.xsd
+							Insert
+									Type:INTEGER:5
+									Text:CHARACTER:2
+							Insert
+									Type:INTEGER:5
+									Text:CHARACTER:/var/mqsi/components/PAYMENT_EXP/servers/Payment_E_01/run/personalCifCreation_orchDS
