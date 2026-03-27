@@ -1,21 +1,4 @@
-After this node 
-
-
-
-CREATE COMPUTE MODULE postUpdate_Compute
-	CREATE FUNCTION Main() RETURNS BOOLEAN
-	BEGIN
-		SET Environment.FilePath = CAST('/var/mqsi/component/' || InputRoot.JSON.Data.IntegrationNode || '/servers/' || InputRoot.JSON.Data.IntegrationServer || '/run/' || InputRoot.JSON.Data.ApiName AS CHARACTER);
-	    SET OutputLocalEnvironment.Destination.File.Directory = Environment.FilePath;
-		RETURN TRUE;
-	END;
-
-END MODULE;
-
-
-this is the tree 
-
-
+still
 Message
 	Properties
 			MessageSet:UNKNOWN:null
@@ -46,7 +29,7 @@ LocalEnvironment
 					label:CHARACTER:postUpdate
 	Destination
 			HTTP
-					RequestIdentifier:BLOB:[B@d7f9a0f4
+					RequestIdentifier:BLOB:[B@8d584b6a
 			RouterList
 	HTTP
 			Input
@@ -60,8 +43,19 @@ LocalEnvironment
 					Path:CHARACTER:/validation/update
 					URI:CHARACTER:http://10.177.44.58:4422/validation/update
 					Parameters
+
 Environment
 	FilePath:CHARACTER:/var/mqsi/component/PAYMENT_EXP/servers/Payment_E_01/run/depositToBGLFundTransfer_VPS_expDS
 
 
 
+CREATE COMPUTE MODULE postUpdate_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+		SET Environment.FilePath = CAST('/var/mqsi/component/' || InputRoot.JSON.Data.IntegrationNode || '/servers/' || InputRoot.JSON.Data.IntegrationServer || '/run/' || InputRoot.JSON.Data.ApiName AS CHARACTER);
+	    SET OutputLocalEnvironment.Destination.File.Directory = Environment.FilePath;
+		RETURN TRUE;
+	END;
+
+END MODULE;
