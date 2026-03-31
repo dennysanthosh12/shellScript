@@ -1,3 +1,33 @@
+CREATE COMPUTE MODULE postUpdate_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE Env REFERENCE to Environment;
+		CREATE LASTCHILD OF Env DOMAIN'XMLNSC';
+		CREATE LASTCHILD OF Env.XMLNSC NAME 'Validation';
+		SET Environment.Variables.FilePath = CAST('/var/mqsi/components/' || InputRoot.JSON.Data.IntegrationNode || '/servers/' || InputRoot.JSON.Data.IntegrationServer || '/run/' || InputRoot.JSON.Data.ApiName AS CHARACTER);
+	    SET Environment.Variables.Pattern = '*.xsd' ;
+	    SET Env.i=1;
+	    
+		RETURN TRUE;
+	END;
+
+END MODULE;
+
+
+
+
+CREATE COMPUTE MODULE postUpdate_Compute2
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		declare Env REFERENCE to Environment;
+		SET OutputRoot = InputRoot;
+		set Env.Flag='N';
+		RETURN TRUE;
+	END;
+
+END MODULE;
+
+
 
 
 CREATE COMPUTE MODULE postUpdate_Compute3
@@ -18,7 +48,7 @@ CREATE COMPUTE MODULE postUpdate_Compute3
 		    	SET outXmRef.FileName = EnvVal.FileName;
 		    	CREATE LASTCHILD OF outXmRef NAME 'FileContent';
 		    	MOVE outXmRef LASTCHILD;
-		    	CREATE LASTCHILD OF outXmRef DOMAIN 'XMLNSC' PARSE(CAST(EnvVal.FileContent AS BLOB CCSID COALESCE(InputRoot.Properties.CodedCharSetId,5348)) ENCODING COALESCE(InputRoot.Properties.Encoding,546) CCSID COALESCE(InputRoot.Properties.CodedCharSetId,5348));
+		    	SET outXmRef = EnvVal.FileContent;
 		    	MOVE EnvVal NEXTSIBLING;
 			END WHILE;
 			RETURN true;
@@ -33,117 +63,3 @@ CREATE COMPUTE MODULE postUpdate_Compute3
 		END IF;
 	END;
 END MODULE;
-
-
-
-
-ExceptionList
-	RecoverableException
-			File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/MessageServices/ImbDataFlowNode.cpp
-			Line:INTEGER:1886
-			Function:CHARACTER:ImbDataFlowNode::createExceptionList
-			Type:CHARACTER:ComIbmWSInputNode
-			Name:CHARACTER:gen.API_VALIDATION_UPDATE#FCMComposite_1_1
-			Label:CHARACTER:gen.API_VALIDATION_UPDATE.HTTP Input
-			Catalog:CHARACTER:BIPmsgs
-			Severity:INTEGER:3
-			Number:INTEGER:2230
-			Text:CHARACTER:Node throwing exception
-			Insert
-					Type:INTEGER:14
-					Text:CHARACTER:gen.API_VALIDATION_UPDATE.HTTP Input
-			RecoverableException
-					File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/PluginInterface/jlinklib/ImbJniNode.cpp
-					Line:INTEGER:429
-					Function:CHARACTER:ImbJniNode::evaluate
-					Type:CHARACTER:ComIbmJavaComputeNode
-					Name:CHARACTER:gen.API_VALIDATION_UPDATE#FCMComposite_1_12.postUpdate#FCMComposite_1_4
-					Label:CHARACTER:gen.API_VALIDATION_UPDATE.postUpdate (Implementation).Java Compute
-					Catalog:CHARACTER:BIPmsgs
-					Severity:INTEGER:3
-					Number:INTEGER:2230
-					Text:CHARACTER:Caught exception and rethrowing
-					Insert
-							Type:INTEGER:14
-							Text:CHARACTER:gen.API_VALIDATION_UPDATE.postUpdate (Implementation).Java Compute
-					RecoverableException
-							File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/FileNodes/File/ImbFileIteratorNode.cpp
-							Line:INTEGER:755
-							Function:CHARACTER:ImbFileIteratorNode::evaluate
-							Type:CHARACTER:
-							Name:CHARACTER:
-							Label:CHARACTER:
-							Catalog:CHARACTER:BIPmsgs
-							Severity:INTEGER:3
-							Number:INTEGER:2230
-							Text:CHARACTER:Caught exception and rethrowing
-							Insert
-									Type:INTEGER:5
-									Text:CHARACTER:gen.API_VALIDATION_UPDATE.postUpdate (Implementation).File Iterator
-							RecoverableException
-									File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/SQLNodeLibrary/ImbComputeNode.cpp
-									Line:INTEGER:343
-									Function:CHARACTER:ImbComputeNode::evaluate
-									Type:CHARACTER:ComIbmComputeNode
-									Name:CHARACTER:gen.API_VALIDATION_UPDATE#FCMComposite_1_12.postUpdate#FCMComposite_1_11
-									Label:CHARACTER:gen.API_VALIDATION_UPDATE.postUpdate (Implementation).Compute3
-									Catalog:CHARACTER:BIPmsgs
-									Severity:INTEGER:3
-									Number:INTEGER:2230
-									Text:CHARACTER:Caught exception and rethrowing
-									Insert
-											Type:INTEGER:14
-											Text:CHARACTER:gen.API_VALIDATION_UPDATE.postUpdate (Implementation).Compute3
-									RecoverableException
-											File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/ImbRdl/ImbRdlStatementGroup.cpp
-											Line:INTEGER:784
-											Function:CHARACTER:SqlStatementGroup::execute
-											Type:CHARACTER:
-											Name:CHARACTER:
-											Label:CHARACTER:
-											Catalog:CHARACTER:BIPmsgs
-											Severity:INTEGER:3
-											Number:INTEGER:2488
-											Text:CHARACTER:Error detected, rethrowing
-											Insert
-													Type:INTEGER:5
-													Text:CHARACTER:.postUpdate_Compute3.Main
-											Insert
-													Type:INTEGER:5
-													Text:CHARACTER:18.8
-											Insert
-													Type:INTEGER:5
-													Text:CHARACTER:CREATE LASTCHILD OF outXmRef DOMAIN 'XMLNSC' PARSE(CAST(EnvVal.FileContent AS BLOB CCSID COALESCE(InputRoot.Properties.CodedCharSetId, 5348)), COALESCE(InputRoot.Properties.Encoding, 546), COALESCE(InputRoot.Properties.CodedCharSetId, 5348));
-											RecoverableException
-													File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/ImbRdl/ImbRdlTreeStatements.cpp
-													Line:INTEGER:179
-													Function:CHARACTER:SqlCreateFieldStatement::execute
-													Type:CHARACTER:
-													Name:CHARACTER:
-													Label:CHARACTER:
-													Catalog:CHARACTER:BIPmsgs
-													Severity:INTEGER:3
-													Number:INTEGER:2906
-													Text:CHARACTER:
-													Insert
-															Type:INTEGER:5
-															Text:CHARACTER:.postUpdate_Compute3.Main
-													Insert
-															Type:INTEGER:5
-															Text:CHARACTER:18.8
-													Insert
-															Type:INTEGER:5
-															Text:CHARACTER:UNKNOWN
-													Insert
-															Type:INTEGER:5
-															Text:CHARACTER:BITSTREAM
-													Insert
-															Type:INTEGER:5
-															Text:CHARACTER:CREATE
-													Insert
-															Type:INTEGER:5
-															Text:CHARACTER:CHARACTER, BIT, BLOB
-													Insert
-															Type:INTEGER:5
-															Text:CHARACTER:NULL
-
