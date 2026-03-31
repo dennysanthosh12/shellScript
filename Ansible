@@ -1,0 +1,71 @@
+---
+- name: Block SSH access for specific IP range
+  hosts: all
+  become: yes
+
+  vars:
+    blocked_ips:
+      - 10.177.44.20
+      - 10.177.44.21
+      - 10.177.44.22
+      - 10.177.44.23
+      - 10.177.44.24
+      - 10.177.44.25
+      - 10.177.44.26
+      - 10.177.44.27
+      - 10.177.44.28
+      - 10.177.44.29
+
+  tasks:
+    - name: Ensure firewalld is installed
+      yum:
+        name: firewalld
+        state: present
+
+    - name: Ensure firewalld is running
+      service:
+        name: firewalld
+        state: started
+        enabled: yes
+
+    - name: Block SSH from specific IPs
+      firewalld:
+        rich_rule: 'rule family="ipv4" source address="{{ item }}" port protocol="tcp" port="22" reject'
+        permanent: yes
+        state: enabled
+      loop: "{{ blocked_ips }}"
+
+    - name: Reload firewalld
+      command: firewall-cmd --reload
+
+
+
+
+---
+- name: Revert SSH block for specific IP range
+  hosts: all
+  become: yes
+
+  vars:
+    blocked_ips:
+      - 10.177.44.20
+      - 10.177.44.21
+      - 10.177.44.22
+      - 10.177.44.23
+      - 10.177.44.24
+      - 10.177.44.25
+      - 10.177.44.26
+      - 10.177.44.27
+      - 10.177.44.28
+      - 10.177.44.29
+
+  tasks:
+    - name: Remove SSH block rules for specific IPs
+      firewalld:
+        rich_rule: 'rule family="ipv4" source address="{{ item }}" port protocol="tcp" port="22" reject'
+        permanent: yes
+        state: disabled
+      loop: "{{ blocked_ips }}"
+
+    - name: Reload firewalld
+      command: firewall-cmd --reload
