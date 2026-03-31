@@ -8,29 +8,142 @@ CREATE COMPUTE MODULE postUpdate_Compute3
 		SET Env.Flag=COALESCE(Env.Flag,'Y');
 		
 		IF Env.Flag='N' THEN
-			DECLARE outRef REFERENCE TO Environment.XMLNSC.Validation.File[1];
+			MOVE EnvVal FIRSTCHILD;
 			CREATE LASTCHILD OF OutputRoot DOMAIN('XMLNSC');
 			CREATE LASTCHILD OF OutputRoot.XMLNSC NAME 'Validation';
 			DECLARE outXmRef REFERENCE TO OutputRoot.XMLNSC.Validation;
-		    WHILE LASTMOVE(outRef) DO
+		    WHILE LASTMOVE(EnvVal) DO
 		    	CREATE LASTCHILD OF outXmRef NAME 'File';
-		    	DECLARE fileRef REFERENCE TO outXmRef LASTCHILD;
-		    	SET fileRef.Filename = outRef.FileName;
-		    	CREATE LASTCHILD OF fileRef NAME 'FileContent';
-		    	DECLARE contentRef REFERENCE TO fileRef.FileContent ;
-		    	CREATE LASTCHILD OF contentRef DOMAIN 'XMLNSC' PARSE(CAST(outRef.FileContent AS BLOB CCSID InputRoot.Properties.CodedCharSetId) ENCODING InputRoot.Properties.Encoding CCSID InputRoot.Properties.CodedCharSetId);
-		    	MOVE outRef NEXTSIBLING;
+				MOVE outXmRef LASTCHILD;
+		    	SET outXmRef.FileName = EnvVal.FileName;
+		    	CREATE LASTCHILD OF outXmRef NAME 'FileContent';
+		    	MOVE outXmRef LASTCHILD;
+		    	CREATE LASTCHILD OF outXmRef DOMAIN 'XMLNSC' PARSE(CAST(EnvVal.FileContent AS BLOB CCSID COALESCE(InputRoot.Properties.CodedCharSetId,5348)) ENCODING COALESCE(InputRoot.Properties.Encoding,546) CCSID COALESCE(InputRoot.Properties.CodedCharSetId,5348));
+		    	MOVE EnvVal NEXTSIBLING;
 			END WHILE;
 			RETURN true;
 		ELSE
 			CREATE LASTCHILD OF EnvVal NAME 'File';
-			DECLARE fileRef REFERENCE TO EnvVal LASTCHILD;
-			SET fileRef.FileName = InputLocalEnvironment.File.Read.Name;
-			CREATE LASTCHILD OF fileRef NAME 'FileContent';
-			DECLARE contentRef REFERENCE TO fileRef LASTCHILD;
-			CREATE LASTCHILD OF contentRef DOMAIN 'XMLNSC' PARSE(InputRoot.BLOB.BLOB ENCODING InputRoot.Properties.Encoding CCSID InputRoot.Properties.CodedCharSetId);
-			SET Env.i=Env.i+1;
+			MOVE EnvVal LASTCHILD;
+			SET EnvVal.FileName = InputLocalEnvironment.File.Read.Name;
+			CREATE LASTCHILD OF EnvVal NAME 'FileContent';
+			MOVE EnvVal LASTCHILD;
+			CREATE LASTCHILD OF EnvVal DOMAIN 'XMLNSC' PARSE(InputRoot.BLOB.BLOB ENCODING COALESCE(InputRoot.Properties.Encoding,546) CCSID COALESCE(InputRoot.Properties.CodedCharSetId,5348));
 			RETURN false;
 		END IF;
 	END;
 END MODULE;
+
+
+
+
+ExceptionList
+	RecoverableException
+			File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/MessageServices/ImbDataFlowNode.cpp
+			Line:INTEGER:1886
+			Function:CHARACTER:ImbDataFlowNode::createExceptionList
+			Type:CHARACTER:ComIbmWSInputNode
+			Name:CHARACTER:gen.API_VALIDATION_UPDATE#FCMComposite_1_1
+			Label:CHARACTER:gen.API_VALIDATION_UPDATE.HTTP Input
+			Catalog:CHARACTER:BIPmsgs
+			Severity:INTEGER:3
+			Number:INTEGER:2230
+			Text:CHARACTER:Node throwing exception
+			Insert
+					Type:INTEGER:14
+					Text:CHARACTER:gen.API_VALIDATION_UPDATE.HTTP Input
+			RecoverableException
+					File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/PluginInterface/jlinklib/ImbJniNode.cpp
+					Line:INTEGER:429
+					Function:CHARACTER:ImbJniNode::evaluate
+					Type:CHARACTER:ComIbmJavaComputeNode
+					Name:CHARACTER:gen.API_VALIDATION_UPDATE#FCMComposite_1_12.postUpdate#FCMComposite_1_4
+					Label:CHARACTER:gen.API_VALIDATION_UPDATE.postUpdate (Implementation).Java Compute
+					Catalog:CHARACTER:BIPmsgs
+					Severity:INTEGER:3
+					Number:INTEGER:2230
+					Text:CHARACTER:Caught exception and rethrowing
+					Insert
+							Type:INTEGER:14
+							Text:CHARACTER:gen.API_VALIDATION_UPDATE.postUpdate (Implementation).Java Compute
+					RecoverableException
+							File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/FileNodes/File/ImbFileIteratorNode.cpp
+							Line:INTEGER:755
+							Function:CHARACTER:ImbFileIteratorNode::evaluate
+							Type:CHARACTER:
+							Name:CHARACTER:
+							Label:CHARACTER:
+							Catalog:CHARACTER:BIPmsgs
+							Severity:INTEGER:3
+							Number:INTEGER:2230
+							Text:CHARACTER:Caught exception and rethrowing
+							Insert
+									Type:INTEGER:5
+									Text:CHARACTER:gen.API_VALIDATION_UPDATE.postUpdate (Implementation).File Iterator
+							RecoverableException
+									File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/SQLNodeLibrary/ImbComputeNode.cpp
+									Line:INTEGER:343
+									Function:CHARACTER:ImbComputeNode::evaluate
+									Type:CHARACTER:ComIbmComputeNode
+									Name:CHARACTER:gen.API_VALIDATION_UPDATE#FCMComposite_1_12.postUpdate#FCMComposite_1_11
+									Label:CHARACTER:gen.API_VALIDATION_UPDATE.postUpdate (Implementation).Compute3
+									Catalog:CHARACTER:BIPmsgs
+									Severity:INTEGER:3
+									Number:INTEGER:2230
+									Text:CHARACTER:Caught exception and rethrowing
+									Insert
+											Type:INTEGER:14
+											Text:CHARACTER:gen.API_VALIDATION_UPDATE.postUpdate (Implementation).Compute3
+									RecoverableException
+											File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/ImbRdl/ImbRdlStatementGroup.cpp
+											Line:INTEGER:784
+											Function:CHARACTER:SqlStatementGroup::execute
+											Type:CHARACTER:
+											Name:CHARACTER:
+											Label:CHARACTER:
+											Catalog:CHARACTER:BIPmsgs
+											Severity:INTEGER:3
+											Number:INTEGER:2488
+											Text:CHARACTER:Error detected, rethrowing
+											Insert
+													Type:INTEGER:5
+													Text:CHARACTER:.postUpdate_Compute3.Main
+											Insert
+													Type:INTEGER:5
+													Text:CHARACTER:18.8
+											Insert
+													Type:INTEGER:5
+													Text:CHARACTER:CREATE LASTCHILD OF outXmRef DOMAIN 'XMLNSC' PARSE(CAST(EnvVal.FileContent AS BLOB CCSID COALESCE(InputRoot.Properties.CodedCharSetId, 5348)), COALESCE(InputRoot.Properties.Encoding, 546), COALESCE(InputRoot.Properties.CodedCharSetId, 5348));
+											RecoverableException
+													File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/ImbRdl/ImbRdlTreeStatements.cpp
+													Line:INTEGER:179
+													Function:CHARACTER:SqlCreateFieldStatement::execute
+													Type:CHARACTER:
+													Name:CHARACTER:
+													Label:CHARACTER:
+													Catalog:CHARACTER:BIPmsgs
+													Severity:INTEGER:3
+													Number:INTEGER:2906
+													Text:CHARACTER:
+													Insert
+															Type:INTEGER:5
+															Text:CHARACTER:.postUpdate_Compute3.Main
+													Insert
+															Type:INTEGER:5
+															Text:CHARACTER:18.8
+													Insert
+															Type:INTEGER:5
+															Text:CHARACTER:UNKNOWN
+													Insert
+															Type:INTEGER:5
+															Text:CHARACTER:BITSTREAM
+													Insert
+															Type:INTEGER:5
+															Text:CHARACTER:CREATE
+													Insert
+															Type:INTEGER:5
+															Text:CHARACTER:CHARACTER, BIT, BLOB
+													Insert
+															Type:INTEGER:5
+															Text:CHARACTER:NULL
+
