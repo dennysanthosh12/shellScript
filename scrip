@@ -16,8 +16,10 @@ CREATE COMPUTE MODULE postUpdate_Compute3
 		    	CREATE LASTCHILD OF outXmRef NAME 'File';
 		    	DECLARE fileRef REFERENCE TO outXmRef LASTCHILD;
 		    	SET fileRef.Filename = outRef.FileName;
-		    	SET fileRef.FileContent = outRef.FileContent ;
-		    	MOVE fileRef NEXTSIBLING;
+		    	CREATE LASTCHILD OF fileRef NAME 'FileContent';
+		    	DECLARE contentRef REFERENCE TO fileRef.FileContent ;
+		    	CREATE LASTCHILD OF contentRef DOMAIN 'XMLNSC' PARSE(CAST(outRef.FileContent AS BLOB CCSID InputRoot.Properties.CodedCharSetId) ENCODING InputRoot.Properties.Encoding CCSID InputRoot.Properties.CodedCharSetId);
+		    	MOVE outRef NEXTSIBLING;
 			END WHILE;
 			RETURN true;
 		ELSE
