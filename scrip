@@ -1,68 +1,80 @@
-import com.ibm.broker.javacompute.MbJavaComputeNode;
-import com.ibm.broker.plugin.MbElement;
-import com.ibm.broker.plugin.MbException;
-import com.ibm.broker.plugin.MbMessage;
-import com.ibm.broker.plugin.MbMessageAssembly;
-import com.ibm.broker.plugin.MbOutputTerminal;
-import com.ibm.broker.plugin.MbUserException;
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class ListFilesJCN extends MbJavaComputeNode {
+
    public void evaluate(MbMessageAssembly inAssembly) throws MbException {
-      MbOutputTerminal out = this.getOutputTerminal("out");
+
+      MbOutputTerminal out = getOutputTerminal("out");
+      MbOutputTerminal alternate = getOutputTerminal("alternate");
+
       MbMessage inMessage = inAssembly.getMessage();
       MbMessage outMessage = new MbMessage(inMessage);
       MbMessageAssembly outAssembly = new MbMessageAssembly(inAssembly, outMessage);
 
       try {
+         // Read input variables
          MbElement envRoot = inAssembly.getGlobalEnvironment().getRootElement();
          MbElement variables = envRoot.getFirstElementByPath("Variables");
+
          String filePath = variables.getFirstElementByPath("FilePath").getValueAsString();
          String pattern = variables.getFirstElementByPath("Pattern").getValueAsString();
+
          String regex = pattern.replace("*", ".*");
+
          File dir = new File(filePath);
+
+         // ❌ Case 1: Invalid directory
          if (!dir.exists() || !dir.isDirectory()) {
-            throw new MbUserException(this, "evaluate()", "", "", "Invalid directory path: " + filePath, (Object[])null);
+
+            setError(outAssembly, "INVALID_PATH", "Directory does not exist: " + filePath);
+
+            alternate.propagate(outAssembly);
+            return;
          }
 
-         File[] files = dir.listFiles((d, name) -> {
-            return name.matches(regex);
-         });
+         // Get files
+         File[] files = dir.listFiles((d, name) -> name.matches(regex));
+
+         // ❌ Case 2: No files found
+         if (files == null || files.length == 0) {
+
+            setError(outAssembly, "NO_FILES", "No files found in: " + filePath);
+
+            alternate.propagate(outAssembly);
+            return;
+         }
+
+         // ✅ Success case
          MbElement localEnvRoot = outAssembly.getLocalEnvironment().getRootElement();
-         MbElement filesRoot = localEnvRoot.createElementAsLastChild(16777216, "Files", (Object)null);
-         String timeStamp = (new SimpleDateFormat("yyyyMMdd_HHmmss_SSSSSS")).format(new Date());
-         filesRoot.createElementAsLastChild(50331648, "TimeStamp", timeStamp);
-         filesRoot.createElementAsLastChild(50331648, "ProcessedBy", "File Exists");
-         filesRoot.createElementAsLastChild(50331648, "FromFTP", false);
-         int totalFiles = files != null ? files.length : 0;
-         filesRoot.createElementAsLastChild(50331648, "TotalInList", totalFiles);
-         if (files != null) {
-            File[] var20 = files;
-            int var19 = files.length;
+         MbElement filesRoot = localEnvRoot.createElementAsLastChild(MbElement.TYPE_NAME, "Files", null);
 
-            for(int var18 = 0; var18 < var19; ++var18) {
-               File f = var20[var18];
-               MbElement fileElement = filesRoot.createElementAsLastChild(16777216, "File", (Object)null);
-               fileElement.createElementAsLastChild(50331648, "Directory", f.getParent());
-               fileElement.createElementAsLastChild(50331648, "Name", f.getName());
-               String lastModifiedStr = (new SimpleDateFormat("yyyyMMdd_HHmmss")).format(new Date(f.lastModified()));
-               fileElement.createElementAsLastChild(50331648, "LastModified", lastModifiedStr);
-               fileElement.createElementAsLastChild(50331648, "IsEmpty", f.length() == 0L);
-               MbElement wildcard = fileElement.createElementAsLastChild(16777216, "Wildcard", (Object)null);
-               String baseName = f.getName();
-               if (baseName.contains(".")) {
-                  baseName = baseName.substring(0, baseName.lastIndexOf("."));
-               }
+         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss_SSSSSS").format(new Date());
 
-               wildcard.createElementAsLastChild(50331648, "WildcardMatch", baseName);
-            }
+         filesRoot.createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "TimeStamp", timeStamp);
+         filesRoot.createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "TotalInList", files.length);
+
+         for (File f : files) {
+            MbElement fileElement = filesRoot.createElementAsLastChild(MbElement.TYPE_NAME, "File", null);
+
+            fileElement.createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "Name", f.getName());
+            fileElement.createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "Directory", f.getParent());
          }
-      } catch (Exception var25) {
-         throw new MbUserException(this, "evaluate()", "", "", var25.toString(), (Object[])null);
-      }
 
-      out.propagate(outAssembly);
+         out.propagate(outAssembly);
+
+      } catch (Exception e) {
+
+         // ❌ Unexpected error → failure terminal
+         throw new MbUserException(this, "evaluate()", "", "", e.getMessage(), null);
+      }
+   }
+
+   // 🔧 Utility method to set error details
+   private void setError(MbMessageAssembly assembly, String code, String message) throws MbException {
+
+      MbElement localEnvRoot = assembly.getLocalEnvironment().getRootElement();
+
+      MbElement error = localEnvRoot.createElementAsLastChild(MbElement.TYPE_NAME, "Error", null);
+
+      error.createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "Code", code);
+      error.createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "Message", message);
    }
 }
