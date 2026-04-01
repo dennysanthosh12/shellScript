@@ -1,29 +1,14 @@
-ssh -L 4416:localhost:4416 10.177.44.58
-
-Kernel  on an
-Activate the web console with: systemctl enable --now cockpit.socket
-
-Register this system with Red Hat Insights: rhc connect
-
-Example:
-# rhc connect --activation-key <key> --organization <org>
-
-The rhc client and Red Hat Insights will enable analytics and additional
-management capabilities on your system.
-View your connected systems at https://console.redhat.com/insights
-
-You can learn more about how to register your system
-using rhc at https://red.ht/registration
-Last login: Fri Mar 27 16:19:13 2026 from 10.177.44.20
-
-MQSI 13.0.5.0
-/opt/IBM/ace/server
-
-[eisuser@EISUATEXP09 ~]$
+ssh -Q cipher
+3des-cbc
+aes128-cbc
+aes192-cbc
+aes256-cbc
+rijndael-cbc@lysator.liu.se
+aes128-ctr
+aes192-ctr
+aes256-ctr
+aes128-gcm@openssh.com
+aes256-gcm@openssh.com
+chacha20-poly1305@openssh.com
 
 
----> netstat -antpl | grep 4416
-(Not all processes could be identified, non-owned process info
- will not be shown, you would have to be root to see it all.)
-tcp        0      0 127.0.0.1:4416          0.0.0.0:*               LISTEN      754459/ssh
-tcp6       0      0 ::1:4416                :::*                    LISTEN      754459/ssh
