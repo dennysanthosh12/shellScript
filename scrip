@@ -1,65 +1,68 @@
-CREATE COMPUTE MODULE postUpdate_Compute
-	CREATE FUNCTION Main() RETURNS BOOLEAN
-	BEGIN
-		DECLARE Env REFERENCE to Environment;
-		CREATE LASTCHILD OF Env DOMAIN'XMLNSC';
-		CREATE LASTCHILD OF Env.XMLNSC NAME 'Validation';
-		SET Environment.Variables.FilePath = CAST('/var/mqsi/components/' || InputRoot.JSON.Data.IntegrationNode || '/servers/' || InputRoot.JSON.Data.IntegrationServer || '/run/' || InputRoot.JSON.Data.ApiName AS CHARACTER);
-	    SET Environment.Variables.Pattern = '*.xsd' ;
-	    SET Env.i=1;
-	    
-		RETURN TRUE;
-	END;
+import com.ibm.broker.javacompute.MbJavaComputeNode;
+import com.ibm.broker.plugin.MbElement;
+import com.ibm.broker.plugin.MbException;
+import com.ibm.broker.plugin.MbMessage;
+import com.ibm.broker.plugin.MbMessageAssembly;
+import com.ibm.broker.plugin.MbOutputTerminal;
+import com.ibm.broker.plugin.MbUserException;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-END MODULE;
+public class ListFilesJCN extends MbJavaComputeNode {
+   public void evaluate(MbMessageAssembly inAssembly) throws MbException {
+      MbOutputTerminal out = this.getOutputTerminal("out");
+      MbMessage inMessage = inAssembly.getMessage();
+      MbMessage outMessage = new MbMessage(inMessage);
+      MbMessageAssembly outAssembly = new MbMessageAssembly(inAssembly, outMessage);
 
+      try {
+         MbElement envRoot = inAssembly.getGlobalEnvironment().getRootElement();
+         MbElement variables = envRoot.getFirstElementByPath("Variables");
+         String filePath = variables.getFirstElementByPath("FilePath").getValueAsString();
+         String pattern = variables.getFirstElementByPath("Pattern").getValueAsString();
+         String regex = pattern.replace("*", ".*");
+         File dir = new File(filePath);
+         if (!dir.exists() || !dir.isDirectory()) {
+            throw new MbUserException(this, "evaluate()", "", "", "Invalid directory path: " + filePath, (Object[])null);
+         }
 
+         File[] files = dir.listFiles((d, name) -> {
+            return name.matches(regex);
+         });
+         MbElement localEnvRoot = outAssembly.getLocalEnvironment().getRootElement();
+         MbElement filesRoot = localEnvRoot.createElementAsLastChild(16777216, "Files", (Object)null);
+         String timeStamp = (new SimpleDateFormat("yyyyMMdd_HHmmss_SSSSSS")).format(new Date());
+         filesRoot.createElementAsLastChild(50331648, "TimeStamp", timeStamp);
+         filesRoot.createElementAsLastChild(50331648, "ProcessedBy", "File Exists");
+         filesRoot.createElementAsLastChild(50331648, "FromFTP", false);
+         int totalFiles = files != null ? files.length : 0;
+         filesRoot.createElementAsLastChild(50331648, "TotalInList", totalFiles);
+         if (files != null) {
+            File[] var20 = files;
+            int var19 = files.length;
 
+            for(int var18 = 0; var18 < var19; ++var18) {
+               File f = var20[var18];
+               MbElement fileElement = filesRoot.createElementAsLastChild(16777216, "File", (Object)null);
+               fileElement.createElementAsLastChild(50331648, "Directory", f.getParent());
+               fileElement.createElementAsLastChild(50331648, "Name", f.getName());
+               String lastModifiedStr = (new SimpleDateFormat("yyyyMMdd_HHmmss")).format(new Date(f.lastModified()));
+               fileElement.createElementAsLastChild(50331648, "LastModified", lastModifiedStr);
+               fileElement.createElementAsLastChild(50331648, "IsEmpty", f.length() == 0L);
+               MbElement wildcard = fileElement.createElementAsLastChild(16777216, "Wildcard", (Object)null);
+               String baseName = f.getName();
+               if (baseName.contains(".")) {
+                  baseName = baseName.substring(0, baseName.lastIndexOf("."));
+               }
 
-CREATE COMPUTE MODULE postUpdate_Compute2
-	CREATE FUNCTION Main() RETURNS BOOLEAN
-	BEGIN
-		declare Env REFERENCE to Environment;
-		SET OutputRoot = InputRoot;
-		set Env.Flag='N';
-		RETURN TRUE;
-	END;
+               wildcard.createElementAsLastChild(50331648, "WildcardMatch", baseName);
+            }
+         }
+      } catch (Exception var25) {
+         throw new MbUserException(this, "evaluate()", "", "", var25.toString(), (Object[])null);
+      }
 
-END MODULE;
-
-
-
-
-CREATE COMPUTE MODULE postUpdate_Compute3
-	CREATE FUNCTION Main() RETURNS BOOLEAN
-	BEGIN
-		DECLARE Env REFERENCE to Environment;
-		DECLARE EnvVal REFERENCE TO Environment.XMLNSC.Validation;
-		SET Env.Flag=COALESCE(Env.Flag,'Y');
-		
-		IF Env.Flag='N' THEN
-			MOVE EnvVal FIRSTCHILD;
-			CREATE LASTCHILD OF OutputRoot DOMAIN('XMLNSC');
-			CREATE LASTCHILD OF OutputRoot.XMLNSC NAME 'Validation';
-			DECLARE outXmRef REFERENCE TO OutputRoot.XMLNSC.Validation;
-		    WHILE LASTMOVE(EnvVal) DO
-		    	CREATE LASTCHILD OF outXmRef NAME 'File';
-				MOVE outXmRef LASTCHILD;
-		    	SET outXmRef.FileName = EnvVal.FileName;
-		    	CREATE LASTCHILD OF outXmRef NAME 'FileContent';
-		    	MOVE outXmRef LASTCHILD;
-		    	SET outXmRef = EnvVal.FileContent;
-		    	MOVE EnvVal NEXTSIBLING;
-			END WHILE;
-			RETURN true;
-		ELSE
-			CREATE LASTCHILD OF EnvVal NAME 'File';
-			MOVE EnvVal LASTCHILD;
-			SET EnvVal.FileName = InputLocalEnvironment.File.Read.Name;
-			CREATE LASTCHILD OF EnvVal NAME 'FileContent';
-			MOVE EnvVal LASTCHILD;
-			CREATE LASTCHILD OF EnvVal DOMAIN 'XMLNSC' PARSE(InputRoot.BLOB.BLOB ENCODING COALESCE(InputRoot.Properties.Encoding,546) CCSID COALESCE(InputRoot.Properties.CodedCharSetId,5348));
-			RETURN false;
-		END IF;
-	END;
-END MODULE;
+      out.propagate(outAssembly);
+   }
+}
