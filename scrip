@@ -1,80 +1,8 @@
-public class ListFilesJCN extends MbJavaComputeNode {
-
-   public void evaluate(MbMessageAssembly inAssembly) throws MbException {
-
-      MbOutputTerminal out = getOutputTerminal("out");
-      MbOutputTerminal alternate = getOutputTerminal("alternate");
-
-      MbMessage inMessage = inAssembly.getMessage();
-      MbMessage outMessage = new MbMessage(inMessage);
-      MbMessageAssembly outAssembly = new MbMessageAssembly(inAssembly, outMessage);
-
-      try {
-         // Read input variables
-         MbElement envRoot = inAssembly.getGlobalEnvironment().getRootElement();
-         MbElement variables = envRoot.getFirstElementByPath("Variables");
-
-         String filePath = variables.getFirstElementByPath("FilePath").getValueAsString();
-         String pattern = variables.getFirstElementByPath("Pattern").getValueAsString();
-
-         String regex = pattern.replace("*", ".*");
-
-         File dir = new File(filePath);
-
-         // ❌ Case 1: Invalid directory
-         if (!dir.exists() || !dir.isDirectory()) {
-
-            setError(outAssembly, "INVALID_PATH", "Directory does not exist: " + filePath);
-
-            alternate.propagate(outAssembly);
-            return;
-         }
-
-         // Get files
-         File[] files = dir.listFiles((d, name) -> name.matches(regex));
-
-         // ❌ Case 2: No files found
-         if (files == null || files.length == 0) {
-
-            setError(outAssembly, "NO_FILES", "No files found in: " + filePath);
-
-            alternate.propagate(outAssembly);
-            return;
-         }
-
-         // ✅ Success case
-         MbElement localEnvRoot = outAssembly.getLocalEnvironment().getRootElement();
-         MbElement filesRoot = localEnvRoot.createElementAsLastChild(MbElement.TYPE_NAME, "Files", null);
-
-         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss_SSSSSS").format(new Date());
-
-         filesRoot.createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "TimeStamp", timeStamp);
-         filesRoot.createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "TotalInList", files.length);
-
-         for (File f : files) {
-            MbElement fileElement = filesRoot.createElementAsLastChild(MbElement.TYPE_NAME, "File", null);
-
-            fileElement.createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "Name", f.getName());
-            fileElement.createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "Directory", f.getParent());
-         }
-
-         out.propagate(outAssembly);
-
-      } catch (Exception e) {
-
-         // ❌ Unexpected error → failure terminal
-         throw new MbUserException(this, "evaluate()", "", "", e.getMessage(), null);
-      }
-   }
-
-   // 🔧 Utility method to set error details
-   private void setError(MbMessageAssembly assembly, String code, String message) throws MbException {
-
-      MbElement localEnvRoot = assembly.getLocalEnvironment().getRootElement();
-
-      MbElement error = localEnvRoot.createElementAsLastChild(MbElement.TYPE_NAME, "Error", null);
-
-      error.createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "Code", code);
-      error.createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "Message", message);
-   }
-}
+1771315698779,Getting error from EIS - Card issuance,Farhin,completed,2026-02-17T08:08:18.779Z
+1760516944002,Swagger Doc 1,Yamini,completed,2025-10-15T08:29:04.002Z
+1766127868094,SBI - API Call Back services,Rajasri,completed,2025-12-19T07:04:28.094Z
+1773645614792,swagger and UAT URL of existing API,Farhin,completed,2026-03-16T07:20:14.792Z
+1762921424214,Production Promotion 24/10/2025,Yamini,completed,2025-11-12T04:23:44.214Z
+1765967008131,DM2025101119 PM2025125793 Integration of INL with Loan Processing Application - DEV,Rajasri,completed,2025-12-17T10:23:28.131Z
+1766057111771,DM2025018396 - Integration with NPCI's UDIR,Rajasri,completed,2025-12-18T11:25:11.771Z
+1762418603308,SEWA Portal SSL Certificate,Prerana,completed,2025-11-06T08:43:23.308Z
