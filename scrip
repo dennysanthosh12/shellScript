@@ -1,1 +1,107 @@
-CTDV1438E : DFDL property 'terminator' contains an invalid entity '%NL,%CR,%LF;'. A valid entity must obey pattern ['%#' [0-9]+ ';' | '%#x' [0-9a-fA-F]+ ';' | '%#r' [0-9a-fA-F] (2)';' | '%' <name> ';']. Sequence: #xscd(/schemaElement::message/type::0/model::sequence/schemaElement::Task/type::0/model::sequence). 
+DFDL
+	message
+			Task
+					Task_Id:CHARACTER:1771315698779
+					Description:CHARACTER:Getting error from EIS - Card issuance
+					Assigned_To:CHARACTER:Farhin
+					Status:CHARACTER:completed
+					Creation_date_time:CHARACTER:2026-02-17T08:08:18.779Z
+	CHARACTER:DFDL parsing errors have occurred
+
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns:csv="http://www.ibm.com/dfdl/CommaSeparatedFormat" xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:ibmDfdlExtn="http://www.ibm.com/dfdl/extensions" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                  
+  
+  
+  
+  
+  
+  
+  <xsd:import namespace="http://www.ibm.com/dfdl/CommaSeparatedFormat" schemaLocation="IBMdefined/CommaSeparatedFormat.xsd"/>
+                  
+    
+  
+        
+  
+      
+  
+    
+  
+  <xsd:element ibmSchExtn:docRoot="true" name="message">
+        
+    <xsd:complexType>
+            
+      <xsd:sequence>
+                
+        <xsd:element maxOccurs="unbounded" name="Task">
+                    
+          <xsd:complexType>
+                        
+            <xsd:sequence dfdl:separatorPosition="infix" dfdl:terminator="%NL;">
+                            
+              <xsd:element name="Task_Id" type="xsd:string"/>
+                            
+              <xsd:element name="Description" type="xsd:string"/>
+                            
+              <xsd:element name="Assigned_To" type="xsd:string"/>
+                            
+              <xsd:element name="Status" type="xsd:string"/>
+                            
+              <xsd:element name="Creation_date_time" type="xsd:string"/>
+                          
+            </xsd:sequence>
+                      
+          </xsd:complexType>
+                  
+        </xsd:element>
+              
+      </xsd:sequence>
+          
+    </xsd:complexType>
+      
+  </xsd:element>
+            
+  
+  
+  
+  <xsd:annotation>
+                            		
+    
+    
+    
+    
+    
+    
+    <xsd:appinfo source="http://www.ogf.org/dfdl/">
+                                          			
+      
+      
+      
+      
+      
+      
+      <dfdl:format documentFinalTerminatorCanBeMissing="yes" encoding="{$dfdl:encoding}" escapeSchemeRef="csv:CSVEscapeScheme" ref="csv:CommaSeparatedFormat"/>
+                                          		
+    
+    
+    
+    
+    
+    
+    </xsd:appinfo>
+                            	
+  
+  
+  
+  
+  
+  
+  </xsd:annotation>
+              
+
+
+
+
+
+
+</xsd:schema>
