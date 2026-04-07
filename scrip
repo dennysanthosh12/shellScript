@@ -1,9 +1,4 @@
-[eisuser@EISUATEXP09 .ssh]$ ip r
-default via 10.177.44.1 dev eth0 proto dhcp src 10.177.44.58 metric 100
-10.177.44.0/24 dev eth0 proto kernel scope link src 10.177.44.58 metric 100
-[eisuser@EISUATEXP09 .ssh]$
-[eisuser@EISUATEXP09 .ssh]$
-[eisuser@EISUATEXP09 .ssh]$ sftp eisuser@10.177.44.50
+[eisuser@EISUATEXP09 PEM_RSA]$ sftp -i ~/.ssh/PEM_RSA/id_rsa eisuser@10.177.44.50
 ##################################################################
 |This system is for the use of authorized users only.            |
 |Individuals using this computer system without authority, or in |
@@ -20,10 +15,4 @@ default via 10.177.44.1 dev eth0 proto dhcp src 10.177.44.58 metric 100
 ##################################################################
 Connected to 10.177.44.50.
 sftp>
-
-
-
-<Error>
-    <Code>500</Code>
-    <Message>invalid privatekey: [B@cf6c1c5b</Message>
-</Error>
+sftp> exit
