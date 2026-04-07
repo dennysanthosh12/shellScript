@@ -1,61 +1,29 @@
-ExceptionList
-	RecoverableException
-			File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/MessageServices/ImbDataFlowNode.cpp
-			Line:INTEGER:1886
-			Function:CHARACTER:ImbDataFlowNode::createExceptionList
-			Type:CHARACTER:ComIbmJavaComputeNode
-			Name:CHARACTER:gen.API_VALIDATION#FCMComposite_1_5.postFetch#FCMComposite_1_8
-			Label:CHARACTER:gen.API_VALIDATION.postFetch (Implementation).Java Compute
-			Catalog:CHARACTER:BIPmsgs
-			Severity:INTEGER:3
-			Number:INTEGER:2230
-			Text:CHARACTER:Node throwing exception
-			Insert
-					Type:INTEGER:14
-					Text:CHARACTER:gen.API_VALIDATION.postFetch (Implementation).Java Compute
-			RecoverableException
-					File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/PluginInterface/jlinklib/com_ibm_broker_plugin_CMbService.cpp
-					Line:INTEGER:1693
-					Function:CHARACTER:ImbJavaExceptionUtils::throwableToNativeException
-					Type:CHARACTER:
-					Name:CHARACTER:
-					Label:CHARACTER:
-					Catalog:CHARACTER:BIPmsgs
-					Severity:INTEGER:3
-					Number:INTEGER:4367
-					Text:CHARACTER:Unhandled exception in plugin method.
-					Insert
-							Type:INTEGER:5
-							Text:CHARACTER:evaluate
-					Insert
-							Type:INTEGER:5
-							Text:CHARACTER:postFetch (Implementation).Java Compute
-					Insert
-							Type:INTEGER:5
-							Text:CHARACTER:java.lang.NoClassDefFoundError: com.jcraft.jsch.JSch
-					RecoverableException
-							File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/PluginInterface/jlinklib/com_ibm_broker_plugin_CMbService.cpp
-							Line:INTEGER:1700
-							Function:CHARACTER:ImbJavaExceptionUtils::throwableToNativeException
-							Type:CHARACTER:
-							Name:CHARACTER:
-							Label:CHARACTER:
-							Catalog:CHARACTER:BIPmsgs
-							Severity:INTEGER:3
-							Number:INTEGER:4395
-							Text:CHARACTER:Unhandled exception in plugin method
-							Insert
-									Type:INTEGER:5
-									Text:CHARACTER:java.lang.NoClassDefFoundError
-							Insert
-									Type:INTEGER:5
-									Text:CHARACTER:ListFilesJCN
-							Insert
-									Type:INTEGER:5
-									Text:CHARACTER:evaluate
-							Insert
-									Type:INTEGER:5
-									Text:CHARACTER:ListFilesJCN.java
-							Insert
-									Type:INTEGER:2
-									Text:CHARACTER:35
+[eisuser@EISUATEXP09 .ssh]$ ip r
+default via 10.177.44.1 dev eth0 proto dhcp src 10.177.44.58 metric 100
+10.177.44.0/24 dev eth0 proto kernel scope link src 10.177.44.58 metric 100
+[eisuser@EISUATEXP09 .ssh]$
+[eisuser@EISUATEXP09 .ssh]$
+[eisuser@EISUATEXP09 .ssh]$ sftp eisuser@10.177.44.50
+##################################################################
+|This system is for the use of authorized users only.            |
+|Individuals using this computer system without authority, or in |
+|excess of their authority, are subject to having all of their   |
+|activities on this system monitored and recorded by system      |
+|personnel.                                                      |
+|In the course of monitoring individuals improperly using this   |
+|system, or in the course of system maintenance, the activities  |
+|of authorized users may also be monitored.                      |
+|Anyone using this system expressly consents to such monitoring  |
+|and is advised that if such monitoring reveals possible         |
+|evidence of criminal activity, system personnel may provide the |
+|evidence of such monitoring to law enforcement officials.       |
+##################################################################
+Connected to 10.177.44.50.
+sftp>
+
+
+
+<Error>
+    <Code>500</Code>
+    <Message>invalid privatekey: [B@cf6c1c5b</Message>
+</Error>
