@@ -1,7 +1,6 @@
-java.util.Properties config = new java.util.Properties();
-config.put("StrictHostKeyChecking", "no");
-config.put("PreferredAuthentications", "publickey");
-session.setConfig(config);
-jsch.removeAllIdentity();
-jsch.addIdentity("/home/eisuser/.ssh/PEM_RSA/id_rsa");
-
+JSch.setLogger(new Logger() {
+    public boolean isEnabled(int level) { return true; }
+    public void log(int level, String message) {
+        System.out.println("JSch DEBUG: " + message);
+    }
+});
