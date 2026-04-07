@@ -1,107 +1,71 @@
-DFDL
-	message
-			Task
-					Task_Id:CHARACTER:1771315698779
-					Description:CHARACTER:Getting error from EIS - Card issuance
-					Assigned_To:CHARACTER:Farhin
-					Status:CHARACTER:completed
-					Creation_date_time:CHARACTER:2026-02-17T08:08:18.779Z
-	CHARACTER:DFDL parsing errors have occurred
+import com.ibm.broker.javacompute.MbJavaComputeNode;
+import com.ibm.broker.plugin.MbElement;
+import com.ibm.broker.plugin.MbException;
+import com.ibm.broker.plugin.MbMessage;
+import com.ibm.broker.plugin.MbMessageAssembly;
+import com.ibm.broker.plugin.MbOutputTerminal;
+import com.ibm.broker.plugin.MbUserException;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<xsd:schema xmlns:csv="http://www.ibm.com/dfdl/CommaSeparatedFormat" xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:ibmDfdlExtn="http://www.ibm.com/dfdl/extensions" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-                  
-  
-  
-  
-  
-  
-  
-  <xsd:import namespace="http://www.ibm.com/dfdl/CommaSeparatedFormat" schemaLocation="IBMdefined/CommaSeparatedFormat.xsd"/>
-                  
-    
-  
-        
-  
-      
-  
-    
-  
-  <xsd:element ibmSchExtn:docRoot="true" name="message">
-        
-    <xsd:complexType>
-            
-      <xsd:sequence>
-                
-        <xsd:element maxOccurs="unbounded" name="Task">
-                    
-          <xsd:complexType>
-                        
-            <xsd:sequence dfdl:separatorPosition="infix" dfdl:terminator="%NL;">
-                            
-              <xsd:element name="Task_Id" type="xsd:string"/>
-                            
-              <xsd:element name="Description" type="xsd:string"/>
-                            
-              <xsd:element name="Assigned_To" type="xsd:string"/>
-                            
-              <xsd:element name="Status" type="xsd:string"/>
-                            
-              <xsd:element name="Creation_date_time" type="xsd:string"/>
-                          
-            </xsd:sequence>
-                      
-          </xsd:complexType>
-                  
-        </xsd:element>
-              
-      </xsd:sequence>
-          
-    </xsd:complexType>
-      
-  </xsd:element>
-            
-  
-  
-  
-  <xsd:annotation>
-                            		
-    
-    
-    
-    
-    
-    
-    <xsd:appinfo source="http://www.ogf.org/dfdl/">
-                                          			
-      
-      
-      
-      
-      
-      
-      <dfdl:format documentFinalTerminatorCanBeMissing="yes" encoding="{$dfdl:encoding}" escapeSchemeRef="csv:CSVEscapeScheme" ref="csv:CommaSeparatedFormat"/>
-                                          		
-    
-    
-    
-    
-    
-    
-    </xsd:appinfo>
-                            	
-  
-  
-  
-  
-  
-  
-  </xsd:annotation>
-              
+public class ListFilesJCN extends MbJavaComputeNode {
+   public void evaluate(MbMessageAssembly inAssembly) throws MbException {
+      MbOutputTerminal out = this.getOutputTerminal("out");
+      MbOutputTerminal alternate = this.getOutputTerminal("alternate");
+      MbMessage outMessage = new MbMessage();
+      MbMessageAssembly outAssembly = new MbMessageAssembly(inAssembly, outMessage);
 
+      try {
+         MbElement envRoot = inAssembly.getGlobalEnvironment().getRootElement();
+         MbElement variables = envRoot.getFirstElementByPath("Variables");
+         String filePath = variables.getFirstElementByPath("FilePath").getValueAsString();
+         String pattern = variables.getFirstElementByPath("Pattern").getValueAsString();
+         String regex = pattern.replace("*", ".*");
+         File dir = new File(filePath);
+         MbElement outRoot;
+         MbElement filesRoot;
+         if (dir.exists() && dir.isDirectory()) {
+            File[] files = dir.listFiles((d, name) -> {
+               return name.matches(regex);
+            });
+            if (files != null && files.length != 0) {
+               outRoot = outAssembly.getLocalEnvironment().getRootElement();
+               filesRoot = outRoot.createElementAsLastChild(16777216, "Files", (Object)null);
+               String timeStamp = (new SimpleDateFormat("yyyyMMdd_HHmmss_SSSSSS")).format(new Date());
+               filesRoot.createElementAsLastChild(50331648, "TimeStamp", timeStamp);
+               filesRoot.createElementAsLastChild(50331648, "TotalInList", files.length);
+               File[] var19 = files;
+               int var18 = files.length;
 
+               for(int var17 = 0; var17 < var18; ++var17) {
+                  File f = var19[var17];
+                  MbElement fileElement = filesRoot.createElementAsLastChild(16777216, "File", (Object)null);
+                  fileElement.createElementAsLastChild(50331648, "Name", f.getName());
+                  fileElement.createElementAsLastChild(50331648, "Directory", f.getParent());
+               }
 
-
-
-
-</xsd:schema>
+               out.propagate(outAssembly);
+            } else {
+               outRoot = outMessage.getRootElement();
+               filesRoot = outRoot.createElementAsLastChild("XMLNSC");
+               MbElement error = filesRoot.createElementAsLastChild(16777216, "Error", (Object)null);
+               error.createElementAsLastChild(50331648, "Code", "500");
+               error.createElementAsLastChild(50331648, "Message", "No xsd Validation files found in: " + filePath);
+               MbMessageAssembly outAssemblyWithException = new MbMessageAssembly(inAssembly, outMessage);
+               alternate.propagate(outAssemblyWithException);
+            }
+         } else {
+            outRoot = outMessage.getRootElement();
+            outRoot = outRoot.createElementAsLastChild("XMLNSC");
+            filesRoot = outRoot.createElementAsLastChild(16777216, "Error", (Object)null);
+            filesRoot.createElementAsLastChild(50331648, "Code", "500");
+            filesRoot.createElementAsLastChild(50331648, "Message", "Directory does not exist: " + filePath);
+            MbMessageAssembly outAssemblyWithException = new MbMessageAssembly(inAssembly, outMessage);
+            alternate.propagate(outAssemblyWithException);
+         }
+      } catch (Exception var21) {
+         throw new MbUserException(this, "evaluate()", "", "", var21.getMessage(), (Object[])null);
+      }
+   }
+}
