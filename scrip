@@ -1,104 +1,61 @@
-import com.ibm.broker.javacompute.MbJavaComputeNode;
-import com.ibm.broker.plugin.*;
-import com.jcraft.jsch.*;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Vector;
-
-public class ListFilesJCN extends MbJavaComputeNode {
-
-    public void evaluate(MbMessageAssembly inAssembly) throws MbException {
-
-        MbOutputTerminal out = getOutputTerminal("out");
-        MbOutputTerminal alternate = getOutputTerminal("alternate");
-
-        MbMessage outMessage = new MbMessage();
-        MbMessageAssembly outAssembly = new MbMessageAssembly(inAssembly, outMessage);
-
-        Session session = null;
-        ChannelSftp sftp = null;
-
-        try {
-            // ===== Read Environment Variables =====
-            MbElement envRoot = inAssembly.getGlobalEnvironment().getRootElement();
-            MbElement variables = envRoot.getFirstElementByPath("Variables");
-
-            String host = variables.getFirstElementByPath("Host").getValueAsString();
-            int port = Integer.parseInt(variables.getFirstElementByPath("Port").getValueAsString());
-            String user = variables.getFirstElementByPath("User").getValueAsString();
-            String filePath = variables.getFirstElementByPath("FilePath").getValueAsString();
-            String pattern = variables.getFirstElementByPath("Pattern").getValueAsString();
-            String privateKeyPath = variables.getFirstElementByPath("PrivateKeyPath").getValueAsString();
-
-            String regex = pattern.replace("*", ".*");
-
-            // ===== Setup JSch with Private Key =====
-            JSch jsch = new JSch();
-            jsch.addIdentity(privateKeyPath);
-
-            session = jsch.getSession(user, host, port);
-
-            java.util.Properties config = new java.util.Properties();
-            config.put("StrictHostKeyChecking", "no");
-            session.setConfig(config);
-
-            session.connect(10000); // timeout 10s
-
-            Channel channel = session.openChannel("sftp");
-            channel.connect();
-
-            sftp = (ChannelSftp) channel;
-
-            // ===== List Files =====
-            Vector<ChannelSftp.LsEntry> fileList = sftp.ls(filePath);
-
-            MbElement outRoot = outAssembly.getLocalEnvironment().getRootElement();
-            MbElement filesRoot = outRoot.createElementAsLastChild(16777216, "Files", null);
-
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss_SSSSSS").format(new Date());
-            filesRoot.createElementAsLastChild(50331648, "TimeStamp", timeStamp);
-
-            int count = 0;
-
-            for (ChannelSftp.LsEntry entry : fileList) {
-                String name = entry.getFilename();
-
-                // skip . and ..
-                if (".".equals(name) || "..".equals(name)) continue;
-
-                if (name.matches(regex)) {
-                    MbElement fileElement = filesRoot.createElementAsLastChild(16777216, "File", null);
-                    fileElement.createElementAsLastChild(50331648, "Name", name);
-                    fileElement.createElementAsLastChild(50331648, "Directory", filePath);
-                    count++;
-                }
-            }
-
-            if (count == 0) {
-                throw new Exception("No files found matching pattern in: " + filePath);
-            }
-
-            filesRoot.createElementAsLastChild(50331648, "TotalInList", count);
-
-            out.propagate(outAssembly);
-
-        } catch (Exception e) {
-
-            MbElement outRoot = outMessage.getRootElement().createElementAsLastChild("XMLNSC");
-            MbElement error = outRoot.createElementAsLastChild(16777216, "Error", null);
-
-            error.createElementAsLastChild(50331648, "Code", "500");
-            error.createElementAsLastChild(50331648, "Message", e.getMessage());
-
-            MbMessageAssembly errorAssembly = new MbMessageAssembly(inAssembly, outMessage);
-            alternate.propagate(errorAssembly);
-
-        } finally {
-            try {
-                if (sftp != null) sftp.disconnect();
-                if (session != null) session.disconnect();
-            } catch (Exception ignored) {}
-        }
-    }
-}
+ExceptionList
+	RecoverableException
+			File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/MessageServices/ImbDataFlowNode.cpp
+			Line:INTEGER:1886
+			Function:CHARACTER:ImbDataFlowNode::createExceptionList
+			Type:CHARACTER:ComIbmJavaComputeNode
+			Name:CHARACTER:gen.API_VALIDATION#FCMComposite_1_5.postFetch#FCMComposite_1_8
+			Label:CHARACTER:gen.API_VALIDATION.postFetch (Implementation).Java Compute
+			Catalog:CHARACTER:BIPmsgs
+			Severity:INTEGER:3
+			Number:INTEGER:2230
+			Text:CHARACTER:Node throwing exception
+			Insert
+					Type:INTEGER:14
+					Text:CHARACTER:gen.API_VALIDATION.postFetch (Implementation).Java Compute
+			RecoverableException
+					File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/PluginInterface/jlinklib/com_ibm_broker_plugin_CMbService.cpp
+					Line:INTEGER:1693
+					Function:CHARACTER:ImbJavaExceptionUtils::throwableToNativeException
+					Type:CHARACTER:
+					Name:CHARACTER:
+					Label:CHARACTER:
+					Catalog:CHARACTER:BIPmsgs
+					Severity:INTEGER:3
+					Number:INTEGER:4367
+					Text:CHARACTER:Unhandled exception in plugin method.
+					Insert
+							Type:INTEGER:5
+							Text:CHARACTER:evaluate
+					Insert
+							Type:INTEGER:5
+							Text:CHARACTER:postFetch (Implementation).Java Compute
+					Insert
+							Type:INTEGER:5
+							Text:CHARACTER:java.lang.NoClassDefFoundError: com.jcraft.jsch.JSch
+					RecoverableException
+							File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/PluginInterface/jlinklib/com_ibm_broker_plugin_CMbService.cpp
+							Line:INTEGER:1700
+							Function:CHARACTER:ImbJavaExceptionUtils::throwableToNativeException
+							Type:CHARACTER:
+							Name:CHARACTER:
+							Label:CHARACTER:
+							Catalog:CHARACTER:BIPmsgs
+							Severity:INTEGER:3
+							Number:INTEGER:4395
+							Text:CHARACTER:Unhandled exception in plugin method
+							Insert
+									Type:INTEGER:5
+									Text:CHARACTER:java.lang.NoClassDefFoundError
+							Insert
+									Type:INTEGER:5
+									Text:CHARACTER:ListFilesJCN
+							Insert
+									Type:INTEGER:5
+									Text:CHARACTER:evaluate
+							Insert
+									Type:INTEGER:5
+									Text:CHARACTER:ListFilesJCN.java
+							Insert
+									Type:INTEGER:2
+									Text:CHARACTER:35
