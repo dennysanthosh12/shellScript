@@ -1,71 +1,104 @@
 import com.ibm.broker.javacompute.MbJavaComputeNode;
-import com.ibm.broker.plugin.MbElement;
-import com.ibm.broker.plugin.MbException;
-import com.ibm.broker.plugin.MbMessage;
-import com.ibm.broker.plugin.MbMessageAssembly;
-import com.ibm.broker.plugin.MbOutputTerminal;
-import com.ibm.broker.plugin.MbUserException;
-import java.io.File;
+import com.ibm.broker.plugin.*;
+import com.jcraft.jsch.*;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Vector;
 
 public class ListFilesJCN extends MbJavaComputeNode {
-   public void evaluate(MbMessageAssembly inAssembly) throws MbException {
-      MbOutputTerminal out = this.getOutputTerminal("out");
-      MbOutputTerminal alternate = this.getOutputTerminal("alternate");
-      MbMessage outMessage = new MbMessage();
-      MbMessageAssembly outAssembly = new MbMessageAssembly(inAssembly, outMessage);
 
-      try {
-         MbElement envRoot = inAssembly.getGlobalEnvironment().getRootElement();
-         MbElement variables = envRoot.getFirstElementByPath("Variables");
-         String filePath = variables.getFirstElementByPath("FilePath").getValueAsString();
-         String pattern = variables.getFirstElementByPath("Pattern").getValueAsString();
-         String regex = pattern.replace("*", ".*");
-         File dir = new File(filePath);
-         MbElement outRoot;
-         MbElement filesRoot;
-         if (dir.exists() && dir.isDirectory()) {
-            File[] files = dir.listFiles((d, name) -> {
-               return name.matches(regex);
-            });
-            if (files != null && files.length != 0) {
-               outRoot = outAssembly.getLocalEnvironment().getRootElement();
-               filesRoot = outRoot.createElementAsLastChild(16777216, "Files", (Object)null);
-               String timeStamp = (new SimpleDateFormat("yyyyMMdd_HHmmss_SSSSSS")).format(new Date());
-               filesRoot.createElementAsLastChild(50331648, "TimeStamp", timeStamp);
-               filesRoot.createElementAsLastChild(50331648, "TotalInList", files.length);
-               File[] var19 = files;
-               int var18 = files.length;
+    public void evaluate(MbMessageAssembly inAssembly) throws MbException {
 
-               for(int var17 = 0; var17 < var18; ++var17) {
-                  File f = var19[var17];
-                  MbElement fileElement = filesRoot.createElementAsLastChild(16777216, "File", (Object)null);
-                  fileElement.createElementAsLastChild(50331648, "Name", f.getName());
-                  fileElement.createElementAsLastChild(50331648, "Directory", f.getParent());
-               }
+        MbOutputTerminal out = getOutputTerminal("out");
+        MbOutputTerminal alternate = getOutputTerminal("alternate");
 
-               out.propagate(outAssembly);
-            } else {
-               outRoot = outMessage.getRootElement();
-               filesRoot = outRoot.createElementAsLastChild("XMLNSC");
-               MbElement error = filesRoot.createElementAsLastChild(16777216, "Error", (Object)null);
-               error.createElementAsLastChild(50331648, "Code", "500");
-               error.createElementAsLastChild(50331648, "Message", "No xsd Validation files found in: " + filePath);
-               MbMessageAssembly outAssemblyWithException = new MbMessageAssembly(inAssembly, outMessage);
-               alternate.propagate(outAssemblyWithException);
+        MbMessage outMessage = new MbMessage();
+        MbMessageAssembly outAssembly = new MbMessageAssembly(inAssembly, outMessage);
+
+        Session session = null;
+        ChannelSftp sftp = null;
+
+        try {
+            // ===== Read Environment Variables =====
+            MbElement envRoot = inAssembly.getGlobalEnvironment().getRootElement();
+            MbElement variables = envRoot.getFirstElementByPath("Variables");
+
+            String host = variables.getFirstElementByPath("Host").getValueAsString();
+            int port = Integer.parseInt(variables.getFirstElementByPath("Port").getValueAsString());
+            String user = variables.getFirstElementByPath("User").getValueAsString();
+            String filePath = variables.getFirstElementByPath("FilePath").getValueAsString();
+            String pattern = variables.getFirstElementByPath("Pattern").getValueAsString();
+            String privateKeyPath = variables.getFirstElementByPath("PrivateKeyPath").getValueAsString();
+
+            String regex = pattern.replace("*", ".*");
+
+            // ===== Setup JSch with Private Key =====
+            JSch jsch = new JSch();
+            jsch.addIdentity(privateKeyPath);
+
+            session = jsch.getSession(user, host, port);
+
+            java.util.Properties config = new java.util.Properties();
+            config.put("StrictHostKeyChecking", "no");
+            session.setConfig(config);
+
+            session.connect(10000); // timeout 10s
+
+            Channel channel = session.openChannel("sftp");
+            channel.connect();
+
+            sftp = (ChannelSftp) channel;
+
+            // ===== List Files =====
+            Vector<ChannelSftp.LsEntry> fileList = sftp.ls(filePath);
+
+            MbElement outRoot = outAssembly.getLocalEnvironment().getRootElement();
+            MbElement filesRoot = outRoot.createElementAsLastChild(16777216, "Files", null);
+
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss_SSSSSS").format(new Date());
+            filesRoot.createElementAsLastChild(50331648, "TimeStamp", timeStamp);
+
+            int count = 0;
+
+            for (ChannelSftp.LsEntry entry : fileList) {
+                String name = entry.getFilename();
+
+                // skip . and ..
+                if (".".equals(name) || "..".equals(name)) continue;
+
+                if (name.matches(regex)) {
+                    MbElement fileElement = filesRoot.createElementAsLastChild(16777216, "File", null);
+                    fileElement.createElementAsLastChild(50331648, "Name", name);
+                    fileElement.createElementAsLastChild(50331648, "Directory", filePath);
+                    count++;
+                }
             }
-         } else {
-            outRoot = outMessage.getRootElement();
-            outRoot = outRoot.createElementAsLastChild("XMLNSC");
-            filesRoot = outRoot.createElementAsLastChild(16777216, "Error", (Object)null);
-            filesRoot.createElementAsLastChild(50331648, "Code", "500");
-            filesRoot.createElementAsLastChild(50331648, "Message", "Directory does not exist: " + filePath);
-            MbMessageAssembly outAssemblyWithException = new MbMessageAssembly(inAssembly, outMessage);
-            alternate.propagate(outAssemblyWithException);
-         }
-      } catch (Exception var21) {
-         throw new MbUserException(this, "evaluate()", "", "", var21.getMessage(), (Object[])null);
-      }
-   }
+
+            if (count == 0) {
+                throw new Exception("No files found matching pattern in: " + filePath);
+            }
+
+            filesRoot.createElementAsLastChild(50331648, "TotalInList", count);
+
+            out.propagate(outAssembly);
+
+        } catch (Exception e) {
+
+            MbElement outRoot = outMessage.getRootElement().createElementAsLastChild("XMLNSC");
+            MbElement error = outRoot.createElementAsLastChild(16777216, "Error", null);
+
+            error.createElementAsLastChild(50331648, "Code", "500");
+            error.createElementAsLastChild(50331648, "Message", e.getMessage());
+
+            MbMessageAssembly errorAssembly = new MbMessageAssembly(inAssembly, outMessage);
+            alternate.propagate(errorAssembly);
+
+        } finally {
+            try {
+                if (sftp != null) sftp.disconnect();
+                if (session != null) session.disconnect();
+            } catch (Exception ignored) {}
+        }
+    }
 }
