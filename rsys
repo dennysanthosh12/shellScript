@@ -372,3 +372,10 @@ stages:
                   echo "$(yq -o=json ".Cache | map({\"FIELD_NAME\": .FIELD_NAME, \"FIELD_VALUE\": .FIELD_VALUE})" config.yml)"
                 fi
               done
+
+
+
+
+
+
+/cicd-cache.yml@shared: (Line: 228, Col: 27, Idx: 9048) - (Line: 235, Col: 1, Idx: 9373): While scanning a block scalar, find a tab character where an indentation space is expected.
