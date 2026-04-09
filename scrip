@@ -1,44 +1,227 @@
-[4/7/26 18:36:23:129 IST] 00000035 WXSProperties I   CWOBJ0054I: The value of the "com.ibm.websphere.xs.replication.prior.promotion.timeout" property is "600000".
-JSch DEBUG: Connecting to 10.177.44.51 port 22
-2026-04-07 18:57:37.833    145 JSch DEBUG: Connection established
-2026-04-07 18:57:37.850    145 JSch DEBUG: Remote version string: SSH-2.0-OpenSSH_8.7
-2026-04-07 18:57:37.850    145 JSch DEBUG: Local version string: SSH-2.0-JSCH-0.1.54
-2026-04-07 18:57:37.851    145 JSch DEBUG: CheckCiphers: aes256-ctr,aes192-ctr,aes128-ctr,aes256-cbc,aes192-cbc,aes128-cbc,3des-ctr,arcfour,arcfour128,arcfour256
-2026-04-07 18:57:37.852    145 JSch DEBUG: CheckKexes: diffie-hellman-group14-sha1,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521
-2026-04-07 18:57:37.875    145 JSch DEBUG: CheckSignatures: ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521
-2026-04-07 18:57:37.876    145 JSch DEBUG: SSH_MSG_KEXINIT sent
-2026-04-07 18:57:37.877    145 JSch DEBUG: SSH_MSG_KEXINIT received
-2026-04-07 18:57:37.877    145 JSch DEBUG: kex: server: curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,kex-strict-s-v00@openssh.com
-2026-04-07 18:57:37.878    145 JSch DEBUG: kex: server: rsa-sha2-512,rsa-sha2-256,ecdsa-sha2-nistp256,ssh-ed25519
-2026-04-07 18:57:37.878    145 JSch DEBUG: kex: server: aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr
-2026-04-07 18:57:37.879    145 JSch DEBUG: kex: server: aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr
-2026-04-07 18:57:37.879    145 JSch DEBUG: kex: server: hmac-sha2-256-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha1,umac-128@openssh.com,hmac-sha2-512
-2026-04-07 18:57:37.880    145 JSch DEBUG: kex: server: hmac-sha2-256-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha1,umac-128@openssh.com,hmac-sha2-512
-2026-04-07 18:57:37.881    145 JSch DEBUG: kex: server: none,zlib@openssh.com
-2026-04-07 18:57:37.881    145 JSch DEBUG: kex: server: none,zlib@openssh.com
-2026-04-07 18:57:37.881    145 JSch DEBUG: kex: server:
-2026-04-07 18:57:37.882    145 JSch DEBUG: kex: server:
-2026-04-07 18:57:37.883    145 JSch DEBUG: kex: client: ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha256,diffie-hellman-group-exchange-sha1,diffie-hellman-group1-sha1
-2026-04-07 18:57:37.883    145 JSch DEBUG: kex: client: ssh-rsa,ssh-dss,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521
-2026-04-07 18:57:37.884    145 JSch DEBUG: kex: client: aes128-ctr,aes128-cbc,3des-ctr,3des-cbc,blowfish-cbc,aes192-ctr,aes192-cbc,aes256-ctr,aes256-cbc
-2026-04-07 18:57:37.884    145 JSch DEBUG: kex: client: aes128-ctr,aes128-cbc,3des-ctr,3des-cbc,blowfish-cbc,aes192-ctr,aes192-cbc,aes256-ctr,aes256-cbc
-2026-04-07 18:57:37.885    145 JSch DEBUG: kex: client: hmac-md5,hmac-sha1,hmac-sha2-256,hmac-sha1-96,hmac-md5-96
-2026-04-07 18:57:37.885    145 JSch DEBUG: kex: client: hmac-md5,hmac-sha1,hmac-sha2-256,hmac-sha1-96,hmac-md5-96
-2026-04-07 18:57:37.885    145 JSch DEBUG: kex: client: none
-2026-04-07 18:57:37.886    145 JSch DEBUG: kex: client: none
-2026-04-07 18:57:37.887    145 JSch DEBUG: kex: client:
-2026-04-07 18:57:37.887    145 JSch DEBUG: kex: client:
-2026-04-07 18:57:37.888    145 JSch DEBUG: kex: server->client aes128-ctr hmac-sha1 none
-2026-04-07 18:57:37.888    145 JSch DEBUG: kex: client->server aes128-ctr hmac-sha1 none
-2026-04-07 18:57:37.889    145 JSch DEBUG: SSH_MSG_KEX_ECDH_INIT sent
-2026-04-07 18:57:37.890    145 JSch DEBUG: expecting SSH_MSG_KEX_ECDH_REPLY
-2026-04-07 18:57:37.892    145 JSch DEBUG: Permanently added '10.177.44.51' (ECDSA) to the list of known hosts.
-2026-04-07 18:57:37.893    145 JSch DEBUG: SSH_MSG_NEWKEYS sent
-2026-04-07 18:57:37.893    145 JSch DEBUG: SSH_MSG_NEWKEYS received
-2026-04-07 18:57:37.894    145 JSch DEBUG: SSH_MSG_SERVICE_REQUEST sent
-2026-04-07 18:57:37.895    145 JSch DEBUG: SSH_MSG_SERVICE_ACCEPT received
-2026-04-07 18:57:37.912    145 JSch DEBUG: Authentications that can continue: publickey,keyboard-interactive,password
-2026-04-07 18:57:37.913    145 JSch DEBUG: Next authentication method: publickey
-2026-04-07 18:57:37.920    145 JSch DEBUG: Authentications that can continue: password
-2026-04-07 18:57:37.921    145 JSch DEBUG: Next authentication method: password
-2026-04-07 18:57:37.921    145 JSch DEBUG: Disconnecting from 10.177.44.51 port 22
+DESCRIBE EISAPP.api_log;
+
+Name                  Null?    Type            
+--------------------- -------- --------------- 
+URN                   NOT NULL VARCHAR2(50)    
+ERROR_CODE                     VARCHAR2(50)    
+ERROR_DESCRIPTION              VARCHAR2(32767) 
+RESPONSE_STATUS                VARCHAR2(8)     
+SOURCE_ID                      VARCHAR2(10)    
+BROKER_EG                      VARCHAR2(40)    
+URL                            VARCHAR2(500)   
+REQUEST_DATE_TIME              TIMESTAMP(6)    
+RESPONSE_DATE_TIME             TIMESTAMP(6)    
+SOURCE_IP                      VARCHAR2(50)    
+CREATION_DATE_TIME             TIMESTAMP(6)    
+EXP_IP                         VARCHAR2(50)    
+ORIGIN_DATE_TIME               TIMESTAMP(6)    
+CLOB_TYPE                      VARCHAR2(1)     
+EXP_PORT                       VARCHAR2(50)    
+BROKER_NAME                    VARCHAR2(50)    
+ORCH                           VARCHAR2(1)     
+DPG_IP                         VARCHAR2(50)    
+DPG_PORT                       VARCHAR2(50)    
+MICRO_CALL                     VARCHAR2(1)     
+ACTIVITY                       VARCHAR2(1000)  
+SUP_FLAG                       VARCHAR2(5)     
+SUP_CAPABILITY                 VARCHAR2(5)     
+SUP_URL                        VARCHAR2(500)   
+TRANSACTION_URN                VARCHAR2(50)    
+ORIGINAL_URN                   VARCHAR2(50)    
+API_NAME                       VARCHAR2(500)   
+ACTUAL_ERROR                   VARCHAR2(32767) 
+DPG_REQUEST_DATE_TIME          TIMESTAMP(6)    
+DB_BROKER_IP                   VARCHAR2(50)    
+DB_QM_BROKER_EG                VARCHAR2(100)   
+URN_INSERT_BYPASS              VARCHAR2(50)    
+CACHE_READ_START               TIMESTAMP(6)    
+CACHE_READ_END                 TIMESTAMP(6)    
+DB_OPERATION                   VARCHAR2(100)   
+DB_INSERT_START                TIMESTAMP(6)    
+DB_INSERT_END                  TIMESTAMP(6)    
+WRITERTIMESTAMP                TIMESTAMP(6)    
+EXP_SYS_LINKER                 VARCHAR2(50)    
+DB_APPLICATION_NAME            VARCHAR2(50)    
+MQ_READ_TIMESTAMP              TIMESTAMP(6)    
+JOURNEY_ID                     VARCHAR2(50)    
+URL_SPECIFIER                  VARCHAR2(100)   
+IO_FLAG                        VARCHAR2(20)    
+
+DESCRIBE EISAPP.api_details;
+
+Name                Null?    Type            
+------------------- -------- --------------- 
+URN                 NOT NULL VARCHAR2(50)    
+CREATION_DATE_TIME           TIMESTAMP(6)    
+SOURCE_ID                    VARCHAR2(10)    
+EXCEPTION_DESC               VARCHAR2(32767) 
+INPUT_DATA                   VARCHAR2(32767) 
+OUTPUT_DATA                  VARCHAR2(32767) 
+DB_BROKER_IP                 VARCHAR2(50)    
+DB_QM_BROKER_EG              VARCHAR2(100)   
+DB_APPLICATION_NAME          VARCHAR2(50)    
+WRITERTIMESTAMP              TIMESTAMP(6)    
+EXP_SYS_LINKER               VARCHAR2(50)    
+MQ_READ_TIMESTAMP            TIMESTAMP(6)
+
+DESCRIBE EISAPP.api_details_clob;
+
+Name                Null?    Type            
+------------------- -------- --------------- 
+URN                 NOT NULL VARCHAR2(25)    
+CREATION_DATE_TIME           TIMESTAMP(6)    
+SOURCE_ID                    VARCHAR2(10)    
+EXCEPTION_DESC               CLOB            
+INPUT_DATA                   CLOB            
+OUTPUT_DATA                  CLOB            
+DB_BROKER_IP                 VARCHAR2(50)    
+DB_QM_BROKER_EG              VARCHAR2(100)   
+DB_APPLICATION_NAME          VARCHAR2(32767) 
+WRITERTIMESTAMP              TIMESTAMP(6)    
+EXP_SYS_LINKER               VARCHAR2(50)    
+MQ_READ_TIMESTAMP            TIMESTAMP(6)  
+
+DESCRIBE EISAPP.orch_api_log;
+
+Name                   Null?    Type            
+---------------------- -------- --------------- 
+URN                    NOT NULL VARCHAR2(25)    
+URN_CHILD                       VARCHAR2(25)    
+ERROR_CODE                      VARCHAR2(50)    
+ERROR_DESCRIPTION               VARCHAR2(32767) 
+URL                             VARCHAR2(300)   
+CLOB_TYPE                       VARCHAR2(1)     
+CREATION_DATE_TIME              TIMESTAMP(6)    
+BROKER_NAME                     VARCHAR2(50)    
+BROKER_EG                       VARCHAR2(40)    
+ORCH_CALL                       VARCHAR2(1)     
+MAKER_CHECKER                   VARCHAR2(5)     
+REQUEST_DATE_TIME               TIMESTAMP(6)    
+RESPONSE_DATE_TIME              TIMESTAMP(6)    
+API_NAME                        VARCHAR2(500)   
+DB_BROKER_IP                    VARCHAR2(50)    
+DB_QM_BROKER_EG                 VARCHAR2(100)   
+SOURCE_ID                       VARCHAR2(10)    
+DB_APPLICATION_NAME             VARCHAR2(50)    
+WRITERTIMESTAMP                 TIMESTAMP(6)    
+EXP_SYS_LINKER                  VARCHAR2(50)    
+MQ_READ_TIMESTAMP               TIMESTAMP(6)    
+REQUEST_INITIATE_TIME           TIMESTAMP(6)    
+TIMEOUT_TERMINATE_TIME          TIMESTAMP(6)    
+IO_FLAG                         VARCHAR2(20)    
+
+
+DESCRIBE EISAPP.orch_api_details;
+
+Name                Null?    Type            
+------------------- -------- --------------- 
+URN                 NOT NULL VARCHAR2(25)    
+CREATION_DATE_TIME           TIMESTAMP(6)    
+URN_CHILD                    VARCHAR2(25)    
+EXCEPTION_DESC               VARCHAR2(32767) 
+INPUT_DATA                   VARCHAR2(32767) 
+OUTPUT_DATA                  VARCHAR2(32767) 
+DB_APPLICATION_NAME          VARCHAR2(32767) 
+DB_BROKER_IP                 VARCHAR2(50)    
+DB_QM_BROKER_EG              VARCHAR2(100)   
+WRITERTIMESTAMP              TIMESTAMP(6)    
+EXP_SYS_LINKER               VARCHAR2(50)    
+MQ_READ_TIMESTAMP            TIMESTAMP(6) 
+
+DESCRIBE EISAPP.Orch_api_details_clob;
+
+Name                Null?    Type            
+------------------- -------- --------------- 
+URN                 NOT NULL VARCHAR2(25)    
+CREATION_DATE_TIME           TIMESTAMP(6)    
+URN_CHILD                    VARCHAR2(25)    
+EXCEPTION_DESC               CLOB            
+INPUT_DATA                   CLOB            
+OUTPUT_DATA                  CLOB            
+DB_BROKER_IP                 VARCHAR2(50)    
+DB_QM_BROKER_EG              VARCHAR2(100)   
+DB_APPLICATION_NAME          VARCHAR2(32767) 
+WRITERTIMESTAMP              TIMESTAMP(6)    
+EXP_SYS_LINKER               VARCHAR2(50)    
+MQ_READ_TIMESTAMP            TIMESTAMP(6)   
+
+DESCRIBE EISAPP.backend_log;
+
+Name                Null?    Type            
+------------------- -------- --------------- 
+URN                 NOT NULL VARCHAR2(25)    
+EIS_TXN_ID                   VARCHAR2(25)    
+REQUEST_DATE_TIME            TIMESTAMP(6)    
+RESPONSE_DATE_TIME           TIMESTAMP(6)    
+ERROR_CODE                   VARCHAR2(50)    
+ERROR_DESCRIPTION            VARCHAR2(32767) 
+END_POINT_URL                VARCHAR2(300)   
+TXN_ENDPOINT                 VARCHAR2(50)    
+CREATION_DATE_TIME           TIMESTAMP(6)    
+CBS_TXN_ID                   VARCHAR2(25)    
+BATCH_TANDEM                 VARCHAR2(15)    
+TXN_TYPE                     VARCHAR2(50)    
+TXN_SUB_TYPE                 VARCHAR2(50)    
+MAKER_ID                     VARCHAR2(10)    
+SUPERVISORY_ID               VARCHAR2(10)    
+BRANCH_CODE                  VARCHAR2(10)    
+END_POINT_PORT               VARCHAR2(10)    
+CLOB_TYPE                    VARCHAR2(1)     
+SYS_IP                       VARCHAR2(50)    
+SYS_PORT                     VARCHAR2(50)    
+SYS_BROKER                   VARCHAR2(50)    
+SYS_EG                       VARCHAR2(50)    
+CBS_JOURNAL_NUMBER           VARCHAR2(10)    
+CHECKER_ID_1                 VARCHAR2(10)    
+CHECKER_FLAG                 VARCHAR2(1)     
+SUPERVISORY_FLAG             VARCHAR2(1)     
+CHECKER_ID_2                 VARCHAR2(7)     
+RESPONSE_TRANCODE            VARCHAR2(50)    
+API_NAME                     VARCHAR2(500)   
+ACTUAL_ERROR                 VARCHAR2(32676) 
+DB_BROKER_IP                 VARCHAR2(50)    
+DB_QM_BROKER_EG              VARCHAR2(100)   
+SOURCE_ID                    VARCHAR2(10)    
+CACHE_OPERATION              VARCHAR2(5000)  
+CACHE_FIELD_NAME             VARCHAR2(5000)  
+DB_APPLICATION_NAME          VARCHAR2(50)    
+WRITERTIMESTAMP              TIMESTAMP(6)    
+EXP_SYS_LINKER               VARCHAR2(50)    
+MQ_READ_TIMESTAMP            TIMESTAMP(6)    
+CBS_IDENTIFIER               VARCHAR2(50)    
+IO_FLAG                      VARCHAR2(20) 
+
+
+DESCRIBE EISAPP.backend_details;
+
+Name                Null?    Type            
+------------------- -------- --------------- 
+URN                 NOT NULL VARCHAR2(25)    
+CREATION_DATE_TIME           TIMESTAMP(6)    
+EXCEPTION_DESC               VARCHAR2(32767) 
+INPUT_DATA                   VARCHAR2(32767) 
+OUTPUT_DATA                  VARCHAR2(32767) 
+DB_BROKER_IP                 VARCHAR2(50)    
+DB_QM_BROKER_EG              VARCHAR2(100)   
+DB_APPLICATION_NAME          VARCHAR2(50)    
+WRITERTIMESTAMP              TIMESTAMP(6)    
+EXP_SYS_LINKER               VARCHAR2(50)    
+MQ_READ_TIMESTAMP            TIMESTAMP(6)    
+CBS_IDENTIFIER               VARCHAR2(50)   
+
+DESCRIBE EISAPP.backend_details_clob;
+
+Name                Null?    Type          
+------------------- -------- ------------- 
+URN                 NOT NULL VARCHAR2(25)  
+CREATION_DATE_TIME           TIMESTAMP(6)  
+EXCEPTION_DESC               CLOB          
+OUTPUT_DATA                  CLOB          
+INPUT_DATA                   CLOB          
+DB_BROKER_IP                 VARCHAR2(50)  
+DB_QM_BROKER_EG              VARCHAR2(100) 
+DB_APPLICATION_NAME          VARCHAR2(50)  
+WRITERTIMESTAMP              TIMESTAMP(6)  
+EXP_SYS_LINKER               VARCHAR2(50)  
+MQ_READ_TIMESTAMP            TIMESTAMP(6)  
+CBS_IDENTIFIER               VARCHAR2(50)  
