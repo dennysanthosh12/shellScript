@@ -168,4 +168,29 @@ EnableNcharSupport=0
 #####################################################################################################################
 
 
-
+remoteDefaultQueueManager: ''
+httpServerName: ''
+RestAdminListener:
+  port: 7600
+  sslMode: 'automatic'
+  sslCertificate: ''
+  sslPassword: 'adminRestApi::sslpwd'
+basicAuth: true
+Security:
+  Permissions:
+    iibadmin: 'read+:write+:execute+'
+  DataPermissions:
+    iibadmin: 'read+:write+:execute+'
+BrokerRegistry:
+  brokerKeystoreFile: ''
+  brokerKeystorePass: 'brokerKeystore::password'
+  brokerTruststoreFile: ''
+  brokerTruststorePass: 'brokerTruststore::password'
+ResourceManagers:
+  JVM:
+    jvmMinHeapSize: 33554432
+    jvmMaxHeapSize: 268435456
+    jvmDebugPort: 0
+HTTPConnector:
+  ListenerPort: 0
+  
