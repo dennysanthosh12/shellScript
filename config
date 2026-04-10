@@ -168,7 +168,8 @@ EnableNcharSupport=0
 #####################################################################################################################
 
 
-remoteDefaultQueueManager: '{DefaultPolicies}:QMGR'
+cat SERVER/overrides/server.conf.yaml
+---
 httpServerName: 'Payment_E_01'
 RestAdminListener:
   port: 7600
@@ -191,6 +192,6 @@ ResourceManagers:
     jvmMinHeapSize: 33554432
     jvmMaxHeapSize: 268435456
     jvmDebugPort: 0
-HTTPConnector:
-  ListenerPort: 4001
+  HTTPConnector:
+    ListenerPort: 4001
   
