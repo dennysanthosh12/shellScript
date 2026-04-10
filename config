@@ -195,3 +195,10 @@ ResourceManagers:
   HTTPConnector:
     ListenerPort: 4001
   
+
+
+
+podman run -d --name SERVER -p 4415:7600 -p 4001:4001 -v /home/eisuser/ACE_CONTAINER/ace:/opt/IBM/ace:ro -v /home/eisuser/ACE_CONTAINER/GAUTAM:/home/aceuser/workdir -v /home/eisuser/ACE_CONTAINER/EndPoint_Public:/opt/IBM/EndPoint_Public -v /home/eisuser/ACE_CONTAINER/RSAKeystore:/opt/IBM/RSAKeystore -v /home/eisuser/ACE_CONTAINER/Keystore:/opt/IBM/Keystore ace:v1.0
+
+
+
