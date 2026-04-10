@@ -168,12 +168,12 @@ EnableNcharSupport=0
 #####################################################################################################################
 
 
-remoteDefaultQueueManager: ''
-httpServerName: ''
+remoteDefaultQueueManager: '{DefaultPolicies}:QMGR'
+httpServerName: 'Payment_E_01'
 RestAdminListener:
   port: 7600
   sslMode: 'automatic'
-  sslCertificate: ''
+  sslCertificate: '/opt/IBM/Keystore/IBM_ACE.pfx'
   sslPassword: 'adminRestApi::sslpwd'
 basicAuth: true
 Security:
@@ -182,9 +182,9 @@ Security:
   DataPermissions:
     iibadmin: 'read+:write+:execute+'
 BrokerRegistry:
-  brokerKeystoreFile: ''
+  brokerKeystoreFile: '/opt/IBM/Keystore/keyStore.jks'
   brokerKeystorePass: 'brokerKeystore::password'
-  brokerTruststoreFile: ''
+  brokerTruststoreFile: '/opt/IBM/Keystore/N2ks.jks'
   brokerTruststorePass: 'brokerTruststore::password'
 ResourceManagers:
   JVM:
@@ -192,5 +192,5 @@ ResourceManagers:
     jvmMaxHeapSize: 268435456
     jvmDebugPort: 0
 HTTPConnector:
-  ListenerPort: 0
+  ListenerPort: 4001
   
