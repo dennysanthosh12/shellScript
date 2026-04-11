@@ -21,3 +21,26 @@ EXPOSE 7600
 EXPOSE 4001
 
 CMD ["/bin/bash", "-c", "source mqsiprofile && IntegrationServer --work-dir /home/aceuser/workdir"]
+
+
+#!/bin/bash
+
+source mqsiprofile
+
+WORK_DIR=/home/aceuser/workdir
+
+echo "Checking work directory..."
+
+# Check if already initialized
+if [ ! -f "$WORK_DIR/server.conf.yaml" ]; then
+  echo "Workdir not initialized. Creating..."
+  mqsicreateworkdir "$WORK_DIR"
+else
+  echo "Workdir already exists. Skipping creation."
+fi
+
+echo "Starting Integration Server: ${SERVER_NAME}"
+
+IntegrationServer \
+  --work-dir "$WORK_DIR" \
+  --name "${SERVER_NAME}"
