@@ -1,32 +1,63 @@
-[eisuser@eisuatsftp01 ace]$ ./ace --help
-IBM App Connect Enterprise v13050 (utility.mqsiexplain) [Thread 2791658] (Msg 1/1) BIP2229W: Warning: abend file directory (/var/mqsi/common/errors) open failed: errno 2. Using directory /tmp 0
-IBM App Connect Enterprise v13050 (utility.mqsiexplain) [Thread 2791658] (Msg 1/1) BIP2229W: Warning: abend file directory (/var/mqsi/common/errors) open failed: errno 2. Using directory /tmp 0
-Failed to open file /var/mqsi/common/log/utility.mqsiexplain.trace.0.txt with error No such file or directory
-BIP2112E: IBM App Connect Enterprise internal error: diagnostic information ''No such file or directory'', '2'.
-An internal software error has occurred in IBM App Connect Enterprise.  Further messages may indicate the effect of this error on the component.
-Shutdown and restart the component.  If the problem continues to occur, then restart the system.  If the problem still continues to occur contact your IBM support center.
-
-BIP8081E: An error occurred while processing the command.
-An error occurred while the command was running; the command has cleaned up and ended.
-Use messages prior to this one to determine the cause of the error.
- Check for some common problems:
- Does the user id have the correct authorities (for example a member of the mqbrkrs group)?
- Is any operating system limit set too low to allow the command to run?
- Is the environment correctly set up?
- Correct the problem and retry the command, otherwise, contact your IBM support center.
-IBM App Connect Enterprise v13050 (utility.mqsiexplain) [Thread 2791662] (Msg 1/1) BIP2229W: Warning: abend file directory (/var/mqsi/common/errors) open failed: errno 2. Using directory /tmp 0
-IBM App Connect Enterprise v13050 (utility.mqsiexplain) [Thread 2791662] (Msg 1/1) BIP2229W: Warning: abend file directory (/var/mqsi/common/errors) open failed: errno 2. Using directory /tmp 0
-Failed to open file /var/mqsi/common/log/utility.mqsiexplain.trace.0.txt with error No such file or directory
-BIP2112E: IBM App Connect Enterprise internal error: diagnostic information ''No such file or directory'', '2'.
-An internal software error has occurred in IBM App Connect Enterprise.  Further messages may indicate the effect of this error on the component.
-Shutdown and restart the component.  If the problem continues to occur, then restart the system.  If the problem still continues to occur contact your IBM support center.
-
-BIP8081E: An error occurred while processing the command.
-An error occurred while the command was running; the command has cleaned up and ended.
-Use messages prior to this one to determine the cause of the error.
- Check for some common problems:
- Does the user id have the correct authorities (for example a member of the mqbrkrs group)?
- Is any operating system limit set too low to allow the command to run?
- Is the environment correctly set up?
- Correct the problem and retry the command, otherwise, contact your IBM support center.
-[eisuser@eisuatsftp01 ace]$
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <inlinedXMLSchema targetNamespace="http://www.ibm.com/iib/msl/json"><![CDATA[<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.ibm.com/iib/msl/json" xmlns:Q1="http://www.ibm.com/iib/msl/json">      
+                                  <xsd:complexType block="#all" name="JSONArray_9">     
+    <xsd:sequence>     
+      <xsd:element maxOccurs="unbounded" minOccurs="0" name="Item" nillable="true">     
+        <xsd:complexType>     
+          <xsd:sequence>     
+            <xsd:element name="FIELD_NAME" nillable="true" type="xsd:string"/>     
+            <xsd:element name="FIELD_VALUE" nillable="true" type="xsd:string"/>     
+          </xsd:sequence>     
+        </xsd:complexType>     
+      </xsd:element>     
+    </xsd:sequence>     
+  </xsd:complexType>     
+</xsd:schema>]]></inlinedXMLSchema>
+    <inlinedXMLSchema><![CDATA[<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">        
+                                           <xsd:element name="RESPONSE" nillable="true" type="xsd:string"/>        
+</xsd:schema>]]></inlinedXMLSchema>
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/JsonDomainMsg.xsd" var="var"/>
+    <input inlinedXMLSchema="true" path="../schema_1.xsd" var="var4"/>
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/JsonDomainMsg.xsd" var="var5"/>
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/JsonDomainMsg.xsd" var="var6"/>
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/JsonDomainMsg.xsd" var="var7"/>
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/JsonDomainMsg.xsd" var="var8"/>
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/JsonDomainMsg.xsd" var="var3"/>
+    <input inlinedXMLSchema="true" path="../schema_0.xsd" targetNamespace="http://www.ibm.com/iib/msl/json" var="var9"/>
+    <output path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/JsonDomainMsg.xsd" var="var2"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var11"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="io" uri="http://www.ibm.com/iib/msl/json"/>
+        <namespace kind="supplement" prefix="out" uri="http://www.ibm.com/msl/cache/1.0"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="postLoadCache_Mapping">
+        <input namespace="http://www.ibm.com/iib/msl/json" path="$var3/mb:msg(JSON,assembly,JSON,Properties)">
+            <cast castType="userDefined" path="JSON/Data/type('anyType')" qualifier="{http://www.ibm.com/iib/msl/json}JSONArray_9" ref="var9"/>
+        </input>
+        <output namespace="http://www.ibm.com/iib/msl/json" path="$var2/mb:msg(JSON,assembly,JSON,Properties)" var="ComIbmMessageAssembly_JSON1">
+            <cast castType="userDefined" path="$ComIbmMessageAssembly_JSON1/JSON/Data/type('anyType')" qualifier="{http://www.ibm.com/iib/msl/json}JSONObject" ref="var2"/>
+            <cast castType="userDefined" path="$ComIbmMessageAssembly_JSON1/JSON/spath('Data',2)/any" qualifier="RESPONSE" ref="var4"/>
+        </output>
+        <foreach>
+            <input path="JSON/spath('Data',2)/Item" var="Item"/>
+            <output path="$ComIbmMessageAssembly_JSON1/JSON/spath('Data',2)/RESPONSE"/>
+            <cachePut mode="upsert">
+                <input path="$Item/FIELD_NAME" var="FIELD_NAME"/>
+                <input path="$Item/FIELD_VALUE" var="FIELD_VALUE"/>
+                <output path="$var11/CachePut"/>
+                <move>
+                    <input path="$FIELD_NAME/."/>
+                    <output path="Key"/>
+                </move>
+                <move>
+                    <input path="$FIELD_VALUE/." var="FIELD_VALUE1"/>
+                    <output path="Value"/>
+                </move>
+            </cachePut>
+        </foreach>
+        <assign value="success">
+            <output path="$ComIbmMessageAssembly_JSON1/JSON/spath('Data',2)/RESPONSE"/>
+        </assign>
+    </mappingDeclaration>
+</mappingRoot>
