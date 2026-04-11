@@ -1,46 +1,32 @@
-FROM rhel:9.6
+[eisuser@eisuatsftp01 ace]$ ./ace --help
+IBM App Connect Enterprise v13050 (utility.mqsiexplain) [Thread 2791658] (Msg 1/1) BIP2229W: Warning: abend file directory (/var/mqsi/common/errors) open failed: errno 2. Using directory /tmp 0
+IBM App Connect Enterprise v13050 (utility.mqsiexplain) [Thread 2791658] (Msg 1/1) BIP2229W: Warning: abend file directory (/var/mqsi/common/errors) open failed: errno 2. Using directory /tmp 0
+Failed to open file /var/mqsi/common/log/utility.mqsiexplain.trace.0.txt with error No such file or directory
+BIP2112E: IBM App Connect Enterprise internal error: diagnostic information ''No such file or directory'', '2'.
+An internal software error has occurred in IBM App Connect Enterprise.  Further messages may indicate the effect of this error on the component.
+Shutdown and restart the component.  If the problem continues to occur, then restart the system.  If the problem still continues to occur contact your IBM support center.
 
-ENV ACE_HOME=/opt/IBM/ace
-ENV PATH=$ACE_HOME/server/bin:$PATH
+BIP8081E: An error occurred while processing the command.
+An error occurred while the command was running; the command has cleaned up and ended.
+Use messages prior to this one to determine the cause of the error.
+ Check for some common problems:
+ Does the user id have the correct authorities (for example a member of the mqbrkrs group)?
+ Is any operating system limit set too low to allow the command to run?
+ Is the environment correctly set up?
+ Correct the problem and retry the command, otherwise, contact your IBM support center.
+IBM App Connect Enterprise v13050 (utility.mqsiexplain) [Thread 2791662] (Msg 1/1) BIP2229W: Warning: abend file directory (/var/mqsi/common/errors) open failed: errno 2. Using directory /tmp 0
+IBM App Connect Enterprise v13050 (utility.mqsiexplain) [Thread 2791662] (Msg 1/1) BIP2229W: Warning: abend file directory (/var/mqsi/common/errors) open failed: errno 2. Using directory /tmp 0
+Failed to open file /var/mqsi/common/log/utility.mqsiexplain.trace.0.txt with error No such file or directory
+BIP2112E: IBM App Connect Enterprise internal error: diagnostic information ''No such file or directory'', '2'.
+An internal software error has occurred in IBM App Connect Enterprise.  Further messages may indicate the effect of this error on the component.
+Shutdown and restart the component.  If the problem continues to occur, then restart the system.  If the problem still continues to occur contact your IBM support center.
 
-RUN mkdir -p /opt/IBM
-RUN mkdir -p /opt/IBM/ace
-RUN mkdir -p /home/aceuser/workdir
-RUN mkdir -p /opt/IBM/EndPoint_Public
-RUN mkdir -p /opt/IBM/RSAKeystore
-RUN mkdir -p /opt/IBM/Keystore
-
-COPY ./Broker_Properties /opt/IBM/
-ENV ODBCINI /home/aceuser/workdir/odbc.ini
-ENV ODBCSYSINI /opt/IBM/Broker_Properties/ODBC/unixodbc
-
-
-WORKDIR /home/aceuser
-
-EXPOSE 7600
-EXPOSE 4001
-
-CMD ["/bin/bash", "-c", "source mqsiprofile && IntegrationServer --work-dir /home/aceuser/workdir"]
-
-
-#!/bin/bash
-
-source mqsiprofile
-
-WORK_DIR=/home/aceuser/workdir
-
-echo "Checking work directory..."
-
-# Check if already initialized
-if [ ! -f "$WORK_DIR/server.conf.yaml" ]; then
-  echo "Workdir not initialized. Creating..."
-  mqsicreateworkdir "$WORK_DIR"
-else
-  echo "Workdir already exists. Skipping creation."
-fi
-
-echo "Starting Integration Server: ${SERVER_NAME}"
-
-IntegrationServer \
-  --work-dir "$WORK_DIR" \
-  --name "${SERVER_NAME}"
+BIP8081E: An error occurred while processing the command.
+An error occurred while the command was running; the command has cleaned up and ended.
+Use messages prior to this one to determine the cause of the error.
+ Check for some common problems:
+ Does the user id have the correct authorities (for example a member of the mqbrkrs group)?
+ Is any operating system limit set too low to allow the command to run?
+ Is the environment correctly set up?
+ Correct the problem and retry the command, otherwise, contact your IBM support center.
+[eisuser@eisuatsftp01 ace]$
