@@ -1,14 +1,31 @@
-[eisuser@eisuatsftp01 ACE_CONTAINER]$ podman images
-REPOSITORY      TAG         IMAGE ID      CREATED         SIZE
-localhost/ace   v13.6       347147d33d96  19 seconds ago  157 MB
-localhost/rhel  9.0         f33f17430547  9 hours ago     157 MB
-localhost/app   v1.1        025eb0a90f96  8 weeks ago     1.33 GB
-localhost/rhel  9.6         c17949d600f8  3 months ago    1.18 GB
-[eisuser@eisuatsftp01 ACE_CONTAINER]$ podman run -d -v /home/eisuser/ACE_CONTAINER/ace:/opt/IBM/ace:Z ace:v13.6
-WARN[0000] Failed to mount subscriptions, skipping entry in /usr/share/containers/mounts.conf: getting host subscription data: failed to read subscriptions from "/usr/share/rhel/secrets": open /usr/share/rhel/secrets/redhat.repo: permission denied
-Error: crun: cannot find `` in $PATH: No such file or directory: OCI runtime attempted to invoke a command that was not found
-[eisuser@eisuatsftp01 ACE_CONTAINER]$ podman ps
-CONTAINER ID  IMAGE       COMMAND     CREATED     STATUS      PORTS       NAMES
-[eisuser@eisuatsftp01 ACE_CONTAINER]$ podman ps -a
-CONTAINER ID  IMAGE                COMMAND     CREATED         STATUS      PORTS       NAMES
-607b27a1c431  localhost/ace:v13.6              19 seconds ago  Created                 sad_gates
+bash-5.1# cd /opt/IBM/ace
+bash-5.1#
+bash-5.1#
+bash-5.1# source /opt/IBM/ace/server/bin/mqsiprofile .
+
+MQSI 13.0.5.0
+/opt/IBM/ace/server
+
+bash-5.1#
+bash-5.1# pwd
+/opt/IBM/ace
+bash-5.1# ls -lrth
+total 52K
+drwxr-x---  2 root root    6 Sep 26  2025 extensions
+drwxr-x--- 42 root root 4.0K Sep 26  2025 server
+drwxr-x---  6 root root   93 Sep 26  2025 ie02
+drwxr-x--- 15 root root  175 Sep 26  2025 readmes
+-rwxr-x---  1 root root  29K Sep 26  2025 ace
+drwxr-x--- 13 root root 4.0K Sep 26  2025 tools
+drwxr-x---  2 root root 4.0K Sep 26  2025 swidtag
+drwxr-x---  2 root root 4.0K Feb 13 11:13 license
+drwxr-x--- 13 root root 4.0K Feb 13 11:13 common
+bash-5.1# ./ace make registry global accept license silently
+mqsiexplain: error while loading shared libraries: libstdc++.so.6: cannot open shared object file: No such file or directory
+mqsiexplain: error while loading shared libraries: libstdc++.so.6: cannot open shared object file: No such file or directory
+mqsiexplain: error while loading shared libraries: libstdc++.so.6: cannot open shared object file: No such file or directory
+./ace: line 440: awk: command not found
+mqsiexplain: error while loading shared libraries: libstdc++.so.6: cannot open shared object file: No such file or directory
+ibmint: error while loading shared libraries: libstdc++.so.6: cannot open shared object file: No such file or directory
+ibmint: error while loading shared libraries: libstdc++.so.6: cannot open shared object file: No such file or directory
+bash-5.1#
