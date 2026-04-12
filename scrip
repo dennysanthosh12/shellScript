@@ -1,78 +1,28 @@
-FROM rhel:9.6
-RUN groupadd -r mqbrkrs
-RUN useradd -r -g mqbrkrs -m -d /home/eisuser -s /bin/bash eisuser
-RUN mkdir -p /var/mqsi \
-    && mkdir -p /var/mqsi/common/errors \
-    && mkdir -p /var/mqsi/common/log \
-    && mkdir -p /opt/IBM \
-	&& mkdir -p /opt/IBM/EndPoint_Public \
-	&& mkdir -p /opt/IBM/Keystore \
-	&& mkdir -p /opt/IBM/RSAKeystore \
-	
-COPY ./Broker_Properties /opt/IBM/
-ADD ./ace.tar.gz /opt/IBM/
-
-RUN cd /opt/IBM/ace && \
-    .ace make registry global accept license silently
-	
-RUN echo 'source /opt/IBM/ace/server/bin/mqsiprofile' >> /etc/bashrc && \
-    echo 'source /opt/IBM/ace/server/bin/mqsiprofile' > /etc/profile.d/ace.sh && \
-    chmod +x /etc/profile.d/ace.sh
-
-RUN chown -R eisuser:mqbrkrs /var/mqsi && \
-    chmod -R 775 /var/mqsi && \
-    chown -R eisuser:mqbrkrs /opt/IBM && \
-    chmod -R 775 /opt/IBM
-
-USER eisuser
-
-WORKDIR /var/mqsi/
-
-
-
-
-[eisuser@EISUATEXP09 ~]$ mqsicreateworkdir SERVER
-mqsicreateworkdir: Copying sample server.config.yaml to work directory
-1 file(s) copied.
-Successful command completion.
-
-[eisuser@EISUATEXP09 ~]$ ibmint specify jre --version 8 --work-directory SERVER
-BIP15273I: The JRE to be used by this Integration Server has changed. This will take effect next time the Integration Server is started.
-
-[eisuser@EISUATEXP09 ~]$ IntegrationServer --work-dir SERVER --name "$SERVER_NAME" --overrides-directory "$OVERRIDE_PATH"
-
-
-
-#!/bin/bash
-
-source /opt/IBM/ace/server/bin/mqsiprofile
-
-# Create work directory only if it doesn't already exist
-if [ ! -d "/var/mqsi/${SERVER_NAME}" ]; then
-    echo "Creating work directory for ${SERVER_NAME}..."
-    mqsicreateworkdir /var/mqsi/${SERVER_NAME}
-    ibmint specify jre --version 8 --work-directory /var/mqsi/${SERVER_NAME}
-else
-    echo "Work directory /var/mqsi/${SERVER_NAME} already exists, skipping creation..."
-fi
-
-# Start Integration Server
-exec IntegrationServer --work-dir /var/mqsi/${SERVER_NAME} \
-    --name "${SERVER_NAME}" \
-    --overrides-directory "${OVERRIDE_PATH}"
-
-
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-USER eisuser
-
-ENTRYPOINT ["/entrypoint.sh"]
-
-podman run -d \
-    -e SERVER_NAME=MYSERVER \
-    -e OVERRIDE_PATH=/mnt/overrides \
-    -v /host/var/mqsi:/var/mqsi:Z \
-    -v /host/overrides:/mnt/overrides:Z \
-    your-ace-image
-
+[eisuser@eisuatsftp01 ACE_CONTAINER]$ podman images
+WARN[0000] Found incomplete layer "7e2a6b36c6e5c1017404e789c5716cab826ce8f4e043844657d8143cf7fcf3b9", deleting it
+Error: loading primary layer store data: open /home/eisuser/.local/share/containers/storage/overlay-layers/.tmp-layers.json3357552399: no space left on device
+WARN[0000] Found incomplete layer "7e2a6b36c6e5c1017404e789c5716cab826ce8f4e043844657d8143cf7fcf3b9", deleting it
+[eisuser@eisuatsftp01 ACE_CONTAINER]$ podman images
+WARN[0000] Found incomplete layer "7e2a6b36c6e5c1017404e789c5716cab826ce8f4e043844657d8143cf7fcf3b9", deleting it
+Error: loading primary layer store data: open /home/eisuser/.local/share/containers/storage/overlay-layers/.tmp-layers.json2772671643: no space left on device
+WARN[0000] Found incomplete layer "7e2a6b36c6e5c1017404e789c5716cab826ce8f4e043844657d8143cf7fcf3b9", deleting it
+[eisuser@eisuatsftp01 ACE_CONTAINER]$ podman images
+WARN[0000] Found incomplete layer "7e2a6b36c6e5c1017404e789c5716cab826ce8f4e043844657d8143cf7fcf3b9", deleting it
+Error: loading primary layer store data: open /home/eisuser/.local/share/containers/storage/overlay-layers/.tmp-layers.json2216308568: no space left on device
+WARN[0000] Found incomplete layer "7e2a6b36c6e5c1017404e789c5716cab826ce8f4e043844657d8143cf7fcf3b9", deleting it
+[eisuser@eisuatsftp01 ACE_CONTAINER]$ df -hT
+Filesystem                       Type      Size  Used Avail Use% Mounted on
+devtmpfs                         devtmpfs  4.0M     0  4.0M   0% /dev
+tmpfs                            tmpfs      32G  260K   32G   1% /dev/shm
+tmpfs                            tmpfs      13G  1.3G   12G  10% /run
+/dev/mapper/rootvg-rootlv        xfs        30G   14G   17G  47% /
+/dev/mapper/rootvg-usrlv         xfs        10G  4.5G  5.6G  45% /usr
+/dev/mapper/rootvg-optlv         xfs        20G  5.2G   15G  26% /opt
+/dev/mapper/rootvg-tmplv         xfs        10G  564M  9.5G   6% /tmp
+/dev/mapper/rootvg-varlv         xfs        84G   56G   29G  67% /var
+/dev/mapper/vmware-vmware_bkp    xfs        50G   29G   22G  58% /vmware_bkp
+/dev/mapper/rootvg-homelv        xfs        30G   30G   44K 100% /home
+/dev/mapper/rootvg-homescriptslv xfs       5.0G   93M  4.9G   2% /home/scripts
+/dev/sdb3                        xfs      1014M  559M  456M  56% /boot
+/dev/sdb2                        vfat      200M  7.1M  193M   4% /efi
+tmpfs                            tmpfs     6.3G   36K  6.3G   1% /run/user/1001
