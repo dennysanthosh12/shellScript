@@ -20,3 +20,6 @@ Group 'mqbrkrs' already exists
 Installation wide admin ssl is 'enabled'.
 Installation wide HTTPSConnector ssl is 'enabled'.
 [root@EISUATEXP09 ace]#
+
+
+[root@EISUATEXP09 ace]$ source /opt/IBM/ace/server/bin/mqsiprofile .
