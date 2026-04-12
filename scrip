@@ -1,24 +1,8 @@
-CREATE COMPUTE MODULE CacheLoader_MQ
-    CREATE FUNCTION Main() RETURNS BOOLEAN
-    BEGIN
-
-        DECLARE gCache REFERENCE TO MbGlobalMap;
-        SET gCache = MbGlobalMap.getGlobalMap('MY_EMBEDDED_CACHE');
-
-        DECLARE i INTEGER 1;
-        DECLARE item REFERENCE TO InputRoot.JSON.Data.Item[i];
-
-        WHILE LASTMOVE(item) DO
-
-            SET gCache.{item.FIELD_NAME} = item.FIELD_VALUE;
-
-            SET i = i + 1;
-            SET item REFERENCE TO InputRoot.JSON.Data.Item[i];
-
-        END WHILE;
-
-        SET OutputRoot.JSON.Data.RESPONSE = 'success';
-
-        RETURN TRUE;
-    END;
-END MODULE;
+FROM rhel:9.6
+RUN groupadd -r mqbrkrs
+RUN useradd -r -g mqbrkrs -m -d /home/eisuser -s /bin/bash eisuser
+RUN mkdir -p /var/mqsi
+RUN mkdir -p /var/mqsi/common/errors
+RUN mkdir -p /var/mqsi/common/log
+RUN mkdir -p /opt/IBM
+ADD ./ace.tar.gz /opt/IBM/
