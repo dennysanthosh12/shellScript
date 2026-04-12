@@ -1,4 +1,45 @@
- dnf install --installroot=/opt/rhel9-minimal --releasever=9 \
+[root@EISUATEXP09 ~]# yum search MQS*
+Updating Subscription Management repositories.
+Unable to read consumer identity
+
+This system is not registered with an entitlement server. You can use subscription-manager to register.
+
+Last metadata expiration check: 2:20:22 ago on Sun Apr 12 21:05:27 2026.
+========================================================================== Name Matched: MQS* ==========================================================================
+MQSeriesAMQP.x86_64 : IBM MQ AMQP Service
+MQSeriesAMS.x86_64 : IBM MQ Advanced Message Security
+MQSeriesClient.x86_64 : IBM MQ Client FileSet
+MQSeriesFTAgent.x86_64 : IBM MQ Managed File Transfer Agent
+MQSeriesFTBase.x86_64 : IBM MQ Managed File Transfer Base Component
+MQSeriesFTLogger.x86_64 : IBM MQ Managed File Transfer Logger
+MQSeriesFTService.x86_64 : IBM MQ Managed File Transfer Service
+MQSeriesFTTools.x86_64 : IBM MQ Managed File Transfer Tools
+MQSeriesGSKit.x86_64 : IBM MQ GSKit FileSet
+MQSeriesJRE.x86_64 : IBM MQ Java JRE
+MQSeriesJava.x86_64 : IBM MQ Java, JMS and Web Services support
+MQSeriesMan.x86_64 : IBM MQ Man Pages FileSet
+MQSeriesMsg_Zh_CN.x86_64 : IBM MQ Messages (Simplified Chinese) FileSet
+MQSeriesMsg_Zh_TW.x86_64 : IBM MQ Messages (Traditional Chinese) FileSet
+MQSeriesMsg_cs.x86_64 : IBM MQ Messages (Czech) FileSet
+MQSeriesMsg_de.x86_64 : IBM MQ Messages (German) FileSet
+MQSeriesMsg_es.x86_64 : IBM MQ Messages (Spanish) FileSet
+MQSeriesMsg_fr.x86_64 : IBM MQ Messages (French) FileSet
+MQSeriesMsg_hu.x86_64 : IBM MQ Messages (Hungarian) FileSet
+MQSeriesMsg_it.x86_64 : IBM MQ Messages (Italian) FileSet
+MQSeriesMsg_ja.x86_64 : IBM MQ Messages (Japanese) FileSet
+MQSeriesMsg_ko.x86_64 : IBM MQ Messages (Korean) FileSet
+MQSeriesMsg_pl.x86_64 : IBM MQ Messages (Polish) FileSet
+MQSeriesMsg_pt.x86_64 : IBM MQ Messages (Brazilian Portuguese) FileSet
+MQSeriesMsg_ru.x86_64 : IBM MQ Messages (Russian) FileSet
+MQSeriesRuntime.x86_64 : IBM MQ Runtime FileSet
+MQSeriesSDK.x86_64 : IBM MQ SDK FileSet
+MQSeriesSamples.x86_64 : IBM MQ Samples FileSet
+MQSeriesServer.x86_64 : IBM MQ Server FileSet
+MQSeriesWeb.x86_64 : IBM MQ REST API and Console
+MQSeriesXRService.x86_64 : IBM MQ Telemetry Service
+
+
+[root@EISUATEXP09 ~]#  dnf install --installroot=/opt/rhel9-minimal --releasever=9 \
 --setopt=install_weak_deps=False --nodocs -y \
 bash coreutils shadow-utils \
 glibc glibc-langpack-en libstdc++ libgcc \
@@ -10,4 +51,15 @@ iproute iputils curl nmap-ncat net-tools \
 libxml2 libxslt \
 zip unzip bzip2 xz \
 libnsl libtirpc ncurses-libs zlib expat \
-perl-interpreter
+perl-interpreter MQS*
+Updating Subscription Management repositories.
+Unable to read consumer identity
+
+This system is not registered with an entitlement server. You can use subscription-manager to register.
+
+BaseOS                                                                                                                                  100 MB/s | 2.2 MB     00:00
+AppStream                                                                                                                               188 MB/s | 7.9 MB     00:00
+Last metadata expiration check: 0:00:01 ago on Sun Apr 12 23:26:44 2026.
+No match for argument: MQS*
+Error: Unable to find a match: MQS*
+[root@EISUATEXP09 ~]#
