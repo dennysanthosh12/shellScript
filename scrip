@@ -6,3 +6,17 @@ RUN mkdir -p /var/mqsi/common/errors
 RUN mkdir -p /var/mqsi/common/log
 RUN mkdir -p /opt/IBM
 ADD ./ace.tar.gz /opt/IBM/
+
+
+[root@EISUATEXP09 ~]# cd /opt/IBM/ace
+[root@EISUATEXP09 ace]#  ./ace make registry global accept license silently
+Registry '/var/mqsi/common/errors' already exists and will not be overwritten.
+ACE installation will be directed to use this existing global registry.
+Registry '/var/mqsi/common/log' already exists and will not be overwritten.
+ACE installation will be directed to use this existing global registry.
+Registry '/var/mqsi' already exists and will not be overwritten.
+ACE installation will be directed to use this existing global registry.
+Group 'mqbrkrs' already exists
+Installation wide admin ssl is 'enabled'.
+Installation wide HTTPSConnector ssl is 'enabled'.
+[root@EISUATEXP09 ace]#
