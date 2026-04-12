@@ -1,12 +1,40 @@
-[eisuser@eisuatsftp01 ACE_CONTAINER]$ podman run -it --user eisuser -v /home/eisuser/ACE_CONTAINER/ace:/opt/IBM/ace:Z ace:v13.6 /bin/bash
-WARN[0000] Failed to mount subscriptions, skipping entry in /usr/share/containers/mounts.conf: getting host subscription data: failed to read subscriptions from "/usr/share/rhel/secrets": open /usr/share/rhel/secrets/redhat.repo: permission denied
-{"msg":"exec container process `/bin/bash`: Permission denied","level":"error","time":"2026-04-12T18:46:16.109692Z"}
-
-
-[eisuser@eisuatsftp01 bin]$ podman run -it -v /home/eisuser/ACE_CONTAINER/ace:/opt/IBM/ace:Z ace:v13.6 /bin/bash
-WARN[0000] Failed to mount subscriptions, skipping entry in /usr/share/containers/mounts.conf: getting host subscription data: failed to read subscriptions from "/usr/share/rhel/secrets": open /usr/share/rhel/secrets/redhat.repo: permission denied
-bash-5.1#
-bash-5.1#
-bash-5.1# ls -ld /bin/bash
--rwxr-x--- 1 1001 1003 1389072 Feb 15  2024 /bin/bash
-bash-5.1#
+[eisuser@eisuatsftp01 home]$ lsblk
+NAME                     MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+sda                        8:0    0   50G  0 disk
+└─sda1                     8:1    0   50G  0 part
+  └─vmware-vmware_bkp    253:8    0   50G  0 lvm  /vmware_bkp
+sdb                        8:16   0  150G  0 disk
+├─sdb1                     8:17   0    1M  0 part
+├─sdb2                     8:18   0  200M  0 part /efi
+├─sdb3                     8:19   0    1G  0 part /boot
+├─sdb4                     8:20   0  135G  0 part
+│ ├─rootvg-rootlv        253:0    0   30G  0 lvm  /
+│ ├─rootvg-usrlv         253:1    0   10G  0 lvm  /usr
+│ ├─rootvg-varlv         253:2    0 83.8G  0 lvm  /var
+│ ├─rootvg-optlv         253:3    0   20G  0 lvm  /opt
+│ ├─rootvg-tmplv         253:4    0   10G  0 lvm  /tmp
+│ ├─rootvg-homelv        253:6    0   30G  0 lvm  /home
+│ └─rootvg-homescriptslv 253:7    0    5G  0 lvm  /home/scripts
+└─sdb5                     8:21   0 13.8G  0 part
+  ├─rootvg-varlv         253:2    0 83.8G  0 lvm  /var
+  └─rootvg-swap          253:5    0   10G  0 lvm  [SWAP]
+sdc                        8:32   0   50G  0 disk
+└─sdc1                     8:33   0   50G  0 part
+  └─rootvg-varlv         253:2    0 83.8G  0 lvm  /var
+[eisuser@eisuatsftp01 home]$ df -hT
+Filesystem                       Type      Size  Used Avail Use% Mounted on
+devtmpfs                         devtmpfs  4.0M     0  4.0M   0% /dev
+tmpfs                            tmpfs      32G  260K   32G   1% /dev/shm
+tmpfs                            tmpfs      13G  1.3G   12G  10% /run
+/dev/mapper/rootvg-rootlv        xfs        30G   14G   17G  47% /
+/dev/mapper/rootvg-usrlv         xfs        10G  4.5G  5.6G  45% /usr
+/dev/mapper/rootvg-optlv         xfs        20G  5.2G   15G  26% /opt
+/dev/mapper/rootvg-tmplv         xfs        10G  566M  9.5G   6% /tmp
+/dev/mapper/rootvg-varlv         xfs        84G   65G   20G  77% /var
+/dev/mapper/vmware-vmware_bkp    xfs        50G   29G   22G  58% /vmware_bkp
+/dev/mapper/rootvg-homelv        xfs        30G   30G   26M 100% /home
+/dev/mapper/rootvg-homescriptslv xfs       5.0G   93M  4.9G   2% /home/scripts
+/dev/sdb3                        xfs      1014M  559M  456M  56% /boot
+/dev/sdb2                        vfat      200M  7.1M  193M   4% /efi
+tmpfs                            tmpfs     6.3G   36K  6.3G   1% /run/user/1001
+[eisuser@eisuatsftp01 home]$
