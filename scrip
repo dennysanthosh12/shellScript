@@ -1,1 +1,13 @@
- dnf install --installroot=/opt/rhel9-minimal --releasever=9 --setopt=install_weak_deps=False --nodocs -y bash coreutils shadow-utils glibc glibc-langpack-en procps-ng net-tools nmap-ncat iproute libstdc++ libgcc findutils grep sed gawk tar gzip util-linux which diffutils file openssl iputils curl ca-certificates libxml2 libxslt zip unzip bzip2 xz
+ dnf install --installroot=/opt/rhel9-minimal --releasever=9 \
+--setopt=install_weak_deps=False --nodocs -y \
+bash coreutils shadow-utils \
+glibc glibc-langpack-en libstdc++ libgcc \
+procps-ng util-linux which \
+findutils grep sed gawk tar gzip \
+diffutils file \
+openssl ca-certificates \
+iproute iputils curl nmap-ncat net-tools \
+libxml2 libxslt \
+zip unzip bzip2 xz \
+libnsl libtirpc ncurses-libs zlib expat \
+perl-interpreter
