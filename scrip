@@ -1,1 +1,11 @@
-
+RUN dnf install -y \
+    glibc glibc-langpack-en \
+    libstdc++ libgcc \
+    bash coreutils findutils grep sed gawk tar gzip \
+    procps-ng util-linux which shadow-utils \
+    diffutils file openssl \
+    iproute iputils curl wget \
+    ca-certificates \
+    libxml2 libxslt \
+    zip unzip bzip2 xz \
+ && dnf clean all
