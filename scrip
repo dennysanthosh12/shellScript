@@ -1,32 +1,24 @@
 FROM rhel:9.6
 RUN groupadd -r mqbrkrs
 RUN useradd -r -g mqbrkrs -m -d /home/eisuser -s /bin/bash eisuser
-RUN mkdir -p /var/mqsi
-RUN mkdir -p /var/mqsi/common/errors
-RUN mkdir -p /var/mqsi/common/log
-RUN mkdir -p /opt/IBM
+RUN mkdir -p /var/mqsi \
+    && mkdir -p /var/mqsi/common/errors \
+    && mkdir -p /var/mqsi/common/log \
+    && mkdir -p /opt/IBM \
+	&& mkdir -p /opt/IBM/EndPoint_Public \
+	&& mkdir -p /opt/IBM/Keystore \
+	&& mkdir -p /opt/IBM/RSAKeystore \
+	
+COPY ./Broker_Properties /opt/IBM/
 ADD ./ace.tar.gz /opt/IBM/
 
-
-[root@EISUATEXP09 ~]# cd /opt/IBM/ace
-[root@EISUATEXP09 ace]#  ./ace make registry global accept license silently
-Registry '/var/mqsi/common/errors' already exists and will not be overwritten.
-ACE installation will be directed to use this existing global registry.
-Registry '/var/mqsi/common/log' already exists and will not be overwritten.
-ACE installation will be directed to use this existing global registry.
-Registry '/var/mqsi' already exists and will not be overwritten.
-ACE installation will be directed to use this existing global registry.
-Group 'mqbrkrs' already exists
-Installation wide admin ssl is 'enabled'.
-Installation wide HTTPSConnector ssl is 'enabled'.
-[root@EISUATEXP09 ace]#
-
-
-[root@EISUATEXP09 ace]$ source /opt/IBM/ace/server/bin/mqsiprofile .
+RUN cd /opt/IBM/ace && \
+    .ace make registry global accept license silently
+	
 RUN echo 'source /opt/IBM/ace/server/bin/mqsiprofile' >> /etc/bashrc && \
     echo 'source /opt/IBM/ace/server/bin/mqsiprofile' > /etc/profile.d/ace.sh && \
     chmod +x /etc/profile.d/ace.sh
-# Set ownership and permissions
+
 RUN chown -R eisuser:mqbrkrs /var/mqsi && \
     chmod -R 775 /var/mqsi && \
     chown -R eisuser:mqbrkrs /opt/IBM && \
@@ -34,3 +26,17 @@ RUN chown -R eisuser:mqbrkrs /var/mqsi && \
 
 USER eisuser
 
+WORKDIR /var/mqsi/
+
+
+
+
+[eisuser@EISUATEXP09 ~]$ mqsicreateworkdir SERVER
+mqsicreateworkdir: Copying sample server.config.yaml to work directory
+1 file(s) copied.
+Successful command completion.
+
+[eisuser@EISUATEXP09 ~]$ ibmint specify jre --version 8 --work-directory SERVER
+BIP15273I: The JRE to be used by this Integration Server has changed. This will take effect next time the Integration Server is started.
+
+[eisuser@EISUATEXP09 ~]$ IntegrationServer --work-dir SERVER --name "$SERVER_NAME" --overrides-directory "$OVERRIDE_PATH"
