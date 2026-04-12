@@ -1,65 +1,100 @@
-[root@EISUATEXP09 ~]# yum search MQS*
+[root@EISUATEXP09 MQ_PACKAGES]# dnf install --installroot=/opt/rhel9-minimal --setopt=tsflags=nodocs -y ./MQSeriesClient-9.4.0-16.x86_64.rpm ./MQSeriesGSKit-9.4.0-16.x86_64.rpm ./MQSeriesJRE-9.4.0-16.x86_64.rpm ./MQSeriesJava-9.4.0-16.x86_64.rpm ./MQSeriesRuntime-9.4.0-16.x86_64.rpm
 Updating Subscription Management repositories.
 Unable to read consumer identity
 
 This system is not registered with an entitlement server. You can use subscription-manager to register.
 
-Last metadata expiration check: 2:20:22 ago on Sun Apr 12 21:05:27 2026.
-========================================================================== Name Matched: MQS* ==========================================================================
-MQSeriesAMQP.x86_64 : IBM MQ AMQP Service
-MQSeriesAMS.x86_64 : IBM MQ Advanced Message Security
-MQSeriesClient.x86_64 : IBM MQ Client FileSet
-MQSeriesFTAgent.x86_64 : IBM MQ Managed File Transfer Agent
-MQSeriesFTBase.x86_64 : IBM MQ Managed File Transfer Base Component
-MQSeriesFTLogger.x86_64 : IBM MQ Managed File Transfer Logger
-MQSeriesFTService.x86_64 : IBM MQ Managed File Transfer Service
-MQSeriesFTTools.x86_64 : IBM MQ Managed File Transfer Tools
-MQSeriesGSKit.x86_64 : IBM MQ GSKit FileSet
-MQSeriesJRE.x86_64 : IBM MQ Java JRE
-MQSeriesJava.x86_64 : IBM MQ Java, JMS and Web Services support
-MQSeriesMan.x86_64 : IBM MQ Man Pages FileSet
-MQSeriesMsg_Zh_CN.x86_64 : IBM MQ Messages (Simplified Chinese) FileSet
-MQSeriesMsg_Zh_TW.x86_64 : IBM MQ Messages (Traditional Chinese) FileSet
-MQSeriesMsg_cs.x86_64 : IBM MQ Messages (Czech) FileSet
-MQSeriesMsg_de.x86_64 : IBM MQ Messages (German) FileSet
-MQSeriesMsg_es.x86_64 : IBM MQ Messages (Spanish) FileSet
-MQSeriesMsg_fr.x86_64 : IBM MQ Messages (French) FileSet
-MQSeriesMsg_hu.x86_64 : IBM MQ Messages (Hungarian) FileSet
-MQSeriesMsg_it.x86_64 : IBM MQ Messages (Italian) FileSet
-MQSeriesMsg_ja.x86_64 : IBM MQ Messages (Japanese) FileSet
-MQSeriesMsg_ko.x86_64 : IBM MQ Messages (Korean) FileSet
-MQSeriesMsg_pl.x86_64 : IBM MQ Messages (Polish) FileSet
-MQSeriesMsg_pt.x86_64 : IBM MQ Messages (Brazilian Portuguese) FileSet
-MQSeriesMsg_ru.x86_64 : IBM MQ Messages (Russian) FileSet
-MQSeriesRuntime.x86_64 : IBM MQ Runtime FileSet
-MQSeriesSDK.x86_64 : IBM MQ SDK FileSet
-MQSeriesSamples.x86_64 : IBM MQ Samples FileSet
-MQSeriesServer.x86_64 : IBM MQ Server FileSet
-MQSeriesWeb.x86_64 : IBM MQ REST API and Console
-MQSeriesXRService.x86_64 : IBM MQ Telemetry Service
+Dependencies resolved.
+========================================================================================================================================================================
+ Package                                      Architecture                        Version                               Repository                                 Size
+========================================================================================================================================================================
+Installing:
+ MQSeriesClient                               x86_64                              9.4.0-16                              @commandline                              5.7 M
+ MQSeriesGSKit                                x86_64                              9.4.0-16                              @commandline                               25 M
+ MQSeriesJRE                                  x86_64                              9.4.0-16                              @commandline                              128 M
+ MQSeriesJava                                 x86_64                              9.4.0-16                              @commandline                              140 M
+ MQSeriesRuntime                              x86_64                              9.4.0-16                              @commandline                               19 M
 
+Transaction Summary
+========================================================================================================================================================================
+Install  5 Packages
 
-[root@EISUATEXP09 ~]#  dnf install --installroot=/opt/rhel9-minimal --releasever=9 \
---setopt=install_weak_deps=False --nodocs -y \
-bash coreutils shadow-utils \
-glibc glibc-langpack-en libstdc++ libgcc \
-procps-ng util-linux which \
-findutils grep sed gawk tar gzip \
-diffutils file \
-openssl ca-certificates \
-iproute iputils curl nmap-ncat net-tools \
-libxml2 libxslt \
-zip unzip bzip2 xz \
-libnsl libtirpc ncurses-libs zlib expat \
-perl-interpreter MQS*
-Updating Subscription Management repositories.
-Unable to read consumer identity
+Total size: 318 M
+Installed size: 533 M
+Downloading Packages:
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                                                                                                                1/1
+  Running scriptlet: MQSeriesRuntime-9.4.0-16.x86_64                                                                                                                1/5
+ls: cannot access '/proc/3657757/exe': No such file or directory
+basename: missing operand
+Try 'basename --help' for more information.
+/var/tmp/rpm-tmp.xN4RRQ: line 307: [: =: unary operator expected
+/var/tmp/rpm-tmp.xN4RRQ: line 498: [: =: unary operator expected
+Creating group mqm
+Creating user mqm
 
-This system is not registered with an entitlement server. You can use subscription-manager to register.
+  Installing       : MQSeriesRuntime-9.4.0-16.x86_64                                                                                                                1/5
+  Running scriptlet: MQSeriesRuntime-9.4.0-16.x86_64                                                                                                                1/5
+ls: cannot access '/proc/3657757/exe': No such file or directory
+basename: missing operand
+Try 'basename --help' for more information.
+/var/tmp/rpm-tmp.AnlWuQ: line 487: [: =: unary operator expected
+AMQ7172I: The license agreement must be accepted before using IBM MQ.
 
-BaseOS                                                                                                                                  100 MB/s | 2.2 MB     00:00
-AppStream                                                                                                                               188 MB/s | 7.9 MB     00:00
-Last metadata expiration check: 0:00:01 ago on Sun Apr 12 23:26:44 2026.
-No match for argument: MQS*
-Error: Unable to find a match: MQS*
-[root@EISUATEXP09 ~]#
+  Running scriptlet: MQSeriesGSKit-9.4.0-16.x86_64                                                                                                                  2/5
+ls: cannot access '/proc/3657757/exe': No such file or directory
+basename: missing operand
+Try 'basename --help' for more information.
+/var/tmp/rpm-tmp.wFb6yi: line 307: [: =: unary operator expected
+/var/tmp/rpm-tmp.wFb6yi: line 498: [: =: unary operator expected
+
+  Installing       : MQSeriesGSKit-9.4.0-16.x86_64                                                                                                                  2/5
+  Running scriptlet: MQSeriesGSKit-9.4.0-16.x86_64                                                                                                                  2/5
+  Running scriptlet: MQSeriesClient-9.4.0-16.x86_64                                                                                                                 3/5
+ls: cannot access '/proc/3657757/exe': No such file or directory
+basename: missing operand
+Try 'basename --help' for more information.
+/var/tmp/rpm-tmp.Lb3M16: line 307: [: =: unary operator expected
+/var/tmp/rpm-tmp.Lb3M16: line 498: [: =: unary operator expected
+
+  Installing       : MQSeriesClient-9.4.0-16.x86_64                                                                                                                 3/5
+  Running scriptlet: MQSeriesClient-9.4.0-16.x86_64                                                                                                                 3/5
+  Running scriptlet: MQSeriesJRE-9.4.0-16.x86_64                                                                                                                    4/5
+ls: cannot access '/proc/3657757/exe': No such file or directory
+basename: missing operand
+Try 'basename --help' for more information.
+/var/tmp/rpm-tmp.9f3Gg8: line 307: [: =: unary operator expected
+/var/tmp/rpm-tmp.9f3Gg8: line 498: [: =: unary operator expected
+
+  Installing       : MQSeriesJRE-9.4.0-16.x86_64                                                                                                                    4/5
+  Running scriptlet: MQSeriesJRE-9.4.0-16.x86_64                                                                                                                    4/5
+  Running scriptlet: MQSeriesJava-9.4.0-16.x86_64                                                                                                                   5/5
+ls: cannot access '/proc/3657757/exe': No such file or directory
+basename: missing operand
+Try 'basename --help' for more information.
+/var/tmp/rpm-tmp.wTyxjS: line 307: [: =: unary operator expected
+/var/tmp/rpm-tmp.wTyxjS: line 498: [: =: unary operator expected
+
+  Installing       : MQSeriesJava-9.4.0-16.x86_64                                                                                                                   5/5
+  Running scriptlet: MQSeriesJava-9.4.0-16.x86_64                                                                                                                   5/5
+  Running scriptlet: MQSeriesRuntime-9.4.0-16.x86_64                                                                                                                5/5
+  Running scriptlet: MQSeriesGSKit-9.4.0-16.x86_64                                                                                                                  5/5
+  Running scriptlet: MQSeriesClient-9.4.0-16.x86_64                                                                                                                 5/5
+  Running scriptlet: MQSeriesJRE-9.4.0-16.x86_64                                                                                                                    5/5
+  Running scriptlet: MQSeriesJava-9.4.0-16.x86_64                                                                                                                   5/5
+  Verifying        : MQSeriesClient-9.4.0-16.x86_64                                                                                                                 1/5
+  Verifying        : MQSeriesGSKit-9.4.0-16.x86_64                                                                                                                  2/5
+  Verifying        : MQSeriesJRE-9.4.0-16.x86_64                                                                                                                    3/5
+  Verifying        : MQSeriesJava-9.4.0-16.x86_64                                                                                                                   4/5
+  Verifying        : MQSeriesRuntime-9.4.0-16.x86_64                                                                                                                5/5
+Installed products updated.
+
+Installed:
+  MQSeriesClient-9.4.0-16.x86_64    MQSeriesGSKit-9.4.0-16.x86_64    MQSeriesJRE-9.4.0-16.x86_64    MQSeriesJava-9.4.0-16.x86_64    MQSeriesRuntime-9.4.0-16.x86_64
+
+Complete!
+[root@EISUATEXP09 MQ_PACKAGES]#
