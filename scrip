@@ -40,3 +40,39 @@ Successful command completion.
 BIP15273I: The JRE to be used by this Integration Server has changed. This will take effect next time the Integration Server is started.
 
 [eisuser@EISUATEXP09 ~]$ IntegrationServer --work-dir SERVER --name "$SERVER_NAME" --overrides-directory "$OVERRIDE_PATH"
+
+
+
+#!/bin/bash
+
+source /opt/IBM/ace/server/bin/mqsiprofile
+
+# Create work directory only if it doesn't already exist
+if [ ! -d "/var/mqsi/${SERVER_NAME}" ]; then
+    echo "Creating work directory for ${SERVER_NAME}..."
+    mqsicreateworkdir /var/mqsi/${SERVER_NAME}
+    ibmint specify jre --version 8 --work-directory /var/mqsi/${SERVER_NAME}
+else
+    echo "Work directory /var/mqsi/${SERVER_NAME} already exists, skipping creation..."
+fi
+
+# Start Integration Server
+exec IntegrationServer --work-dir /var/mqsi/${SERVER_NAME} \
+    --name "${SERVER_NAME}" \
+    --overrides-directory "${OVERRIDE_PATH}"
+
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+USER eisuser
+
+ENTRYPOINT ["/entrypoint.sh"]
+
+podman run -d \
+    -e SERVER_NAME=MYSERVER \
+    -e OVERRIDE_PATH=/mnt/overrides \
+    -v /host/var/mqsi:/var/mqsi:Z \
+    -v /host/overrides:/mnt/overrides:Z \
+    your-ace-image
+
