@@ -1,6 +1,12 @@
-sh-5.1# su - eisuser
-su: warning: cannot change directory to /home/eisuser: Permission denied
-su: failed to execute /bin/bash: Permission denied
-sh-5.1# cd /home/eisuser/
-sh-5.1# pwd
-/home/eisuser
+[eisuser@eisuatsftp01 ACE_CONTAINER]$ podman run -it --user eisuser -v /home/eisuser/ACE_CONTAINER/ace:/opt/IBM/ace:Z ace:v13.6 /bin/bash
+WARN[0000] Failed to mount subscriptions, skipping entry in /usr/share/containers/mounts.conf: getting host subscription data: failed to read subscriptions from "/usr/share/rhel/secrets": open /usr/share/rhel/secrets/redhat.repo: permission denied
+{"msg":"exec container process `/bin/bash`: Permission denied","level":"error","time":"2026-04-12T18:46:16.109692Z"}
+
+
+[eisuser@eisuatsftp01 bin]$ podman run -it -v /home/eisuser/ACE_CONTAINER/ace:/opt/IBM/ace:Z ace:v13.6 /bin/bash
+WARN[0000] Failed to mount subscriptions, skipping entry in /usr/share/containers/mounts.conf: getting host subscription data: failed to read subscriptions from "/usr/share/rhel/secrets": open /usr/share/rhel/secrets/redhat.repo: permission denied
+bash-5.1#
+bash-5.1#
+bash-5.1# ls -ld /bin/bash
+-rwxr-x--- 1 1001 1003 1389072 Feb 15  2024 /bin/bash
+bash-5.1#
