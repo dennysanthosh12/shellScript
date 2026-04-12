@@ -26,3 +26,11 @@ Installation wide HTTPSConnector ssl is 'enabled'.
 RUN echo 'source /opt/IBM/ace/server/bin/mqsiprofile' >> /etc/bashrc && \
     echo 'source /opt/IBM/ace/server/bin/mqsiprofile' > /etc/profile.d/ace.sh && \
     chmod +x /etc/profile.d/ace.sh
+# Set ownership and permissions
+RUN chown -R eisuser:mqbrkrs /var/mqsi && \
+    chmod -R 775 /var/mqsi && \
+    chown -R eisuser:mqbrkrs /opt/IBM && \
+    chmod -R 775 /opt/IBM
+
+USER eisuser
+
