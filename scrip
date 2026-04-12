@@ -23,3 +23,6 @@ Installation wide HTTPSConnector ssl is 'enabled'.
 
 
 [root@EISUATEXP09 ace]$ source /opt/IBM/ace/server/bin/mqsiprofile .
+RUN echo 'source /opt/IBM/ace/server/bin/mqsiprofile' >> /etc/bashrc && \
+    echo 'source /opt/IBM/ace/server/bin/mqsiprofile' > /etc/profile.d/ace.sh && \
+    chmod +x /etc/profile.d/ace.sh
