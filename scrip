@@ -1,51 +1,41 @@
-[eisuser@eisuatsftp01 INTEGRATION_SERVER]$ cat Containerfile
-FROM ace:v13.6
-
-RUN mkdir -p /var/mqsi/extvault
-RUN mkdir -p /mnt/DefaultQmgr
-RUN chown eisuser:mqbrkrs /var/mqsi/extvault && \
-    chmod 775 /var/mqsi/extvault
-RUN touch /mnt/server.conf.yaml
-RUN chown eisuser:mqbrkrs /mnt/server.conf.yaml && \
-    chmod 775 /mnt/server.conf.yaml
-COPY ./entrypoint.sh /opt/IBM/entrypoint.sh
-COPY ./DefaultQmgr /mnt/DefaultQmgr
-RUN chown -R eisuser:mqbrkrs /mnt/DefaultQmgr && \
-    chmod -R 775 /mnt/DefaultQmgr
-RUN chown eisuser:mqbrkrs /opt/IBM/entrypoint.sh && \
-    chmod 775 /opt/IBM/entrypoint.sh
-
-EXPOSE 4001
-EXPOSE 7600
-EXPOSE 5001
-
-USER eisuser
-
-ENTRYPOINT ["/opt/IBM/entrypoint.sh"]
-[eisuser@eisuatsftp01 INTEGRATION_SERVER]$ vi entrypoint.sh
-[eisuser@eisuatsftp01 INTEGRATION_SERVER]$ cat entrypoint.sh
-#!/bin/bash
-
-source /opt/IBM/ace/server/bin/mqsiprofile
-
-# Create work directory only if it doesn't already exist
-if [ ! -d "/var/mqsi/${SERVER_NAME}" ]; then
-    echo "Creating work directory for ${SERVER_NAME}..."
-    mqsicreateworkdir /var/mqsi/${SERVER_NAME}
-    ibmint specify jre --version 8 --work-directory /var/mqsi/${SERVER_NAME}
-    cp -rp /mnt/server.conf.yaml /var/mqsi/${SERVER_NAME}/overrides/server.conf.yaml
-    if [ -n "$ADMIN_USER" ] && [ -n "$ADMIN_PASS" ]; then
-       echo "Creating Web Admin User"
-       mqsiwebuseradmin -w /var/mqsi/${SERVER_NAME} -c -u ${ADMIN_USER} -a ${ADMIN_PASS} -r iibadmin
-    fi
-else
-    echo "Work directory /var/mqsi/${SERVER_NAME} already exists, skipping creation..."
-fi
-
-echo "Copying server.conf.yaml to Work Directory"
-cp -f /mnt/server.conf.yaml /var/mqsi/${SERVER_NAME}/overrides/server.conf.yaml
-
-# Start Integration Server
-exec IntegrationServer --work-dir /var/mqsi/${SERVER_NAME} \
-    --name "${SERVER_NAME}"
+[eisuser@eisuatsftp01 INTEGRATION_SERVER]$ podman run -it --rm \
+  --name Payment_E_01 \
+  --hostname Payment_E_01 \
+  -v ace_workdir:/var/mqsi:z \
+  -v /home/eisuser/INTEGRATION_SERVER/odbc.ini:/opt/IBM/ace/server/ODBC/unixodbc/odbc.ini:z \
+  -v /home/eisuser/INTEGRATION_SERVER/server.conf.yaml:/mnt/server.conf.yaml:z \
+  -v /home/eisuser/INTEGRATION_SERVER/EndPoint_Public:/opt/IBM/EndPoint_Public:z \
+  -v /home/eisuser/INTEGRATION_SERVER/Keystore:/opt/IBM/Keystore:z \
+  -v /home/eisuser/INTEGRATION_SERVER/RSAKeystore:/opt/IBM/RSAKeystore:z \
+  -v /home/eisuser/INTEGRATION_SERVER/extvault:/var/mqsi/extvault:z \
+  -p 4001:4001 \
+  -p 4415:7600 \
+  -p 4416:5001 \
+  -e SERVER_NAME=Payment_E_01 \
+  -e ADMIN_USER=eisadmin \
+  -e ADMIN_PASS=password \
+  server:v8.0
+WARN[0000] Failed to mount subscriptions, skipping entry in /usr/share/containers/mounts.conf: getting host subscription data: failed to read subscriptions from "/usr/share/rhel/secrets": open /usr/share/rhel/secrets/redhat.repo: permission denied
+Creating work directory for Payment_E_01...
+mqsicreateworkdir: Copying sample server.config.yaml to work directory
+1 file(s) copied.
+Successful command completion.
+BIP15273I: The JRE to be used by this Integration Server has changed. This will take effect next time the Integration Server is started.
+Creating Web Admin User
+BIP8071I: Successful command completion.
+Copying server.conf.yaml to Work Directory
+Copying Default qmgr Policy
+2026-04-14 06:41:44.745420: BIP1990I: Integration server 'Payment_E_01' starting initialization; version '13.0.5.0' (64-bit)
+2026-04-14 06:41:44.845532: BIP9905I: Initializing resource managers.
+2026-04-14 06:41:44.847352: BIP15315I: Using JRE version '8' located at '/opt/IBM/ace/common/jdk/jre', as directed by the 'ibmint specify jre' command.
+2026-04-14 06:41:45.099600: BIP7408W: The integration node is being run using Java version '1.8.0_461', not the version it was shipped with.
+2026-04-14 06:41:45.265792: BIP10112I: The resources from 'mqsicdc.par' have not been loaded because the runtime component 'ChangeDataCapture' has not been enabled. Reason: 'Restricted by Java Runtime selected'. Further detail: '/opt/IBM/ace/common/jdk/jre/embedded.java.yaml'.
+2026-04-14 06:41:45.971252: BIP10112I: The resources from 'imbopentelemetry.lil' have not been loaded because the runtime component 'OpenTelemetry' has not been enabled. Reason: 'Integration Server Configuration'. Further detail: 'server.conf.yaml'.
+node.js process.on('exit') event emitted with exitCode of 0
+node.js process.on('exit') event emitted with exitCode of 0
+main checker destroyed before initialisation completed, latest stage was MQ default CCSID , pid 1, tid 1, attempted stage was 49 and 48 stages completed
+2026-04-14 06:41:52.379388: BIP2117E: IBM App Connect Enterprise internal error: diagnostic information 'Fatal Error; exception thrown before initialisation completed', 'MQ default CCSID', '', '1', '1', '49', '48'.
+2026-04-14 06:41:52.379472: BIP2203E: An integration server has encountered a problem whilst starting.
+2026-04-14 06:41:52.379500: BIP2677E: Failed to make a client connection to queue manager 'QM_PAYMENT_EXP' using hostname 'host.containers.internal' on port '1420': MQCC=2; MQRC=2035.
+2026-04-14 06:41:52.831000: BIP1992I: Integration server 'Payment_E_01' stopped.
 [eisuser@eisuatsftp01 INTEGRATION_SERVER]$
