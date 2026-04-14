@@ -1,156 +1,315 @@
-cat odbc.ini
-;##########################################################################
-;# ODBC database driver manager initialisation file.                      #
-;##########################################################################
-;# It is recommended that you take a copy of this file and then edit the  #
-;# copy.                                                                  #
-;#                                                                        #
-;# 1. For each data source, add the name of the data source into          #
-;# the 'List of data sources stanza' section.                             #
-;#                                                                        #
-;# 2. For each data source, create a stanza in the                        #
-;# 'Individual data source stanzas' section.                              #
-;#                                                                        #
-;##########################################################################
+[eisuser@Payment_E_01 mqsi]$ mqsicredentials --work-dir Payment_E_01 --create --ext-vault-dir extvault --ext-vault-key password --name SI --type odbc
+BIP15100W: Create, retrieve, update or delete the credentials of resources used by an Integration Server or Integration Node in the vault or external directory vault.
+Syntax (1):
+ mqsicredentials (connectionSpec) (--create | --update) [--vault-key [<arg>] | --ext-vault-key [<arg>] | --vaultrc-location <arg>] --credential-type <arg> --credential-name <arg> [--username <arg>] [--password <arg>] [--client-id <arg>] [--client-secret <arg>] [--api-key <arg>] [--ssh-identity-file <arg>] [--passphrase <arg>] [--access-token <arg>] [--refresh-token <arg>] [--secret-access-key <arg>] [--access-key-id <arg>] [--websphere-username <arg>] [--websphere-password <arg>] [--private-key <arg>] [--public-key <arg>] [--public-key-id <arg>] [--client-email <arg>] [--bearer-token <arg>] [--auth-type <arg>] [--integration-server server | --all-integration-servers] [--trace traceFileName]
+Syntax (2)
+ mqsicredentials (connectionSpec) --delete [--vault-key [<arg>] | --ext-vault-key [<arg>] | --vaultrc-location <arg>] --credential-type <arg> --credential-name <arg> [--integration-server server | --all-integration-servers] [--trace traceFileName]
+Syntax (3)
+ mqsicredentials (connectionSpec) --report [--vault-key [<arg>] | --ext-vault-key [<arg>] | --vaultrc-location <arg>] [--credential-type <arg> [--credential-name <arg>]] [--integration-server server | --all-integration-servers] [--trace traceFileName]
+Syntax (4)
+ mqsicredentials (connectionSpec) --set-as-default --credential-type <arg> --credential-name <arg> [--integration-server server | --all-integration-servers][--trace traceFileName]
 
-;#######################################
-;#### List of data sources stanza ######
-;#######################################
+Syntax (5)
+ mqsicredentials (connectionSpec) (--export | --import) [--vault-key [<arg>] | --ext-vault-key [<arg>] | --vaultrc-location <arg>] [--credential-type <arg>] [--credential-name <arg>] [--integration-server server] --archive-location <arg> --archive-key <arg> [--trace traceFileName]
 
-[ODBC Data Sources]
-DB2DB=IBM DB2 ODBC Driver
-ORACLEDB=DataDirect ODBC Oracle Wire Protocol
-ORACLERACDB=DataDirect ODBC Oracle RAC Wire Protocol
-ORACLESSLDB=DataDirect ODBC Oracle SSL Wire Protocol
-SYBASEDB=DataDirect ODBC Sybase Wire Protocol
-SYBASEDBUTF8=DataDirect ODBC Sybase UTF8 Wire Protocol
-SQLSERVERDB=DataDirect ODBC SQL Server Wire Protocol
-INFORMIXDB=IBM Informix ODBC Driver
-SOLIDDB_DB_6.5=IBM Solid DB V6.5 ODBC Driver
-SOLIDDB_DB_7=IBM Solid DB V7 ODBC Driver
-IDSDB=IBM Informix Data Server Driver for ODBC and CLI
+Command Options
+ 'connectionSpec' is one of:
+ (a) '--work-dir workDirectory' : The path to the work directory that is used by an independent integration server.
+ (b) '--ext-vault-dir' : The path to the directory which contains the external directory vault.
+                         Not for use with --set-as-default option.
+ (c) '--admin-host (-i) <host> --admin-port (-p) <port> [[--https [--cacert <cacertFile> [--cacert-password <cacertPassword>] | --insecure]] | --no-https]'
+                      : Hostname/ipAddress and port of a remote integration node or independent integration server.
+                        HTTPS options are required if making a connection to an integration node or server that has SSL enabled for REST administration.
+                        If neither https nor no-https is specified, the connection is tried first with https and then falls back no-https.
+                        If no cacert file is provided and default admin-ssl is enabled, the cacert file defaults to the admin-ssl default pem file.
+ (d) '--admin-host (-i) <uri> [--cacert <cacertFile> [--cacert-password <cacertPassword>] | --insecure]'
+                      : URI for the remote integration node or independent integration server in the form tcp://[<user>[:<password>]@]<host>:<port> or ssl://[<user>[:<password>]@]<host>:<port> 'integrationNodeName' optional for validation.
+                        If a user name and password are supplied, any URI Reserved characters in the password must be percent-encoded.
+ (e) '--integration-connection-file (-n) fileName' : File containing connection parameters for an integration node or independent integration server.
+ (f) 'integrationNodeName' : Name of a locally defined integration node.
+ '--https' use HTTPS for the connection to the integration node or server.
+ '--no-https' do not use HTTPS for the connection to the integration node or server.
+ '--cacert <cacertFile>' path to the certificate file in either PEM, P12, or JKS format to verify the integration node or server.
+ '--cacert-password <cacertPassword>' the password for password-protected cacert files.
+ '--insecure' do not verify the certificate returned by the integration node or server.
+ '--create' indicates the credential will be created in the vault.
+ '--update' indicates an existing credential will be updated in the vault.
+ '--delete' indicates an existing credential will be deleted from the vault.
+ '--report' indicates that reportable details of an existing credential will be described.
+ '--export' export the selected credential(s) from the vault into a zip archive file.
+ '--import' import the selected credential(s) from a zip archive file into the vault.
+ '--set-as-default' indicates that an existing credential will be set as the default to be used for that credential type.
+ '--vault-key <arg>' indicates the vault key to be used to access the vault where the credential is stored.
+ '--ext-vault-key <arg>' indicates the vault key to be used to access the external directory vault where the credential is stored.
+ '--vaultrc-location <arg>' indicates the location of the .mqsivaultrc file.
+ '--credential-type <arg>' indicates the type of the credential. See table below for the list of credential types and their properties.
+ '--credential-name <arg>' indicates the name of the credential.
+ '--integration-server (-e) server' integration server name
+ '--all-integration-servers' indicates all integration servers
+ '--auth-type <arg>' indicates the authentication type of the credential.
+                     This options can be omitted except when updating a credential to a different authentication type.
+                     When updating a credential to a different authentication type all properties for the new authentication type must be specified.
+ '--archive-location' location of the zip archive file to be imported-from/exported-to.
+ '--archive-key' The archive key used to protect the records in the archive.
+ '--trace traceFileName' send verbose internal trace to the specified file.
 
-;###########################################
-;###### Individual data source stanzas #####
-;###########################################
+ The properties that are required for each credential vary depending on credential type. The list below shows the properties that are needed for each credential type. Properties that appear in square brackets are optional for that credential type.
 
-;# DB2 stanza
-[DB2DB]
-DRIVER=<Your DB2 install directory>/lib64/libdb2o.so
-Description=IBM DB2 ODBC Database
-Database=DB2DB
+amazoncloudwatch: --auth-type accessKey --secret-access-key <arg> --access-key-id <arg>
+amazoncloudwatch: --auth-type basicOidc --client-id <arg> --client-secret <arg> --refresh-token <arg> --id-token <arg>
+amazondynamodb: --auth-type accessKey --secret-access-key <arg> --access-key-id <arg>
+amazondynamodb: --auth-type basicOidc --client-id <arg> --client-secret <arg> --refresh-token <arg> --id-token <arg>
+amazonec2: --auth-type accessKey --secret-access-key <arg> --access-key-id <arg>
+amazonec2: --auth-type basicOidc --client-id <arg> --client-secret <arg> --refresh-token <arg> --id-token <arg>
+amazoneventbridge: --auth-type accessKey --secret-access-key <arg> --access-key-id <arg>
+amazoneventbridge: --auth-type basicOidc --client-id <arg> --client-secret <arg> --refresh-token <arg> --id-token <arg>
+amazonkinesis: --auth-type accessKey --secret-access-key <arg> --access-key-id <arg>
+amazonkinesis: --auth-type basicOidc --client-id <arg> --client-secret <arg> --refresh-token <arg> --id-token <arg>
+amazonlambda: --auth-type accessKey --secret-access-key <arg> --access-key-id <arg>
+amazonlambda: --auth-type basicOidc --client-id <arg> --client-secret <arg> --refresh-token <arg> --id-token <arg>
+amazonrds: --auth-type accessKey --secret-access-key <arg> --access-key-id <arg>
+amazonrds: --auth-type basicOidc --client-id <arg> --client-secret <arg> --refresh-token <arg> --id-token <arg>
+amazonredshift: --username <arg> --password <arg>
+amazons3: --auth-type accessKey --secret-access-key <arg> --access-key-id <arg>
+amazons3: --auth-type accessKeyPrivateLink --secret-access-key <arg> --access-key-id <arg> --private-key <arg>
+amazons3: --auth-type basicOidc --client-id <arg> --client-secret <arg> --refresh-token <arg> --id-token <arg>
+amazonses: --secret-access-key <arg> --access-key-id <arg>
+amazonsns: --auth-type accessKey --secret-access-key <arg> --access-key-id <arg>
+amazonsns: --auth-type basicOidc --client-id <arg> --client-secret <arg> --refresh-token <arg> --id-token <arg>
+amazonsqs: --auth-type accessKey --secret-access-key <arg> --access-key-id <arg>
+amazonsqs: --auth-type basicOidc --client-id <arg> --client-secret <arg> --refresh-token <arg> --id-token <arg>
+anaplan: --auth-type basic --username <arg> --password <arg>
+anaplan: --auth-type oauth --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+apptiotargetprocess: --auth-type basic --username <arg> --password <arg>
+apptiotargetprocess: --auth-type apiKey --api-key <arg>
+asana: --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+azuread: --auth-type basicClientId --username <arg> --password <arg> --client-id <arg> --client-secret <arg>
+azuread: --auth-type oauth --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+azureblobstorage: --auth-type client --client-id <arg> --client-secret <arg>
+azureblobstorage: --auth-type apiKey --api-key <arg>
+azureblobstorage: --auth-type oauth --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+azurecosmosdb: --auth-type client --client-id <arg> --client-secret <arg>
+azurecosmosdb: --auth-type apiKey --api-key <arg>
+azureeventhub: --client-id <arg> --client-secret <arg>
+azureservicebus: --auth-type client --client-id <arg> --client-secret <arg>
+azureservicebus: --auth-type privateKey --private-key <arg>
+bamboohr: --api-key <arg>
+box: --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+businessmap: --api-key <arg>
+calendly: --auth-type apiKey --api-key <arg>
+calendly: --auth-type oauth --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+cd: --username <arg> --password <arg>
+cdc: --username <arg> --password <arg>
+cics: --auth-type basic --username <arg> --password <arg>
+cics: --auth-type username --username <arg>
+clicksend: --username <arg> --password <arg>
+cloudantdb: --username <arg> --password <arg> --api-key <arg>
+cmis: --username <arg> --password <arg>
+confluence: --username <arg> --api-key <arg>
+couchbase: --username <arg> --password <arg>
+coupa: --client-id <arg> --client-secret <arg>
+crystalball: --access-token <arg>
+db2: --username <arg> --password <arg>
+docusign: --auth-type basicRSA --username <arg> --api-key <arg> --private-key <arg>
+docusign: --auth-type oauth --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+dropbox: --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+eis: --username <arg> --password <arg>
+elk: --username <arg> --password <arg>
+email: --auth-type basic --username <arg> --password <arg>
+email: --auth-type oauthBasic --client-id <arg> --access-token <arg>
+eventbrite: --access-token <arg>
+expensify: --username <arg> --password <arg>
+factorialhr: --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+filenet: --username <arg> --password <arg>
+front: --auth-type accessToken --access-token <arg>
+front: --auth-type oauth --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+ftp: --username <arg> --password <arg>
+github: --auth-type privateKey --private-key <arg>
+github: --auth-type accessKeyId --access-key-id <arg>
+gitlab: --auth-type accessToken --access-token <arg>
+gitlab: --auth-type basicClientId --username <arg> --password <arg> --client-id <arg> --client-secret <arg>
+gmail: --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+googleanalytics: --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+googlebigquery: --private-key <arg> --client-email <arg>
+googlecalendar: --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+googlechat: --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+googlecloudstorage: --secret-access-key <arg> --access-key-id <arg>
+googlecontacts: --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+googledrive: --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+googlegemini: --auth-type apiKey --api-key <arg>
+googlegemini: --auth-type oauth --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+googlegroups: --auth-type apiClientEmailUsername --username <arg> --api-key <arg> --client-email <arg>
+googlegroups: --auth-type oauth --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+googlepubsub: --private-key <arg> --client-email <arg>
+googlesheet: --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+googletasks: --auth-type apiClientEmailUsername --username <arg> --api-key <arg> --client-email <arg>
+googletasks: --auth-type oauth --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+googletranslate: --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+greenhouse: --api-key <arg>
+http: --auth-type basic --username <arg> --password <arg>
+http: --auth-type basicApiKey --username <arg> --password <arg> --api-key <arg>
+http: --auth-type apiKey --api-key <arg>
+http: --auth-type bearerToken --bearer-token <arg>
+http: --auth-type client --client-id <arg> --client-secret <arg>
+http: --auth-type clientScoped --client-id <arg> --client-secret <arg> --scope <arg>
+http: --auth-type oauth --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+http: --auth-type oauthScoped --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg> --scope <arg>
+http: --auth-type oauthPassword --username <arg> --password <arg> --client-id <arg> --client-secret <arg> [--access-token <arg>] [--refresh-token <arg>]
+http: --auth-type oauthPasswordScoped --username <arg> --password <arg> --client-id <arg> --client-secret <arg> [--access-token <arg>] [--refresh-token <arg>] --scope <arg>
+httpproxy: --username <arg> --password <arg>
+hubspotcrm: --auth-type privateKey --private-key <arg>
+hubspotcrm: --auth-type oauth --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+hubspotmarketing: --auth-type privateKey --private-key <arg>
+hubspotmarketing: --auth-type oauth --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+hunter: --api-key <arg>
+ibmaspera: --username <arg> --password <arg>
+ibmcoss3: --auth-type secretAccessApiKey --api-key <arg> --secret-access-key <arg> --access-key-id <arg>
+ibmcoss3: --auth-type apiKey --api-key <arg>
+ibmewm: --username <arg> --password <arg>
+ibmopenpages: --auth-type publicPrivateKeyPair --private-key <arg> --public-key <arg>
+ibmopenpages: --auth-type basic --username <arg> --password <arg>
+ibmsterlingiv: --client-id <arg> --client-secret <arg>
+ibmtwc: --api-key <arg>
+ibmwatsonxai: --api-key <arg>
+ift: --api-key <arg> --client-id <arg>
+ims: --username <arg> --password <arg>
+infobip: --auth-type basic --username <arg> --password <arg>
+infobip: --auth-type apiKey --api-key <arg>
+insightly: --api-key <arg>
+jdbc: --username <arg> --password <arg>
+jenkins: --username <arg> --password <arg>
+jira: --username <arg> --api-key <arg>
+jms: --username <arg> --password <arg>
+jndi: --username <arg> --password <arg>
+kafka: --auth-type basic --username <arg> --password <arg>
+kafka: --auth-type basicTLS [--username <arg>] [--password <arg>] --server-certificate <arg>
+kafka: --auth-type basicMTLS [--username <arg>] [--password <arg>] --client-certificate <arg> --client-private-key <arg> [--client-private-key-password <arg>] --server-certificate <arg>
+kerberos: --username <arg> --password <arg>
+keystore: --password <arg>
+keystorekey: --password <arg>
+kronos: --username <arg> --password <arg> --api-key <arg> --client-id <arg> --client-secret <arg>
+ldap: --username <arg> --password <arg>
+local: --username <arg> --password <arg>
+loopback: --auth-type basic --username <arg> --password <arg>
+loopback: --auth-type basicClientId --username <arg> --password <arg> --client-id <arg> --client-secret <arg>
+magento: --username <arg> --password <arg>
+mailchimp: --access-token <arg>
+marketo: --client-id <arg> --client-secret <arg>
+maximo: --auth-type apiKeyWebsphere --api-key <arg> --websphere-username <arg> --websphere-password <arg>
+maximo: --auth-type basicWebsphere --username <arg> --password <arg> --websphere-username <arg> --websphere-password <arg>
+maximo: --auth-type basic --username <arg> --password <arg>
+maximo: --auth-type apiKey --api-key <arg>
+milvus: --access-token <arg>
+mondaydotcom: --api-key <arg>
+mq: --auth-type basic --username <arg> --password <arg>
+mq: --auth-type basicSSLMQ --username <arg> --password <arg> --public-key <arg> [--ssl-peer-name <arg>]
+mq: --auth-type basicMTLSMQ --username <arg> --password <arg> [--passphrase <arg>] --private-key <arg> [--private-key-id <arg>] --public-key <arg> [--ssl-peer-name <arg>]
+mqtt: --username <arg> --password <arg>
+msad: --username <arg> --password <arg>
+msdynamicscrmrest: --auth-type oauth --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+msdynamicscrmrest: --auth-type basicClientId --username <arg> --password <arg> --client-id <arg> --client-secret <arg>
+msdynamicsfando: --auth-type basicClientId --username <arg> --password <arg> --client-id <arg> --client-secret <arg>
+msdynamicsfando: --auth-type client --client-id <arg> --client-secret <arg>
+msexcel: --auth-type oauth --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+msexcel: --auth-type basicClientId --username <arg> --password <arg> --client-id <arg> --client-secret <arg>
+msexchange: --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+msonedrive: --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+msonenote: --auth-type basicClientId --username <arg> --password <arg> --client-id <arg> --client-secret <arg>
+msonenote: --auth-type oauth --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+mspowerbi: --auth-type oauth --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+mspowerbi: --auth-type basicClientId --username <arg> --password <arg> --client-id <arg> --client-secret <arg>
+mspowerbi: --auth-type client --client-id <arg> --client-secret <arg>
+mssharepoint: --auth-type oauth --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+mssharepoint: --auth-type basic --username <arg> --password <arg>
+mssql: --username <arg> --password <arg>
+msteams: --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+mstodo: --auth-type basicClientId --username <arg> --password <arg> --client-id <arg> --client-secret <arg>
+mstodo: --auth-type oauth --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+mysql: --username <arg> --password <arg>
+odbc: --username <arg> --password <arg>
+odm: --username <arg> --password <arg>
+opentelemetry: --auth-type basic --username <arg> --password <arg>
+opentelemetry: --auth-type accessToken --access-token <arg>
+opentelemetry: --auth-type apiKey --api-key <arg>
+oracle: --username <arg> --password <arg>
+oracleebs: --username <arg> --password <arg>
+oraclehcm: --username <arg> --password <arg>
+pineconedb: --api-key <arg>
+planninganalytics: --api-key <arg>
+postgres: --username <arg> --password <arg>
+redis: --auth-type basic --username <arg> --password <arg>
+redis: --auth-type basicTLS [--username <arg>] [--password <arg>] --server-certificate <arg>
+redis: --auth-type basicMTLS [--username <arg>] [--password <arg>] --client-certificate <arg> --client-private-key <arg> [--client-private-key-password <arg>] --server-certificate <arg>
+rest: --auth-type basic --username <arg> --password <arg>
+rest: --auth-type basicApiKey --username <arg> --password <arg> --api-key <arg>
+rest: --auth-type apiKey --api-key <arg>
+rest: --auth-type bearerToken --bearer-token <arg>
+rest: --auth-type client --client-id <arg> --client-secret <arg>
+rest: --auth-type clientScoped --client-id <arg> --client-secret <arg> --scope <arg>
+rest: --auth-type oauth --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+rest: --auth-type oauthScoped --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg> --scope <arg>
+rest: --auth-type oauthPassword --username <arg> --password <arg> --client-id <arg> --client-secret <arg> [--access-token <arg>] [--refresh-token <arg>]
+rest: --auth-type oauthPasswordScoped --username <arg> --password <arg> --client-id <arg> --client-secret <arg> [--access-token <arg>] [--refresh-token <arg>] --scope <arg>
+salesforce: --auth-type basicClientId --username <arg> --password <arg> --client-id <arg> --client-secret <arg>
+salesforce: --auth-type oauth --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+salesforce: --auth-type privateKeyJWT --username <arg> --client-id <arg> --private-key <arg>
+salesforceae: --auth-type basicClientId --username <arg> --password <arg> --client-id <arg> --client-secret <arg>
+salesforceae: --auth-type oauth --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+salesforcemc: --auth-type client --client-id <arg> --client-secret <arg>
+salesforcemc: --auth-type oauth --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+sapariba: --username <arg> --password <arg>
+sapodata: --username <arg> --password <arg>
+sapsuccessfactors: --auth-type basic --username <arg> --password <arg>
+sapsuccessfactors: --auth-type accessClientKey --client-id <arg> --client-secret <arg> --access-key-id <arg>
+schemaregistry: --auth-type basic --username <arg> --password <arg>
+schemaregistry: --auth-type basicTLS [--username <arg>] [--password <arg>] --server-certificate <arg>
+servicenow: --auth-type basicClientId --username <arg> --password <arg> --client-id <arg> --client-secret <arg>
+servicenow: --auth-type basic --username <arg> --password <arg>
+sfcommerceclouddata: --client-id <arg> --client-secret <arg>
+sftp: --auth-type basic --username <arg> --password <arg>
+sftp: --auth-type sshPublicKey --username <arg> --passphrase <arg> --ssh-identity-file <arg>
+shopify: --access-token <arg>
+slack: --access-token <arg>
+smtp: --auth-type basic --username <arg> --password <arg>
+smtp: --auth-type oauthBasic --client-id <arg> --access-token <arg>
+snowflake: --username <arg> --password <arg>
+soap: --username <arg> --password <arg>
+splunk: --auth-type basic --username <arg> --password <arg>
+splunk: --auth-type accessToken --access-token <arg>
+square: --auth-type apiKey --api-key <arg>
+square: --auth-type oauth --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+surveymonkey: --access-token <arg>
+toggltrack: --auth-type basic --username <arg> --password <arg>
+toggltrack: --auth-type apiKey --api-key <arg>
+trello: --client-id <arg> --access-token <arg>
+truststore: --password <arg>
+truststorekey: --password <arg>
+twilio: --username <arg> --password <arg>
+userdefined: [--username <arg>] [--password <arg>] [--api-key <arg>] [--passphrase <arg>] [--ssh-identity-file <arg>] [--client-id <arg>] [--client-secret <arg>] [--access-token <arg>] [--refresh-token <arg>] [--secret-access-key <arg>] [--access-key-id <arg>] [--websphere-username <arg>] [--websphere-password <arg>] [--private-key <arg>] [--private-key-id <arg>] [--public-key <arg>] [--public-key-id <arg>] [--client-email <arg>] [--ssl-peer-name <arg>] [--client-certificate <arg>] [--client-private-key <arg>] [--client-private-key-password <arg>] [--id-token <arg>] [--server-certificate <arg>] [--bearer-token <arg>] [--scope <arg>]
+vespa: --access-token <arg>
+watsondiscovery: --auth-type basicApiKey --username <arg> --password <arg> --api-key <arg>
+watsondiscovery: --auth-type apiKey --api-key <arg>
+wordpress: --access-token <arg>
+workday: --auth-type basic --username <arg> --password <arg>
+workday: --auth-type oauthClient --client-id <arg> --client-secret <arg> --refresh-token <arg>
+wrike: --auth-type accessToken --access-token <arg>
+wrike: --auth-type oauth --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+wsrr: --username <arg> --password <arg>
+wufoo: --api-key <arg>
+wxs: --username <arg> --password <arg>
+yammer: --access-token <arg>
+yapily: --api-key <arg> --access-token <arg> --secret-access-key <arg>
+zendeskservice: --auth-type basicClientId --username <arg> --password <arg> --client-id <arg> --client-secret <arg>
+zendeskservice: --auth-type basic --username <arg> --password <arg>
+zendeskservice: --auth-type accessToken --access-token <arg>
+zendeskservice: --auth-type usernameApiKey --username <arg> --api-key <arg>
+zohobooks: --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+zohocrm: --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+zohoinventory: --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+zohorecruit: --client-id <arg> --client-secret <arg> --access-token <arg> --refresh-token <arg>
+zosconnect: --username <arg> --password <arg>
 
-;# Oracle stanza
-[ORACLEDB]
-Driver=<Your Broker install directory>/server/ODBC/drivers/lib/UKora95.so
-Description=DataDirect ODBC Oracle Wire Protocol
-HostName=<Your Oracle Server Machine Name>
-PortNumber=<Port on which Oracle is listening on HostName>
-ServiceName=<Your Oracle Service Name>
-CatalogOptions=0
-EnableStaticCursorsForLongData=0
-ApplicationUsingThreads=1
-EnableDescribeParam=1
-OptimizePrepare=1
-WorkArounds=536870912
-ProcedureRetResults=1
-ColumnSizeAsCharacter=1
-LoginTimeout=0
-EnableNcharSupport=0
 
-[SI]
-Driver= /opt/IBM/ace/server/ODBC/drivers/lib/UKora95.so
-Description=DataDirect ODBC Oracle Wire Protocol
-#HostName=10.177.29.37
-#PortNumber=1787
-#HostName=eissiuat-scan1.sbi.co.in
-#PortNumber=1786
-#ServiceName=UATIIB_SRV
-CatalogOptions=0
-EnableStaticCursorsForLongData=0
-ApplicationUsingThreads=1
-EnableDescribeParam=1
-OptimizePrepare=1
-WorkArounds=536870912
-ProcedureRetResults=1
-ColumnSizeAsCharacter=1
-LoginTimeout=0
-#QEWSD=2460587
-################################################  TLSV1.2 ODBC CONFIGURATION ########################################
-HostName=eissiuat-scan1.sbi.co.in
-PortNumber=1789
-ServiceName=UATIIB_SRV
-AuthenticationMethod=1
-KeyPassword=password
-KeyStore=/opt/IBM/Keystore/ewallet.p12
-KeyStorePassword=welcome1
-TrustStore=/opt/IBM/Keystore/ewallet.p12
-TrustStorePassword=welcome1
-EncryptionMethod=1
-CryptoProtocolVersion=TLSv1.2
-ValidateServerCertificate=1
-EnableNcharSupport=0
-#####################################################################################################################
-
-
-
-mqsicredentials --ext-vault-dir extvault --ext-vault-key password --report
-BIP15110I: The credential name 'SI' of type 'odbc' contains user name 'EISAPP' from provider 'extdirvault' and has the following properties defined: 'password', authentication type 'basic'.
-
-mqsicvp --help
-BIP8872W: Verifies an integration node, or verifies a user datasource to be used within the integration node, or compares primary and secondary datasources for equivalence.
-Syntax (1): Verify an integration node.
- mqsicvp integrationNodeName [--integration-server <arg>] [--vault-key <arg> | --vaultrc-location <arg>] [--trace <arg>]
-Syntax (2): Verifies a user datasource to be used within the integration node
- mqsicvp integrationNodeName [--integration-server <arg>] [--vault-key <arg> | --vaultrc-location <arg>] --primary-datasource <arg> [--secondary-datasource <arg>] [--verbose] [--trace <arg>]
-Syntax (3): Verify an independent integration server
- mqsicvp --work-dir <work-directory> [--vault-key <arg> | --vaultrc-location <arg>] [--trace <arg>]
-Syntax (4): Verifies a user datasource to be used within the independent integration server
- mqsicvp --work-dir <work-directory> [--vault-key <arg> | --vaultrc-location <arg>] --primary-datasource <arg> [--secondary-datasource <arg>] [--verbose] [--trace <arg>]
-Syntax (5): Compares primary and secondary datasources for equivalence
- mqsicvp --primary-datasource <arg> --primary-username <arg> --primary-password <arg> [--secondary-datasource <arg> --secondary-username <arg> --secondary-password <arg>] [--verbose] [--trace <arg>]
-Syntax (6): Datasource benchmarking
- mqsicvp integrationNodeName [--integration-server <arg>] [--vault-key <arg> | --vaultrc-location <arg>] --check-type benchmark [--options <arg>] [--recursive] [--trace <arg>]
-
- Command Options:
- '--integration-node-name <integrationNodeName>' : Name of a locally defined integration node.
- '--integration-server (-e) <integrationServerName>' : Name of integration server, required when using vault and benchmark.
- '--vault-key <arg>' : indicates the vault key to be used to access the vault owned by the integration node or integration server.
- '--vaultrc-location <directory-path>' directory path for the .mqsivaultrc file used to locate the vault key and external directory vault key.
- '--primary-datasource (-n) <datasource>' : The name of the datasource to verify
- '--secondary-datasource (-c) <datasource>' : The name of the secondary datasource for comparison
- '--primary-username (-u) <username>' : The user identifier to be used to connect to the primary datasource
- '--primary-password (-p) <password>' : The password for the primary datasource username
- '--secondary-username (-i) <username>' : The user identifier to be used to connect to the secondary datasource
- '--secondary-password (-a) <password>' : The password for the secondary datasource username
- '--check-type (-b) benchmark' : Perform a benchmarking check. The only valid value is 'benchmark'.
- '--options (-o) <options>' : Options if Benchmark is selected. The first option for Benchmark will always be the test name. The valid test names are 'cpu-perf' and 'disk-io-perf'. Benchmark options:  cpu-perf,threads=[X],iterations=[X],sequence=[X].  disk-io-perf,numberoffiles=[X]  network-perf,ipaddress=[X]
- '--verbose (-v)' : Report additional diagnostics related to supported datasource CASTS.
- '--trace <traceFileName>' : send verbose internal trace to the specified file.
-
-
-BIP8071I: Successful command completion.
-[eisuser@Payment_E_01 mqsi]$ mqsicvp --work-dir Payment_E_01
-BIP8873I: Starting the component verification for component 'Payment_E_01'.
-BIP8876I: Starting the environment verification for component 'Payment_E_01'.
-BIP8894I: Verification passed for 'Registry'.
-BIP8894I: Verification passed for 'MQSI_FILEPATH'.
-BIP8878I: The environment verification for component 'integration_server' has finished successfully.
-BIP8290I: Verification passed for the ODBC environment.
-BIP8874I: The component verification for 'Payment_E_01' has finished successfully.
-BIP8071I: Successful command completion.
-[eisuser@Payment_E_01 mqsi]$ mqsicvp --work-dir Payment_E_01 -n SI
-BIP8512E: Datasource 'SI' has not been associated with independent integration server 'Payment_E_01'.
-This invocation of the mqsicvp command requires that the datasource name has been associated with the integration server, using the mqsisetdbparms or mqsicredentials command. If using a vault to store datasource credentials then the vault password must also be supplied.
-Check that this datasource has been associated with the integration server.
-[eisuser@Payment_E_01 mqsi]$ mqsicvp --work-dir Payment_E_01 -n SI --vault-key password
-BIP8512E: Datasource 'SI' has not been associated with independent integration server 'Payment_E_01'.
-This invocation of the mqsicvp command requires that the datasource name has been associated with the integration server, using the mqsisetdbparms or mqsicredentials command. If using a vault to store datasource credentials then the vault password must also be supplied.
-Check that this datasource has been associated with the integration server.
-[eisuser@Payment_E_01 mqsi]$ mqsicvp --work-dir Payment_E_01 -n SI --ext-vault-key password
-BIP8512E: Datasource 'SI' has not been associated with independent integration server 'Payment_E_01'.
-This invocation of the mqsicvp command requires that the datasource name has been associated with the integration server, using the mqsisetdbparms or mqsicredentials command. If using a vault to store datasource credentials then the vault password must also be supplied.
-Check that this datasource has been associated with the integration server.
-[eisuser@Payment_E_01 mqsi]$
-
-
+BIP8001E: Unknown flag 'name' selected.
+When using this command interface the user should only select the supported flags.
+Correct and reissue the command.
