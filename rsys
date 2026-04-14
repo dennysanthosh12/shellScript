@@ -94,4 +94,8 @@ EnableNcharSupport=0
 
 
 
+mqsicredentials --ext-vault-dir extvault --ext-vault-key password --report
+BIP15110I: The credential name 'SI' of type 'odbc' contains user name 'EISAPP' from provider 'extdirvault' and has the following properties defined: 'password', authentication type 'basic'.
+
+
 
