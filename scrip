@@ -1,17 +1,11 @@
-podman run -it --rm \
-  --name Payment_E_01 \
-  --hostname Payment_E_01 \
-  -v ace_workdir:/var/mqsi:z \
-  -v /home/eisuser/INTEGRATION_SERVER/odbc.ini:/opt/IBM/ace/server/ODBC/unixodbc/odbc.ini:z \
-  -v /home/eisuser/INTEGRATION_SERVER/server.conf.yaml:/mnt/server.conf.yaml:z \
-  -v /home/eisuser/INTEGRATION_SERVER/EndPoint_Public:/opt/IBM/EndPoint_Public:z \
-  -v /home/eisuser/INTEGRATION_SERVER/Keystore:/opt/IBM/Keystore:z \
-  -v /home/eisuser/INTEGRATION_SERVER/RSAKeystore:/opt/IBM/RSAKeystore:z \
-  -v /home/eisuser/INTEGRATION_SERVER/extvault:/var/mqsi/extvault:z \
-  -p 4001:4001 \
-  -p 4415:7600 \
-  -p 4416:5001 \
-  -e SERVER_NAME=Payment_E_01 \
-  -e ADMIN_USER=eisadmin \
-  -e ADMIN_PASS=password \
-  server:v8.0
+default via 192.168.50.1 dev eth0 proto static metric 100
+192.168.50.0/24 dev eth0 proto kernel scope link src 192.168.50.5
+bash-5.1# nc -vz 10.177.44.180 1420
+Ncat: Version 7.92 ( https://nmap.org/ncat )
+Ncat: Connection refused.
+bash-5.1# nc -vz host.containers.internal 1420
+Ncat: Version 7.92 ( https://nmap.org/ncat )
+Ncat: Connected to 169.254.1.2:1420.
+Ncat: 0 bytes sent, 0 bytes received in 0.01 seconds.
+bash-5.1#
+
