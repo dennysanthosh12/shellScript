@@ -1,3 +1,28 @@
+[eisuser@eisuatsftp01 INTEGRATION_SERVER]$ cat Containerfile
+FROM ace:v13.6
+
+RUN mkdir -p /var/mqsi/extvault
+RUN mkdir -p /mnt/DefaultQmgr
+RUN chown eisuser:mqbrkrs /var/mqsi/extvault && \
+    chmod 775 /var/mqsi/extvault
+RUN touch /mnt/server.conf.yaml
+RUN chown eisuser:mqbrkrs /mnt/server.conf.yaml && \
+    chmod 775 /mnt/server.conf.yaml
+COPY ./entrypoint.sh /opt/IBM/entrypoint.sh
+COPY ./DefaultQmgr /mnt/DefaultQmgr
+RUN chown -R eisuser:mqbrkrs /mnt/DefaultQmgr && \
+    chmod -R 775 /mnt/DefaultQmgr
+RUN chown eisuser:mqbrkrs /opt/IBM/entrypoint.sh && \
+    chmod 775 /opt/IBM/entrypoint.sh
+
+EXPOSE 4001
+EXPOSE 7600
+EXPOSE 5001
+
+USER eisuser
+
+ENTRYPOINT ["/opt/IBM/entrypoint.sh"]
+[eisuser@eisuatsftp01 INTEGRATION_SERVER]$ vi entrypoint.sh
 [eisuser@eisuatsftp01 INTEGRATION_SERVER]$ cat entrypoint.sh
 #!/bin/bash
 
@@ -17,7 +42,10 @@ else
     echo "Work directory /var/mqsi/${SERVER_NAME} already exists, skipping creation..."
 fi
 
+echo "Copying server.conf.yaml to Work Directory"
+cp -f /mnt/server.conf.yaml /var/mqsi/${SERVER_NAME}/overrides/server.conf.yaml
+
 # Start Integration Server
 exec IntegrationServer --work-dir /var/mqsi/${SERVER_NAME} \
-    --name "${SERVER_NAME}" \
-    --overrides-directory "${OVERRIDE_PATH}"
+    --name "${SERVER_NAME}"
+[eisuser@eisuatsftp01 INTEGRATION_SERVER]$
