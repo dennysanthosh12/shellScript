@@ -1,60 +1,23 @@
-[eisuser@eisuatsftp01 INTEGRATION_SERVER]$ ll /home/eisuser/INTEGRATION_SERVER/server.conf.yaml
--rwxrwxrwx 1 eisuser eisuser 1171 Apr 14 10:35 /home/eisuser/INTEGRATION_SERVER/server.conf.yaml
-[eisuser@eisuatsftp01 INTEGRATION_SERVER]$ podman run -d   --name Payment_E_01   --hostname Payment_E_01   -v ace_workdir:/var/mqsi:z   -v /home/eisuser/INTEGRATION_SERVER/odbc.ini:/opt/IBM/ace/server/ODBC/unixodbc/odbc.ini:z   -v /home/eisuser/INTEGRATION_SERVER/server.conf.yaml:/mnt/server.conf.yaml:z   -v /home/eisuser/INTEGRATION_SERVER/EndPoint_Public:/opt/IBM/EndPoint_Public:z   -v /home/eisuser/INTEGRATION_SERVER/Keystore:/opt/IBM/Keystore:z   -v /home/eisuser/INTEGRATION_SERVER/RSAKeystore:/opt/IBM/RSAKeystore:z   -v /home/eisuser/INTEGRATION_SERVER/extvault:/var/mqsi/extvault:z   -p 4001:4001   -p 4415:7600   -p 4416:5001   -e SERVER_NAME=Payment_E_01   -e OVERRIDE_PATH=/var/mqsi/Payment_E_01/overrides   -e ADMIN_USER=eisadmin   -e ADMIN_PASS=password   server:v8.0
-WARN[0000] Failed to mount subscriptions, skipping entry in /usr/share/containers/mounts.conf: getting host subscription data: failed to read subscriptions from "/usr/share/rhel/secrets": open /usr/share/rhel/secrets/redhat.repo: permission denied
-803e5c161d1f87da3fda0a2a89b194b6cd74809aacf6ba60fce4865a284f2a14
-[eisuser@eisuatsftp01 INTEGRATION_SERVER]$
-[eisuser@eisuatsftp01 INTEGRATION_SERVER]$
-[eisuser@eisuatsftp01 INTEGRATION_SERVER]$
-[eisuser@eisuatsftp01 INTEGRATION_SERVER]$ podman exec -it --user eisuser Payment_E_01 /bin/bash
+[eisuser@eisuatsftp01 INTEGRATION_SERVER]$ cat entrypoint.sh
+#!/bin/bash
 
-MQSI 13.0.5.0
-/opt/IBM/ace/server
+source /opt/IBM/ace/server/bin/mqsiprofile
 
-mqsiprofile repetition disallowed
-[eisuser@Payment_E_01 /]$
-[eisuser@Payment_E_01 /]$
-[eisuser@Payment_E_01 /]$ cat /mnt/server.conf.yaml
----
-remoteDefaultQueueManager: '{DefaultPolicies}:QMGR'
-Credentials:
-  ExternalDirectoryVault:
-    directory: '/var/mqsi/extvault'
-httpServerName: 'Payment_E_01'
-RestAdminListener:
-  port: 7600
-  sslMode: 'automatic'
-  sslCertificate: '/opt/IBM/Keystore/IBM_ACE.pfx'
-  sslPassword: 'password'
-  basicAuth: true
-Security:
-  Permissions:
-    iibadmin: 'read+:write+:execute+'
-  DataPermissions:
-    iibadmin: 'read+:write+:execute+'
-BrokerRegistry:
-  brokerKeystoreFile: '/opt/IBM/Keystore/keyStore.jks'
-  brokerKeystorePass: 'password'
-  brokerTruststoreFile: '/opt/IBM/Keystore/N2ks.jks'
-  brokerTruststorePass: 'password'
-ResourceManagers:
-  GlobalCache:
-    cacheOn: true
-    catalogClusterEndPoints: 'HEART_BEAT_10.177.44.55_2800:10.177.44.55:2803:2801,HEART_BEAT_10.177.44.55_2804:10.177.44.55:2807:2805'
-    catalogDomainName: 'WMB_HEART_BEAT_localhost_2800_HEART_BEAT_localhost_2804'
-    catalogServiceEndPoints: '10.177.44.55:2800,10.177.44.55:2804'
-    enableContainerService: true
-    listenerHost: 'localhost
-    listenerPort: 2920
-  JVM:
-    jvmMinHeapSize: 33554432
-    jvmMaxHeapSize: 268435456
-    jvmDebugPort: 5001
-  HTTPConnector:
-    ListenerPort: 4001
-[eisuser@Payment_E_01 /]$
-[eisuser@Payment_E_01 /]$
-[eisuser@Payment_E_01 /]$ cat /var/mqsi/Payment_E_01/overrides/server.conf.yaml
-[eisuser@Payment_E_01 /]$ ls -lrth /mnt/server.conf.yaml
--rwxrwxrwx 1 root root 1.2K Apr 14 05:05 /mnt/server.conf.yaml
-[eisuser@Payment_E_01 /]$
+# Create work directory only if it doesn't already exist
+if [ ! -d "/var/mqsi/${SERVER_NAME}" ]; then
+    echo "Creating work directory for ${SERVER_NAME}..."
+    mqsicreateworkdir /var/mqsi/${SERVER_NAME}
+    ibmint specify jre --version 8 --work-directory /var/mqsi/${SERVER_NAME}
+    cp -rp /mnt/server.conf.yaml /var/mqsi/${SERVER_NAME}/overrides/server.conf.yaml
+    if [ -n "$ADMIN_USER" ] && [ -n "$ADMIN_PASS" ]; then
+       echo "Creating Web Admin User"
+       mqsiwebuseradmin -w /var/mqsi/${SERVER_NAME} -c -u ${ADMIN_USER} -a ${ADMIN_PASS} -r iibadmin
+    fi
+else
+    echo "Work directory /var/mqsi/${SERVER_NAME} already exists, skipping creation..."
+fi
+
+# Start Integration Server
+exec IntegrationServer --work-dir /var/mqsi/${SERVER_NAME} \
+    --name "${SERVER_NAME}" \
+    --overrides-directory "${OVERRIDE_PATH}"
