@@ -1,4 +1,46 @@
- pwd
-/home/eisuser/ACE_CONTAINER
+[eisuser@eisuatsftp01 ACE_CONTAINER]$ cat Containerfile
+FROM rhel:9.1
+RUN groupadd -r mqbrkrs
+RUN useradd -r -g mqbrkrs -m -d /home/eisuser -s /bin/bash eisuser
+RUN mkdir -p /var/mqsi \
+    && mkdir -p /var/mqsi/common/errors \
+    && mkdir -p /var/mqsi/common/log \
+    && mkdir -p /opt/IBM \
+        && mkdir -p /opt/IBM/EndPoint_Public \
+        && mkdir -p /opt/IBM/Keystore \
+        && mkdir -p /opt/IBM/RSAKeystore
 
-podman build -t ace:v13.6 .
+ADD /var/ace.tar.gz /opt/IBM/
+
+RUN chown -R eisuser:mqbrkrs /var/mqsi && \
+    chmod -R 775 /var/mqsi && \
+    chown -R eisuser:mqbrkrs /opt/IBM && \
+    chmod -R 775 /opt/IBM
+
+ENV ODBCSYSINI /opt/IBM/ace/server/ODBC/unixodbc
+ENV ODBCINI /opt/IBM/ace/server/ODBC/unixodbc/odbc.ini
+
+RUN source /opt/IBM/ace/server/bin/mqsiprofile . && \
+    cd /opt/IBM/ace && \
+    ./ace make registry global accept license silently
+
+RUN echo 'source /opt/IBM/ace/server/bin/mqsiprofile' >> /etc/bashrc && \
+    echo 'source /opt/IBM/ace/server/bin/mqsiprofile' > /etc/profile.d/ace.sh && \
+    chmod +x /etc/profile.d/ace.sh
+[eisuser@eisuatsftp01 ACE_CONTAINER]$ ls -lrth /var/ace.tar.gz
+-rwxrwxrwx 1 eisuser eisuser 4.6G Apr 12 12:29 /var/ace.tar.gz
+
+
+[eisuser@eisuatsftp01 ACE_CONTAINER]$ podman build -t ace:v13.6 .
+STEP 1/10: FROM rhel:9.1
+STEP 2/10: RUN groupadd -r mqbrkrs
+WARN[0000] Failed to mount subscriptions, skipping entry in /usr/share/containers/mounts.conf: getting host subscription data: failed to read subscriptions from "/usr/share/rhel/secrets": open /usr/share/rhel/secrets/redhat.repo: permission denied
+--> 38ad500337c2
+STEP 3/10: RUN useradd -r -g mqbrkrs -m -d /home/eisuser -s /bin/bash eisuser
+WARN[0000] Failed to mount subscriptions, skipping entry in /usr/share/containers/mounts.conf: getting host subscription data: failed to read subscriptions from "/usr/share/rhel/secrets": open /usr/share/rhel/secrets/redhat.repo: permission denied
+--> 2fa50bdbd676
+STEP 4/10: RUN mkdir -p /var/mqsi     && mkdir -p /var/mqsi/common/errors     && mkdir -p /var/mqsi/common/log     && mkdir -p /opt/IBM         && mkdir -p /opt/IBM/EndPoint_Public         && mkdir -p /opt/IBM/Keystore         && mkdir -p /opt/IBM/RSAKeystore
+WARN[0001] Failed to mount subscriptions, skipping entry in /usr/share/containers/mounts.conf: getting host subscription data: failed to read subscriptions from "/usr/share/rhel/secrets": open /usr/share/rhel/secrets/redhat.repo: permission denied
+--> ac466e2fdd98
+STEP 5/10: ADD /var/ace.tar.gz /opt/IBM/
+Error: building at STEP "ADD /var/ace.tar.gz /opt/IBM/": checking on sources under "/home/eisuser/ACE_CONTAINER": copier: stat: "/var/ace.tar.gz": no such file or directory
