@@ -1,10 +1,63 @@
-DISPLAY AUTHINFO(SYSTEM.DEFAULT.AUTHINFO.IDPWOS)
-     4 : DISPLAY AUTHINFO(SYSTEM.DEFAULT.AUTHINFO.IDPWOS)
-AMQ8566I: Display authentication information details.
-   AUTHINFO(SYSTEM.DEFAULT.AUTHINFO.IDPWOS)
-   AUTHTYPE(IDPWOS)                        ADOPTCTX(YES)
-   DESCR( )                                CHCKCLNT(OPTIONAL)
-   CHCKLOCL(OPTIONAL)                      FAILDLAY(1)
-   AUTHENMD(OS)                            ALTDATE(2026-04-14)
-   ALTTIME(10.50.26)
+[eisuser@eisuatsftp01 INTEGRATION_SERVER]$ podman run -it --rm \
+  --name Payment_E_01 \
+  --hostname Payment_E_01 \
+  -v ace_workdir:/var/mqsi:z \
+  -v /home/eisuser/INTEGRATION_SERVER/odbc.ini:/opt/IBM/ace/server/ODBC/unixodbc/odbc.ini:z \
+  -v /home/eisuser/INTEGRATION_SERVER/server.conf.yaml:/mnt/server.conf.yaml:z \
+  -v /home/eisuser/INTEGRATION_SERVER/EndPoint_Public:/opt/IBM/EndPoint_Public:z \
+  -v /home/eisuser/INTEGRATION_SERVER/Keystore:/opt/IBM/Keystore:z \
+  -v /home/eisuser/INTEGRATION_SERVER/RSAKeystore:/opt/IBM/RSAKeystore:z \
+  -v /home/eisuser/INTEGRATION_SERVER/extvault:/var/mqsi/extvault:z \
+  -p 4001:4001 \
+  -p 4415:7600 \
+  -p 4416:5001 \
+  -e SERVER_NAME=Payment_E_01 \
+  -e ADMIN_USER=eisadmin \
+  -e ADMIN_PASS=password \
+  server:v8.0
+WARN[0000] Failed to mount subscriptions, skipping entry in /usr/share/containers/mounts.conf: getting host subscription data: failed to read subscriptions from "/usr/share/rhel/secrets": open /usr/share/rhel/secrets/redhat.repo: permission denied
+Work directory /var/mqsi/Payment_E_01 already exists, skipping creation...
+Copying server.conf.yaml to Work Directory
+Copying Default qmgr Policy
+2026-04-14 06:50:53.882312: BIP1990I: Integration server 'Payment_E_01' starting initialization; version '13.0.5.0' (64-bit)
+2026-04-14 06:50:53.956392: BIP9905I: Initializing resource managers.
+2026-04-14 06:50:53.958084: BIP15315I: Using JRE version '8' located at '/opt/IBM/ace/common/jdk/jre', as directed by the 'ibmint specify jre' command.
+2026-04-14 06:50:54.234752: BIP7408W: The integration node is being run using Java version '1.8.0_461', not the version it was shipped with.
+2026-04-14 06:50:54.400224: BIP10112I: The resources from 'mqsicdc.par' have not been loaded because the runtime component 'ChangeDataCapture' has not been enabled. Reason: 'Restricted by Java Runtime selected'. Further detail: '/opt/IBM/ace/common/jdk/jre/embedded.java.yaml'.
+2026-04-14 06:50:55.106900: BIP10112I: The resources from 'imbopentelemetry.lil' have not been loaded because the runtime component 'OpenTelemetry' has not been enabled. Reason: 'Integration Server Configuration'. Further detail: 'server.conf.yaml'.
+node.js process.on('exit') event emitted with exitCode of 0
+node.js process.on('exit') event emitted with exitCode of 0
+main checker destroyed before initialisation completed, latest stage was MQ default CCSID , pid 1, tid 1, attempted stage was 49 and 48 stages completed
+2026-04-14 06:50:59.162496: BIP2117E: IBM App Connect Enterprise internal error: diagnostic information 'Fatal Error; exception thrown before initialisation completed', 'MQ default CCSID', '', '1', '1', '49', '48'.
+2026-04-14 06:50:59.162576: BIP2203E: An integration server has encountered a problem whilst starting.
+2026-04-14 06:50:59.162612: BIP2677E: Failed to make a client connection to queue manager 'QM_PAYMENT_EXP' using hostname 'host.containers.internal' on port '1420': MQCC=2; MQRC=2035.
+2026-04-14 06:50:59.964792: BIP1992I: Integration server 'Payment_E_01' stopped.
+[eisuser@eisuatsftp01 INTEGRATION_SERVER]$ podman run -it --rm --user eisuser --entrypoint /bin/bash   --name Payment_E_01   --hostname Payment_E_01   -v ace_workdir:/var/mqsi:z   -v /home/eisuser/INTEGRATION_SERVER/odbc.ini:/opt/IBM/ace/server/ODBC/unixodbc/odbc.ini:z   -v /home/eisuser/INTEGRATION_SERVER/server.conf.yaml:/mnt/server.conf.yaml:z   -v /home/eisuser/INTEGRATION_SERVER/EndPoint_Public:/opt/IBM/EndPoint_Public:z   -v /home/eisuser/INTEGRATION_SERVER/Keystore:/opt/IBM/Keystore:z   -v /home/eisuser/INTEGRATION_SERVER/RSAKeystore:/opt/IBM/RSAKeystore:z   -v /home/eisuser/INTEGRATION_SERVER/extvault:/var/mqsi/extvault:z   -p 4001:4001   -p 4415:7600   -p 4416:5001   -e SERVER_NAME=Payment_E_01   -e ADMIN_USER=eisadmin   -e ADMIN_PASS=password   server:v8.0
+WARN[0000] Failed to mount subscriptions, skipping entry in /usr/share/containers/mounts.conf: getting host subscription data: failed to read subscriptions from "/usr/share/rhel/secrets": open /usr/share/rhel/secrets/redhat.repo: permission denied
 
+MQSI 13.0.5.0
+/opt/IBM/ace/server
+
+mqsiprofile repetition disallowed
+[eisuser@Payment_E_01 /]$ nc -vz host.containers.internal 1420
+Ncat: Version 7.92 ( https://nmap.org/ncat )
+Ncat: Connected to 169.254.1.2:1420.
+Ncat: 0 bytes sent, 0 bytes received in 0.01 seconds.
+[eisuser@Payment_E_01 /]$ nslookup host.containers.internal
+bash: nslookup: command not found
+[eisuser@Payment_E_01 /]$ dig +short host.containers.internal
+bash: dig: command not found
+[eisuser@Payment_E_01 /]$ nc -vz 10.177.44.180 1420
+Ncat: Version 7.92 ( https://nmap.org/ncat )
+Ncat: Connection refused.
+[eisuser@Payment_E_01 /]$ exit
+exit
+[eisuser@eisuatsftp01 INTEGRATION_SERVER]$ sudo firewall-cmd --add-port=1420/tcp --permanent
+Warning: ALREADY_ENABLED: 1420:tcp
+success
+[eisuser@eisuatsftp01 INTEGRATION_SERVER]$ sudo netstat -antpl | grep :1420
+tcp6       0      0 :::1420                 :::*                    LISTEN      2001902/runmqlsr
+[eisuser@eisuatsftp01 INTEGRATION_SERVER]$ ip r
+default via 10.177.44.1 dev eth0 proto dhcp src 10.177.44.180 metric 100
+10.177.44.0/24 dev eth0 proto kernel scope link src 10.177.44.180 metric 100
+[eisuser@eisuatsftp01 INTEGRATION_SERVER]$
