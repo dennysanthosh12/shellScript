@@ -1,58 +1,97 @@
-2026-04-14 09:40:30.145242: BIP2866I: IBM App Connect Enterprise administration security is authentication.
-2026-04-14 09:40:30.165260: BIP3132I: The HTTP Listener has started listening on port '7600' for 'RestAdmin http' connections.
-2026-04-14 09:40:30.166594: BIP1991I: Integration server has finished initialization.
-2026-04-14 09:40:49.739756: BIP7190W: The WebSphere eXtreme Scale server components in this integration server have not started. The attempt to start the server components has now been running for '30' seconds.
-2026-04-14 09:40:59.959228: BIP7156W: This integration server has failed to establish a connection to the embedded global cache. The attempt to connect to the remote server components has now been running for '30' seconds. The connection is being made using the connection string '10.177.44.55:2800,10.177.44.55:2804'.
-2026-04-14 09:41:19.741348: BIP7190W: The WebSphere eXtreme Scale server components in this integration server have not started. The attempt to start the server components has now been running for '60' seconds.
+cat odbc.ini
+;##########################################################################
+;# ODBC database driver manager initialisation file.                      #
+;##########################################################################
+;# It is recommended that you take a copy of this file and then edit the  #
+;# copy.                                                                  #
+;#                                                                        #
+;# 1. For each data source, add the name of the data source into          #
+;# the 'List of data sources stanza' section.                             #
+;#                                                                        #
+;# 2. For each data source, create a stanza in the                        #
+;# 'Individual data source stanzas' section.                              #
+;#                                                                        #
+;##########################################################################
 
-[eisuser@eisuatsftp01 ~]$ sudo netstat -antpl | grep 2800
-tcp        0      0 10.177.44.180:31552     10.177.44.55:2800       TIME_WAIT   -
-tcp        0      0 10.177.44.180:31540     10.177.44.55:2800       TIME_WAIT   -
-[eisuser@eisuatsftp01 ~]$ sudo netstat -antpl | grep 2800
-tcp        0      0 10.177.44.180:31602     10.177.44.55:2800       TIME_WAIT   -
-tcp        0      0 10.177.44.180:31582     10.177.44.55:2800       TIME_WAIT   -
-tcp        0      0 10.177.44.180:31552     10.177.44.55:2800       TIME_WAIT   -
-tcp        0      0 10.177.44.180:31540     10.177.44.55:2800       TIME_WAIT   -
-[eisuser@eisuatsftp01 ~]$ sudo netstat -antpl | grep 2800
-tcp        0      0 10.177.44.180:31602     10.177.44.55:2800       TIME_WAIT   -
-tcp        0      0 10.177.44.180:10240     10.177.44.55:2800       TIME_WAIT   -
-tcp        0      0 10.177.44.180:31582     10.177.44.55:2800       TIME_WAIT   -
-tcp        0      0 10.177.44.180:10306     10.177.44.55:2800       TIME_WAIT   -
-tcp        0      0 10.177.44.180:10264     10.177.44.55:2800       TIME_WAIT   -
-tcp        0      0 10.177.44.180:31552     10.177.44.55:2800       TIME_WAIT   -
-tcp        0      0 10.177.44.180:31540     10.177.44.55:2800       TIME_WAIT   -
+;#######################################
+;#### List of data sources stanza ######
+;#######################################
+
+[ODBC Data Sources]
+DB2DB=IBM DB2 ODBC Driver
+ORACLEDB=DataDirect ODBC Oracle Wire Protocol
+ORACLERACDB=DataDirect ODBC Oracle RAC Wire Protocol
+ORACLESSLDB=DataDirect ODBC Oracle SSL Wire Protocol
+SYBASEDB=DataDirect ODBC Sybase Wire Protocol
+SYBASEDBUTF8=DataDirect ODBC Sybase UTF8 Wire Protocol
+SQLSERVERDB=DataDirect ODBC SQL Server Wire Protocol
+INFORMIXDB=IBM Informix ODBC Driver
+SOLIDDB_DB_6.5=IBM Solid DB V6.5 ODBC Driver
+SOLIDDB_DB_7=IBM Solid DB V7 ODBC Driver
+IDSDB=IBM Informix Data Server Driver for ODBC and CLI
+
+;###########################################
+;###### Individual data source stanzas #####
+;###########################################
+
+;# DB2 stanza
+[DB2DB]
+DRIVER=<Your DB2 install directory>/lib64/libdb2o.so
+Description=IBM DB2 ODBC Database
+Database=DB2DB
+
+;# Oracle stanza
+[ORACLEDB]
+Driver=<Your Broker install directory>/server/ODBC/drivers/lib/UKora95.so
+Description=DataDirect ODBC Oracle Wire Protocol
+HostName=<Your Oracle Server Machine Name>
+PortNumber=<Port on which Oracle is listening on HostName>
+ServiceName=<Your Oracle Service Name>
+CatalogOptions=0
+EnableStaticCursorsForLongData=0
+ApplicationUsingThreads=1
+EnableDescribeParam=1
+OptimizePrepare=1
+WorkArounds=536870912
+ProcedureRetResults=1
+ColumnSizeAsCharacter=1
+LoginTimeout=0
+EnableNcharSupport=0
+
+[SI]
+Driver= /opt/IBM/ace/server/ODBC/drivers/lib/UKora95.so
+Description=DataDirect ODBC Oracle Wire Protocol
+#HostName=10.177.29.37
+#PortNumber=1787
+#HostName=eissiuat-scan1.sbi.co.in
+#PortNumber=1786
+#ServiceName=UATIIB_SRV
+CatalogOptions=0
+EnableStaticCursorsForLongData=0
+ApplicationUsingThreads=1
+EnableDescribeParam=1
+OptimizePrepare=1
+WorkArounds=536870912
+ProcedureRetResults=1
+ColumnSizeAsCharacter=1
+LoginTimeout=0
+#QEWSD=2460587
+################################################  TLSV1.2 ODBC CONFIGURATION ########################################
+HostName=eissiuat-scan1.sbi.co.in
+PortNumber=1789
+ServiceName=UATIIB_SRV
+AuthenticationMethod=1
+KeyPassword=password
+KeyStore=/opt/IBM/Keystore/ewallet.p12
+KeyStorePassword=welcome1
+TrustStore=/opt/IBM/Keystore/ewallet.p12
+TrustStorePassword=welcome1
+EncryptionMethod=1
+CryptoProtocolVersion=TLSv1.2
+ValidateServerCertificate=1
+EnableNcharSupport=0
+#####################################################################################################################
 
 
-and on 10.177.44.55 at the same time 
-[eisuser@EISUATEXP06 ~]$ netstat -antpl | grep -vE ":22|:514" | grep 10.177.44.180
-(Not all processes could be identified, non-owned process info
- will not be shown, you would have to be root to see it all.)
-tcp        0      0 10.177.44.55:2800       10.177.44.180:27598     TIME_WAIT   -
-tcp        0      0 10.177.44.55:2804       10.177.44.180:51586     TIME_WAIT   -
-[eisuser@EISUATEXP06 ~]$ netstat -antpl | grep -vE ":22|:514" | grep 10.177.44.180
-(Not all processes could be identified, non-owned process info
- will not be shown, you would have to be root to see it all.)
-tcp        0      0 10.177.44.55:2800       10.177.44.180:27598     TIME_WAIT   -
-tcp        0      0 10.177.44.55:2804       10.177.44.180:51586     TIME_WAIT   -
-[eisuser@EISUATEXP06 ~]$ netstat -antpl | grep -vE ":22|:514" | grep 10.177.44.180
-(Not all processes could be identified, non-owned process info
- will not be shown, you would have to be root to see it all.)
-tcp        0      0 10.177.44.55:2800       10.177.44.180:27598     TIME_WAIT   -
-tcp        0      0 10.177.44.55:2800       10.177.44.180:27620     TIME_WAIT   -
-tcp        0      0 10.177.44.55:2804       10.177.44.180:51586     TIME_WAIT   -
-tcp        0      0 10.177.44.55:2800       10.177.44.180:27660     TIME_WAIT   -
-tcp        0      0 10.177.44.55:2804       10.177.44.180:51638     TIME_WAIT   -
-tcp        0      0 10.177.44.55:2804       10.177.44.180:51628     TIME_WAIT   -
-[eisuser@EISUATEXP06 ~]$ netstat -antpl | grep -vE ":22|:514" | grep 10.177.44.180
-(Not all processes could be identified, non-owned process info
- will not be shown, you would have to be root to see it all.)
-tcp        0      0 10.177.44.55:2800       10.177.44.180:27598     TIME_WAIT   -
-tcp        0      0 10.177.44.55:2800       10.177.44.180:27620     TIME_WAIT   -
-tcp        0      0 10.177.44.55:2804       10.177.44.180:51586     TIME_WAIT   -
-tcp        0      0 10.177.44.55:2800       10.177.44.180:27660     TIME_WAIT   -
-tcp        0      0 10.177.44.55:2804       10.177.44.180:51638     TIME_WAIT   -
-tcp        0      0 10.177.44.55:2804       10.177.44.180:51658     TIME_WAIT   -
-tcp        0      0 10.177.44.55:2800       10.177.44.180:27694     TIME_WAIT   -
-tcp        0      0 10.177.44.55:2804       10.177.44.180:51628     TIME_WAIT   -
-tcp        0      0 10.177.44.55:2804       10.177.44.180:51688     TIME_WAIT   -
-tcp        0      0 10.177.44.55:2800       10.177.44.180:27714     TIME_WAIT   -
+
+
