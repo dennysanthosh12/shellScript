@@ -97,5 +97,60 @@ EnableNcharSupport=0
 mqsicredentials --ext-vault-dir extvault --ext-vault-key password --report
 BIP15110I: The credential name 'SI' of type 'odbc' contains user name 'EISAPP' from provider 'extdirvault' and has the following properties defined: 'password', authentication type 'basic'.
 
+mqsicvp --help
+BIP8872W: Verifies an integration node, or verifies a user datasource to be used within the integration node, or compares primary and secondary datasources for equivalence.
+Syntax (1): Verify an integration node.
+ mqsicvp integrationNodeName [--integration-server <arg>] [--vault-key <arg> | --vaultrc-location <arg>] [--trace <arg>]
+Syntax (2): Verifies a user datasource to be used within the integration node
+ mqsicvp integrationNodeName [--integration-server <arg>] [--vault-key <arg> | --vaultrc-location <arg>] --primary-datasource <arg> [--secondary-datasource <arg>] [--verbose] [--trace <arg>]
+Syntax (3): Verify an independent integration server
+ mqsicvp --work-dir <work-directory> [--vault-key <arg> | --vaultrc-location <arg>] [--trace <arg>]
+Syntax (4): Verifies a user datasource to be used within the independent integration server
+ mqsicvp --work-dir <work-directory> [--vault-key <arg> | --vaultrc-location <arg>] --primary-datasource <arg> [--secondary-datasource <arg>] [--verbose] [--trace <arg>]
+Syntax (5): Compares primary and secondary datasources for equivalence
+ mqsicvp --primary-datasource <arg> --primary-username <arg> --primary-password <arg> [--secondary-datasource <arg> --secondary-username <arg> --secondary-password <arg>] [--verbose] [--trace <arg>]
+Syntax (6): Datasource benchmarking
+ mqsicvp integrationNodeName [--integration-server <arg>] [--vault-key <arg> | --vaultrc-location <arg>] --check-type benchmark [--options <arg>] [--recursive] [--trace <arg>]
+
+ Command Options:
+ '--integration-node-name <integrationNodeName>' : Name of a locally defined integration node.
+ '--integration-server (-e) <integrationServerName>' : Name of integration server, required when using vault and benchmark.
+ '--vault-key <arg>' : indicates the vault key to be used to access the vault owned by the integration node or integration server.
+ '--vaultrc-location <directory-path>' directory path for the .mqsivaultrc file used to locate the vault key and external directory vault key.
+ '--primary-datasource (-n) <datasource>' : The name of the datasource to verify
+ '--secondary-datasource (-c) <datasource>' : The name of the secondary datasource for comparison
+ '--primary-username (-u) <username>' : The user identifier to be used to connect to the primary datasource
+ '--primary-password (-p) <password>' : The password for the primary datasource username
+ '--secondary-username (-i) <username>' : The user identifier to be used to connect to the secondary datasource
+ '--secondary-password (-a) <password>' : The password for the secondary datasource username
+ '--check-type (-b) benchmark' : Perform a benchmarking check. The only valid value is 'benchmark'.
+ '--options (-o) <options>' : Options if Benchmark is selected. The first option for Benchmark will always be the test name. The valid test names are 'cpu-perf' and 'disk-io-perf'. Benchmark options:  cpu-perf,threads=[X],iterations=[X],sequence=[X].  disk-io-perf,numberoffiles=[X]  network-perf,ipaddress=[X]
+ '--verbose (-v)' : Report additional diagnostics related to supported datasource CASTS.
+ '--trace <traceFileName>' : send verbose internal trace to the specified file.
+
+
+BIP8071I: Successful command completion.
+[eisuser@Payment_E_01 mqsi]$ mqsicvp --work-dir Payment_E_01
+BIP8873I: Starting the component verification for component 'Payment_E_01'.
+BIP8876I: Starting the environment verification for component 'Payment_E_01'.
+BIP8894I: Verification passed for 'Registry'.
+BIP8894I: Verification passed for 'MQSI_FILEPATH'.
+BIP8878I: The environment verification for component 'integration_server' has finished successfully.
+BIP8290I: Verification passed for the ODBC environment.
+BIP8874I: The component verification for 'Payment_E_01' has finished successfully.
+BIP8071I: Successful command completion.
+[eisuser@Payment_E_01 mqsi]$ mqsicvp --work-dir Payment_E_01 -n SI
+BIP8512E: Datasource 'SI' has not been associated with independent integration server 'Payment_E_01'.
+This invocation of the mqsicvp command requires that the datasource name has been associated with the integration server, using the mqsisetdbparms or mqsicredentials command. If using a vault to store datasource credentials then the vault password must also be supplied.
+Check that this datasource has been associated with the integration server.
+[eisuser@Payment_E_01 mqsi]$ mqsicvp --work-dir Payment_E_01 -n SI --vault-key password
+BIP8512E: Datasource 'SI' has not been associated with independent integration server 'Payment_E_01'.
+This invocation of the mqsicvp command requires that the datasource name has been associated with the integration server, using the mqsisetdbparms or mqsicredentials command. If using a vault to store datasource credentials then the vault password must also be supplied.
+Check that this datasource has been associated with the integration server.
+[eisuser@Payment_E_01 mqsi]$ mqsicvp --work-dir Payment_E_01 -n SI --ext-vault-key password
+BIP8512E: Datasource 'SI' has not been associated with independent integration server 'Payment_E_01'.
+This invocation of the mqsicvp command requires that the datasource name has been associated with the integration server, using the mqsisetdbparms or mqsicredentials command. If using a vault to store datasource credentials then the vault password must also be supplied.
+Check that this datasource has been associated with the integration server.
+[eisuser@Payment_E_01 mqsi]$
 
 
