@@ -1,26 +1,17 @@
-[eisuser@eisuatsftp01 INTEGRATION_SERVER]$ runmqsc QM_PAYMENT_EXP
-5724-H72 (C) Copyright IBM Corp. 1994, 2024.
-Starting MQSC for queue manager QM_PAYMENT_EXP.
-
-
-DISPLAY AUTHREC OBJTYPE(QMGR) PRINCIPAL('eisuser')
-     1 : DISPLAY AUTHREC OBJTYPE(QMGR) PRINCIPAL('eisuser')
-AMQ8459I: Not found.
-SET AUTHREC OBJTYPE(QMGR) PRINCIPAL('eisuser') AUTHADD(CONNECT,INQ)
-     2 : SET AUTHREC OBJTYPE(QMGR) PRINCIPAL('eisuser') AUTHADD(CONNECT,INQ)
-AMQ8862I: IBM MQ authority record set.
-
-       :
-
-       :
-DISPLAY AUTHREC OBJTYPE(QMGR) PRINCIPAL('eisuser')
-     3 : DISPLAY AUTHREC OBJTYPE(QMGR) PRINCIPAL('eisuser')
-AMQ8459I: Not found.
-REFRESH SECURITY TYPE(CONNAUTH)
-     4 : REFRESH SECURITY TYPE(CONNAUTH)
-AMQ8560I: IBM MQ security cache refreshed.
-
-       :
-DISPLAY AUTHREC OBJTYPE(QMGR) PRINCIPAL('eisuser')
-     5 : DISPLAY AUTHREC OBJTYPE(QMGR) PRINCIPAL('eisuser')
-AMQ8459I: Not found.
+podman run -it --rm \
+  --name Payment_E_01 \
+  --hostname Payment_E_01 \
+  -v ace_workdir:/var/mqsi:z \
+  -v /home/eisuser/INTEGRATION_SERVER/odbc.ini:/opt/IBM/ace/server/ODBC/unixodbc/odbc.ini:z \
+  -v /home/eisuser/INTEGRATION_SERVER/server.conf.yaml:/mnt/server.conf.yaml:z \
+  -v /home/eisuser/INTEGRATION_SERVER/EndPoint_Public:/opt/IBM/EndPoint_Public:z \
+  -v /home/eisuser/INTEGRATION_SERVER/Keystore:/opt/IBM/Keystore:z \
+  -v /home/eisuser/INTEGRATION_SERVER/RSAKeystore:/opt/IBM/RSAKeystore:z \
+  -v /home/eisuser/INTEGRATION_SERVER/extvault:/var/mqsi/extvault:z \
+  -p 4001:4001 \
+  -p 4415:7600 \
+  -p 4416:5001 \
+  -e SERVER_NAME=Payment_E_01 \
+  -e ADMIN_USER=eisadmin \
+  -e ADMIN_PASS=password \
+  server:v8.0
