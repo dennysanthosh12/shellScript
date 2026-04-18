@@ -1,119 +1,747 @@
-[root@eisuatapictk ~]# df -hT
-Filesystem               Type      Size  Used Avail Use% Mounted on
-devtmpfs                 devtmpfs  4.0M     0  4.0M   0% /dev
-tmpfs                    tmpfs     7.7G   88K  7.7G   1% /dev/shm
-tmpfs                    tmpfs     3.1G  9.0M  3.1G   1% /run
-/dev/sda3                xfs       100G  5.9G   95G   6% /
-/dev/mapper/rootvg-varlv xfs        30G  612M   30G   2% /var
-/dev/sda2                xfs       960M  297M  664M  31% /boot
-/dev/mapper/rhel-home    xfs       100G  753M  100G   1% /home
-/dev/sda1                vfat      599M  7.1M  592M   2% /boot/efi
-tmpfs                    tmpfs     1.6G   36K  1.6G   1% /run/user/1003
-[root@eisuatapictk ~]# lsblk
-NAME             MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
-sda                8:0    0  500G  0 disk
-├─sda1             8:1    0  600M  0 part /boot/efi
-├─sda2             8:2    0    1G  0 part /boot
-├─sda3             8:3    0  100G  0 part /
-├─sda4             8:4    0  110G  0 part
-│ ├─rhel-swap    253:0    0   10G  0 lvm  [SWAP]
-│ └─rhel-home    253:2    0  100G  0 lvm  /home
-└─sda5             8:5    0  135G  0 part
-  ├─rootvg-varlv 253:1    0   30G  0 lvm  /var
-  ├─rootvg-usrlv 253:3    0   10G  0 lvm
-  ├─rootvg-tmplv 253:4    0   10G  0 lvm
-  └─rootvg-optlv 253:5    0   20G  0 lvm
-sr0               11:0    1 10.3G  0 rom
-[root@eisuatapictk ~]# cd /
-[root@eisuatapictk /]# ls -lrth
-total 24K
-drwxr-xr-x.   2 root root    6 Aug 10  2021 srv
-lrwxrwxrwx.   1 root root    8 Aug 10  2021 sbin -> usr/sbin
-drwxr-xr-x.   2 root root    6 Aug 10  2021 mnt
-drwxr-xr-x.   2 root root    6 Aug 10  2021 media
-lrwxrwxrwx.   1 root root    9 Aug 10  2021 lib64 -> usr/lib64
-lrwxrwxrwx.   1 root root    7 Aug 10  2021 lib -> usr/lib
-lrwxrwxrwx.   1 root root    7 Aug 10  2021 bin -> usr/bin
-dr-xr-xr-x.   2 root root    6 Aug 10  2021 afs
-drwxr-xr-x.  12 root root  144 Apr 29  2025 usr
-drwxr-xr-x.  20 root root  279 Apr 29  2025 var
-dr-xr-xr-x.   5 root root 4.0K Apr 29  2025 boot
-drwxr-xr-x.   3 root root   21 Apr 30  2025 sftp_data
-drwxr-xr-x.   3 root root   21 May 13  2025 apicuat
-drwxr-xr-x.   8 root root   94 Apr 17 15:27 home
-drwxr-xr-x.   4 root root   64 Apr 17 15:52 opt
-dr-xr-x---.  19 root root 4.0K Apr 17 21:30 root
-dr-xr-xr-x. 331 root root    0 Apr 17 21:30 proc
-dr-xr-xr-x.  13 root root    0 Apr 17 21:30 sys
-drwxr-xr-x.  20 root root 3.4K Apr 17 21:31 dev
-drwxr-xr-x. 132 root root 8.0K Apr 17 21:31 etc
-drwxr-xr-x.  49 root root 1.3K Apr 17 21:41 run
-drwxrwxrwt.  13 root root 4.0K Apr 18 10:25 tmp
-[root@eisuatapictk /]# cat /etc/fstab
+# For more information on configuration, see:
+#   * Official English Documentation: http://nginx.org/en/docs/
+#   * Official Russian Documentation: http://nginx.org/ru/docs/
 
-#
-# /etc/fstab
-# Created by anaconda on Tue Apr 29 10:43:12 2025
-#
-# Accessible filesystems, by reference, are maintained under '/dev/disk/'.
-# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info.
-#
-# After editing this file, run 'systemctl daemon-reload' to update systemd
-# units generated from this file.
-#
-UUID=d819d2ee-7a13-483f-9bf7-59a73f4469fc /                       xfs     defaults        0 0
-UUID=11bb3086-c6ae-405d-a564-9a1d3386ae9d /boot                   xfs     defaults        0 0
-UUID=D3CF-027D          /boot/efi               vfat    umask=0077,shortname=winnt 0 2
-/dev/mapper/rhel-home   /home                   xfs     defaults        0 0
-/dev/mapper/rhel-swap   none                    swap    defaults        0 0
-/dev/mapper/rootvg-varlv  /var                  xfs     defaults        0 0
-[root@eisuatapictk /]#
+user nginx;
+worker_processes auto;
+error_log /var/log/nginx/error.log;
+pid /run/nginx.pid;
+
+# Load dynamic modules. See /usr/share/doc/nginx/README.dynamic.
+include /usr/share/nginx/modules/*.conf;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile            on;
+    tcp_nopush          on;
+    tcp_nodelay         on;
+    keepalive_timeout   65;
+    types_hash_max_size 4096;
+
+    include             /etc/nginx/mime.types;
+    default_type        application/octet-stream;
+
+    include /etc/nginx/conf.d/*.conf;
 
 
-[eisuser@EISUATEXP09 ~]$ df -hT
-Filesystem                       Type      Size  Used Avail Use% Mounted on
-devtmpfs                         devtmpfs  4.0M     0  4.0M   0% /dev
-tmpfs                            tmpfs      32G   32M   32G   1% /dev/shm
-tmpfs                            tmpfs      13G  328M   13G   3% /run
-/dev/mapper/rootvg-rootlv        xfs        30G  1.9G   29G   7% /
-/dev/mapper/rootvg-usrlv         xfs        10G  3.4G  6.7G  34% /usr
-/dev/mapper/rootvg-optlv         xfs        20G   11G  9.5G  53% /opt
-/dev/mapper/rootvg-tmplv         xfs        10G  5.4G  4.7G  54% /tmp
-/dev/mapper/rootvg-varlv         xfs        30G   21G  9.6G  69% /var
-/dev/mapper/rootvg-homelv        xfs        30G   22G  8.1G  74% /home
-/dev/mapper/appvg-optibmlv       xfs        20G   11G  9.9G  51% /opt/IBM
-/dev/mapper/appvg-optmqmlv       xfs        20G  3.5G   17G  18% /opt/mqm
-/dev/mapper/appvg-varmqsilv      xfs        20G   11G  9.6G  52% /var/mqsi
-/dev/mapper/appvg-varmqmlv       xfs       100G   17G   84G  17% /var/mqm
-/dev/sdb3                        xfs      1014M  466M  549M  46% /boot
-/dev/mapper/rootvg-homescriptslv xfs       5.0G   99M  4.9G   2% /home/scripts
-/dev/sdb2                        vfat      200M  7.4M  193M   4% /efi
-tmpfs                            tmpfs     6.3G     0  6.3G   0% /run/user/0
-tmpfs                            tmpfs     6.3G   12K  6.3G   1% /run/user/1001
-/dev/mapper/bindu--VG-bindu--Lv  ext4       20G   24K   19G   1% /home/bindu
-tmpfs                            tmpfs     6.3G     0  6.3G   0% /run/user/1002
-/dev/mapper/appvg-logtmplv       xfs        60G   16G   45G  26% /log_temp
-[eisuser@EISUATEXP09 ~]$ lsblk
-NAME                                  MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
-sda                                     8:0    0  250G  0 disk
-└─sda1                                  8:1    0  250G  0 part
-  ├─appvg-optibmlv                    253:12   0   20G  0 lvm  /opt/IBM
-  ├─appvg-varmqmlv                    253:13   0  100G  0 lvm  /var/mqm
-  ├─appvg-optmqmlv                    253:14   0   20G  0 lvm  /opt/mqm
-  ├─appvg-varmqsilv                   253:15   0   20G  0 lvm  /var/mqsi
-  └─appvg-logtmplv                    253:16   0   60G  0 lvm  /log_temp
-sdb                                     8:16   0  150G  0 disk
-├─sdb1                                  8:17   0    1M  0 part
-├─sdb2                                  8:18   0  200M  0 part /efi
-│                                                              /boot/efi
-├─sdb3                                  8:19   0    1G  0 part /boot
-├─sdb4                                  8:20   0  135G  0 part
-│ ├─rootvg-rootlv                     253:4    0   30G  0 lvm  /
-│ ├─rootvg-usrlv                      253:5    0   10G  0 lvm  /usr
-│ ├─rootvg-varlv                      253:6    0   30G  0 lvm  /var
-│ ├─rootvg-optlv                      253:7    0   20G  0 lvm  /opt
-│ ├─rootvg-tmplv                      253:8    0   10G  0 lvm  /tmp
-│ ├─rootvg-homelv                     253:10   0   30G  0 lvm  /home
-│ └─rootvg-homescriptslv              253:11   0    5G  0 lvm  /home/scripts
-└─sdb5                                  8:21   0 13.8G  0 part
-  └─rootvg-swap                       253:9    0   10G  0 lvm  [SWAP]
+#######################################################################################################################################
+server {
+listen 443 ssl;
+
+ssl_certificate  /etc/nginx/ssl/selfsigned.crt;
+ssl_certificate_key  /etc/nginx/ssl/selfsigned.key;
+
+ssl_protocols TLSv1.2 TLSv1.3;
+ssl_ciphers HIGH:!aNULL:!MD5;
+
+location /UAT/cachehit/{
+  proxy_pass     https://10.177.44.58:8443/TaskTrigger/cache;
+  proxy_ssl_verify off;
+  proxy_ssl_server_name  on;
+  proxy_set_header Host               $host;
+    proxy_set_header X-Real-IP          $remote_addr;
+    proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
+  proxy_connect_timeout       1000;
+    proxy_send_timeout          1000;
+    proxy_read_timeout          1000;
+    send_timeout                1000;
+
+}
+
+
+}
+
+server {
+    listen 4422;
+    
+    location / {
+    proxy_pass http://10.177.44.180:4401;
+}
+}
+
+
+server {
+  listen  8445;
+  server_name example.com www.test.com;
+location /port_monitoring{
+autoindex on;
+alias /var/www/html/port_monitoring_frontend/port_monitoring/;
+}
+location / {
+        try_files $uri $uri/ =404;
+    }
+location /cache/{
+alias /var/www/html/DJP/ ;
+expires 30d;
+access_log off;
+}
+#location /{
+#return 200 "hello";
+#autoindex on;
+#root /tmp;
+#}
+
+}
+
+
+
+
+
+server {
+  listen  9329;
+  server_name example.test.com;
+location /{
+alias /var/www/node/;
+}
+}
+
+
+
+
+server {
+  listen  8443;
+  server_name 10.177.44.180;
+
+root /var/www/build/index.html;
+ssl_certificate  /etc/nginx/ssl/selfsigned.crt;
+ssl_certificate_key  /etc/nginx/ssl/selfsigned.key;
+
+ssl_protocols TLSv1.2 TLSv1.3;
+ssl_ciphers HIGH:!aNULL:!MD5;
+
+
+
+
+
+location /ACCOUNT_EXP51/ {
+        proxy_pass https://10.177.44.51:4418/;
+
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            add_header 'Content-Length' '0';
+            return 204;
+        }
+}
+
+location /ACCOUNT_EXP50/ {
+        proxy_pass https://10.177.44.50:4418/;
+
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            add_header 'Content-Length' '0';
+            return 204;
+        }
+}
+
+location /CUSTOMER_EXP53/ {
+    proxy_pass https://10.177.44.53:4419/;
+ 
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            add_header 'Content-Length' '0';
+            return 204;
+        }
+ 
+
+}
+
+location /CUSTOMER_EXP52/ {
+    proxy_pass https://10.177.44.52:4419/;
+
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            add_header 'Content-Length' '0';
+            return 204;
+        }
+
+
+}
+
+
+location /PAYMENT_EXP55/ {
+    proxy_pass https://10.177.44.55:4420/;
+
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            add_header 'Content-Length' '0';
+            return 204;
+        }
+
+
+}
+
+location /PAYMENT_EXP54/ {
+    proxy_pass https://10.177.44.54:4420/;
+
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            add_header 'Content-Length' '0';
+            return 204;
+        }
+
+
+}
+
+location /MISC_EXP57/ {
+    proxy_pass https://10.177.44.57:4415/;
+
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            add_header 'Content-Length' '0';
+            return 204;
+        }
+
+}
+
+location /MISC_EXP56/ {
+    proxy_pass https://10.177.44.56:4415/;
+
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            add_header 'Content-Length' '0';
+            return 204;
+        }
+
+}
+
+
+location /ACCOUNT_SYS60/ {
+        proxy_pass https://10.177.44.60:4418/;
+
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            add_header 'Content-Length' '0';
+            return 204;
+        }
+}
+
+location /ACCOUNT_SYS61/ {
+        proxy_pass https://10.177.44.61:4418/;
+
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            add_header 'Content-Length' '0';
+            return 204;
+        }
+}
+
+location /CUSTOMER_SYS62/ {
+    proxy_pass https://10.177.44.62:4419/;
+
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            add_header 'Content-Length' '0';
+            return 204;
+        }
+}
+
+location /CUSTOMER_SYS63/ {
+    proxy_pass https://10.177.44.63:4419/;
+
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            add_header 'Content-Length' '0';
+            return 204;
+        }
+}
+
+location /PAYMENT_SYS64/ {
+    proxy_pass https://10.177.44.64:4420/;
+
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            add_header 'Content-Length' '0';
+            return 204;
+        }
+}
+
+location /PAYMENT_SYS65/ {
+    proxy_pass https://10.177.44.65:4420/;
+
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            add_header 'Content-Length' '0';
+            return 204;
+        }
+}
+
+location /MISC_SYS66/ {
+    proxy_pass https://10.177.44.66:4415/;
+
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            add_header 'Content-Length' '0';
+            return 204;
+        }
+}
+
+location /MISC_SYS67/ {
+    proxy_pass https://10.177.44.67:4415/;
+
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            add_header 'Content-Length' '0';
+            return 204;
+        }
+}
+
+location /ThirdParty_sys66/ {
+    proxy_pass https://10.177.44.66:4418/;
+
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            add_header 'Content-Length' '0';
+            return 204;
+        }
+
+}
+
+location /WEB_APP_BROKER_SYS66/ {
+    proxy_pass https://10.177.44.66:4416/;
+
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            add_header 'Content-Length' '0';
+            return 204;
+        }
+
+}
+
+location /ATM_OUTBOUND_SYS66/ {
+    proxy_pass https://10.177.44.66:4423/;
+
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            add_header 'Content-Length' '0';
+            return 204;
+        }
+
+
+}
+
+location /MISC_1208_SYS66/ {
+    proxy_pass https://10.177.44.66:4420/;
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            add_header 'Content-Length' '0';
+            return 204;
+        }
+
+}
+
+location /ThirdParty_sys67/ {
+    proxy_pass https://10.177.44.67:4418/;
+
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            add_header 'Content-Length' '0';
+            return 204;
+        }
+
+}
+
+location /WEB_APP_BROKER_SYS67/ {
+    proxy_pass https://10.177.44.67:4416/;
+
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            add_header 'Content-Length' '0';
+            return 204;
+        }
+
+}
+
+location /ATM_OUTBOUND_SYS67/ {
+    proxy_pass https://10.177.44.67:4423/;
+
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            add_header 'Content-Length' '0';
+            return 204;
+        }
+
+}
+
+location /MISC_1208_SYS67/ {
+    proxy_pass https://10.177.44.67:4420/;
+
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            add_header 'Content-Length' '0';
+            return 204;
+        }
+
+}
+
+
+
+location / {
+
+root /var/www/build;
+index index.html;
+try_files $uri /index.html;
+
+ }
+
+
+  location /UAT/{
+    proxy_pass                          http://10.177.44.180:7443/;
+    proxy_set_header SCRIPT_NAME        /UAT;
+    proxy_set_header Host               $host;
+    proxy_set_header X-Real-IP          $remote_addr;
+    proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
+    proxy_connect_timeout       1000;
+    proxy_send_timeout          1000;
+    proxy_read_timeout          1000;
+    send_timeout                1000;
+  }
+
+
+location /UAT/taskDB{
+    proxy_pass 				http://10.177.44.58:8081/TaskDB/load;
+    proxy_set_header SCRIPT_NAME        /UAT;
+    proxy_set_header Host               $host;
+    proxy_set_header X-Real-IP          $remote_addr;
+    proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
+    proxy_connect_timeout       1000;
+    proxy_send_timeout          1000;
+    proxy_read_timeout          1000;
+    send_timeout                1000;
+  }
+
+#location /UAT/taskDB{
+#    proxy_pass                          http://10.177.44.58:8081/TaskDB;
+#    proxy_set_header SCRIPT_NAME        /UAT;
+#    proxy_set_header Host               $host;
+#    proxy_set_header X-Real-IP          $remote_addr;
+#    proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
+#    proxy_connect_timeout       1000;
+#    proxy_send_timeout          1000;
+#    proxy_read_timeout          1000;
+#    send_timeout                1000;
+#  }
+
+
+
+location /UAT/duplicate/{
+    proxy_pass                          http://10.177.44.58:8081/DuplicateService/Duplicate/;
+    proxy_set_header SCRIPT_NAME        /UAT;
+    proxy_set_header Host               $host;
+    proxy_set_header X-Real-IP          $remote_addr;
+    proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
+    proxy_connect_timeout       1000;
+    proxy_send_timeout          1000;
+    proxy_read_timeout          1000;
+    send_timeout                1000;
+  }
+
+location /UAT/duplicate{
+    proxy_pass                          http://10.177.44.58:8081/DuplicateService/Duplicate;
+    proxy_set_header SCRIPT_NAME        /UAT;
+    proxy_set_header Host               $host;
+    proxy_set_header X-Real-IP          $remote_addr;
+    proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
+    proxy_connect_timeout       1000;
+    proxy_send_timeout          1000;
+    proxy_read_timeout          1000;
+    send_timeout                1000;
+  }
+
+
+
+
+location /UAT/task/{
+  proxy_pass	http://10.177.44.58:3011/;
+  proxy_connect_timeout       1000;
+    proxy_send_timeout          1000;
+    proxy_read_timeout          1000;
+    send_timeout                1000;
+
+}
+
+
+
+
+location /UAT/checklist/{
+  proxy_pass     http://10.177.44.58:8081/TaskTrigger/UAT;
+  proxy_connect_timeout       1000;
+    proxy_send_timeout          1000;
+    proxy_read_timeout          1000;
+    send_timeout                1000;
+
+}
+
+location /UAT/cachehit1/{
+  proxy_pass     http://10.177.44.58:8081/TaskTrigger/cache1/;
+  proxy_connect_timeout       1000;
+    proxy_send_timeout          1000;
+    proxy_read_timeout          1000;
+    send_timeout                1000;
+
+}
+
+location /UAT/cachehit/{
+  proxy_pass     http://10.177.44.58:8081/TaskTrigger/cache;
+  proxy_connect_timeout       1000;
+    proxy_send_timeout          1000;
+    proxy_read_timeout          1000;
+    send_timeout                1000;
+
+}
+
+location /UAT/static/ {
+alias /var/www/html/DJP/static/ ;
+expires 30d;
+access_log off;
+}
+
+location /UAT/cache/{
+alias /var/www/html/DJP/ ;
+expires 30d;
+access_log off;
+ proxy_send_timeout          1000;
+  proxy_read_timeout          1000;
+  send_timeout                1000;
+   proxy_connect_timeout       1000;
+}
+
+ location /STORE/{
+    proxy_pass                          http://10.177.44.180:8446/;
+    proxy_set_header SCRIPT_NAME        /STORE;
+    proxy_set_header Host               $host;
+    proxy_set_header X-Real-IP          $remote_addr;
+    proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
+  }
+
+
+
+ location /AI/{
+    proxy_pass                          http://10.177.44.180:9329/;
+    proxy_set_header SCRIPT_NAME        /STORE;
+    proxy_set_header Host               $host;
+    proxy_set_header X-Real-IP          $remote_addr;
+    proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
+  }
+
+
+location /STORE/db/{
+alias /var/www/html/port_monitoring_backend/port_monitoring_backend ;
+expires 30d;
+access_log off;
+}
+location /STORE/db/static/ {
+alias /var/www/html/port_monitoring_backend/static/;
+expires 30d;
+access_log off;
+}
+
+
+
+
+location /PORT{
+    proxy_pass                          http://10.177.44.180:8445/;
+    proxy_set_header SCRIPT_NAME        /PORT;
+    proxy_set_header Host               $host;
+    proxy_set_header X-Real-IP          $remote_addr;
+    proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
+  }
+
+location /API_STATUS{
+    proxy_pass                          http://10.177.44.180:6666/;
+    proxy_set_header SCRIPT_NAME        /PORT;
+    proxy_set_header Host               $host;
+    proxy_set_header X-Real-IP          $remote_addr;
+    proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
+  }
+
+###################################################EISHOME-UAT################################
+
+
+location ^~  /EISHOME/staticfiles/ {
+        alias /var/www/cgi-bin/PyPortal/staticfiles/;
+        add_header Cache-Control "no-cache, must-revalidate";
+        expires 30d;
+        access_log off;
+    }
+
+
+ location /EISHOME/ {
+        proxy_pass                           http://10.177.44.180:5544/;
+        proxy_set_header SCRIPT_NAME        /EISHOME;
+        proxy_set_header Host               $host;
+        proxy_set_header X-Real-IP          $remote_addr;
+        proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto  $scheme;
+        proxy_connect_timeout       1200;
+        proxy_send_timeout          1200;
+        proxy_read_timeout          1200;
+        send_timeout                1200;
+    }
+
+
+
+
+
+}
+
+}
+
+
+
+
+
+
+
