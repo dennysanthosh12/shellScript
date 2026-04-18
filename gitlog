@@ -1,747 +1,198 @@
-# For more information on configuration, see:
-#   * Official English Documentation: http://nginx.org/en/docs/
-#   * Official Russian Documentation: http://nginx.org/ru/docs/
-
-user nginx;
-worker_processes auto;
-error_log /var/log/nginx/error.log;
-pid /run/nginx.pid;
-
-# Load dynamic modules. See /usr/share/doc/nginx/README.dynamic.
-include /usr/share/nginx/modules/*.conf;
-
-events {
-    worker_connections 1024;
-}
-
-http {
-    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
-                      '$status $body_bytes_sent "$http_referer" '
-                      '"$http_user_agent" "$http_x_forwarded_for"';
-
-    access_log  /var/log/nginx/access.log  main;
-
-    sendfile            on;
-    tcp_nopush          on;
-    tcp_nodelay         on;
-    keepalive_timeout   65;
-    types_hash_max_size 4096;
-
-    include             /etc/nginx/mime.types;
-    default_type        application/octet-stream;
-
-    include /etc/nginx/conf.d/*.conf;
-
-
-#######################################################################################################################################
-server {
-listen 443 ssl;
-
-ssl_certificate  /etc/nginx/ssl/selfsigned.crt;
-ssl_certificate_key  /etc/nginx/ssl/selfsigned.key;
-
-ssl_protocols TLSv1.2 TLSv1.3;
-ssl_ciphers HIGH:!aNULL:!MD5;
-
-location /UAT/cachehit/{
-  proxy_pass     https://10.177.44.58:8443/TaskTrigger/cache;
-  proxy_ssl_verify off;
-  proxy_ssl_server_name  on;
-  proxy_set_header Host               $host;
-    proxy_set_header X-Real-IP          $remote_addr;
-    proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
-  proxy_connect_timeout       1000;
-    proxy_send_timeout          1000;
-    proxy_read_timeout          1000;
-    send_timeout                1000;
-
-}
-
-
-}
-
-server {
-    listen 4422;
-    
-    location / {
-    proxy_pass http://10.177.44.180:4401;
-}
-}
-
-
-server {
-  listen  8445;
-  server_name example.com www.test.com;
-location /port_monitoring{
-autoindex on;
-alias /var/www/html/port_monitoring_frontend/port_monitoring/;
-}
-location / {
-        try_files $uri $uri/ =404;
-    }
-location /cache/{
-alias /var/www/html/DJP/ ;
-expires 30d;
-access_log off;
-}
-#location /{
-#return 200 "hello";
-#autoindex on;
-#root /tmp;
-#}
-
-}
-
-
-
-
-
-server {
-  listen  9329;
-  server_name example.test.com;
-location /{
-alias /var/www/node/;
-}
-}
-
-
-
-
-server {
-  listen  8443;
-  server_name 10.177.44.180;
-
-root /var/www/build/index.html;
-ssl_certificate  /etc/nginx/ssl/selfsigned.crt;
-ssl_certificate_key  /etc/nginx/ssl/selfsigned.key;
-
-ssl_protocols TLSv1.2 TLSv1.3;
-ssl_ciphers HIGH:!aNULL:!MD5;
-
-
-
-
-
-location /ACCOUNT_EXP51/ {
-        proxy_pass https://10.177.44.51:4418/;
-
-        add_header 'Access-Control-Allow-Origin' '*' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
-
-        if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
-            add_header 'Content-Length' '0';
-            return 204;
-        }
-}
-
-location /ACCOUNT_EXP50/ {
-        proxy_pass https://10.177.44.50:4418/;
-
-        add_header 'Access-Control-Allow-Origin' '*' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
-
-        if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
-            add_header 'Content-Length' '0';
-            return 204;
-        }
-}
-
-location /CUSTOMER_EXP53/ {
-    proxy_pass https://10.177.44.53:4419/;
- 
-        add_header 'Access-Control-Allow-Origin' '*' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
-
-        if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
-            add_header 'Content-Length' '0';
-            return 204;
-        }
- 
-
-}
-
-location /CUSTOMER_EXP52/ {
-    proxy_pass https://10.177.44.52:4419/;
-
-        add_header 'Access-Control-Allow-Origin' '*' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
-
-        if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
-            add_header 'Content-Length' '0';
-            return 204;
-        }
-
-
-}
-
-
-location /PAYMENT_EXP55/ {
-    proxy_pass https://10.177.44.55:4420/;
-
-        add_header 'Access-Control-Allow-Origin' '*' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
-
-        if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
-            add_header 'Content-Length' '0';
-            return 204;
-        }
-
-
-}
-
-location /PAYMENT_EXP54/ {
-    proxy_pass https://10.177.44.54:4420/;
-
-        add_header 'Access-Control-Allow-Origin' '*' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
-
-        if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
-            add_header 'Content-Length' '0';
-            return 204;
-        }
-
-
-}
-
-location /MISC_EXP57/ {
-    proxy_pass https://10.177.44.57:4415/;
-
-        add_header 'Access-Control-Allow-Origin' '*' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
-
-        if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
-            add_header 'Content-Length' '0';
-            return 204;
-        }
-
-}
-
-location /MISC_EXP56/ {
-    proxy_pass https://10.177.44.56:4415/;
-
-        add_header 'Access-Control-Allow-Origin' '*' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
-
-        if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
-            add_header 'Content-Length' '0';
-            return 204;
-        }
-
-}
-
-
-location /ACCOUNT_SYS60/ {
-        proxy_pass https://10.177.44.60:4418/;
-
-        add_header 'Access-Control-Allow-Origin' '*' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
-
-        if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
-            add_header 'Content-Length' '0';
-            return 204;
-        }
-}
-
-location /ACCOUNT_SYS61/ {
-        proxy_pass https://10.177.44.61:4418/;
-
-        add_header 'Access-Control-Allow-Origin' '*' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
-
-        if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
-            add_header 'Content-Length' '0';
-            return 204;
-        }
-}
-
-location /CUSTOMER_SYS62/ {
-    proxy_pass https://10.177.44.62:4419/;
-
-        add_header 'Access-Control-Allow-Origin' '*' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
-
-        if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
-            add_header 'Content-Length' '0';
-            return 204;
-        }
-}
-
-location /CUSTOMER_SYS63/ {
-    proxy_pass https://10.177.44.63:4419/;
-
-        add_header 'Access-Control-Allow-Origin' '*' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
-
-        if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
-            add_header 'Content-Length' '0';
-            return 204;
-        }
-}
-
-location /PAYMENT_SYS64/ {
-    proxy_pass https://10.177.44.64:4420/;
-
-        add_header 'Access-Control-Allow-Origin' '*' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
-
-        if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
-            add_header 'Content-Length' '0';
-            return 204;
-        }
-}
-
-location /PAYMENT_SYS65/ {
-    proxy_pass https://10.177.44.65:4420/;
-
-        add_header 'Access-Control-Allow-Origin' '*' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
-
-        if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
-            add_header 'Content-Length' '0';
-            return 204;
-        }
-}
-
-location /MISC_SYS66/ {
-    proxy_pass https://10.177.44.66:4415/;
-
-        add_header 'Access-Control-Allow-Origin' '*' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
-
-        if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
-            add_header 'Content-Length' '0';
-            return 204;
-        }
-}
-
-location /MISC_SYS67/ {
-    proxy_pass https://10.177.44.67:4415/;
-
-        add_header 'Access-Control-Allow-Origin' '*' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
-
-        if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
-            add_header 'Content-Length' '0';
-            return 204;
-        }
-}
-
-location /ThirdParty_sys66/ {
-    proxy_pass https://10.177.44.66:4418/;
-
-        add_header 'Access-Control-Allow-Origin' '*' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
-
-        if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
-            add_header 'Content-Length' '0';
-            return 204;
-        }
-
-}
-
-location /WEB_APP_BROKER_SYS66/ {
-    proxy_pass https://10.177.44.66:4416/;
-
-        add_header 'Access-Control-Allow-Origin' '*' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
-
-        if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
-            add_header 'Content-Length' '0';
-            return 204;
-        }
-
-}
-
-location /ATM_OUTBOUND_SYS66/ {
-    proxy_pass https://10.177.44.66:4423/;
-
-        add_header 'Access-Control-Allow-Origin' '*' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
-
-        if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
-            add_header 'Content-Length' '0';
-            return 204;
-        }
-
-
-}
-
-location /MISC_1208_SYS66/ {
-    proxy_pass https://10.177.44.66:4420/;
-        add_header 'Access-Control-Allow-Origin' '*' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
-
-        if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
-            add_header 'Content-Length' '0';
-            return 204;
-        }
-
-}
-
-location /ThirdParty_sys67/ {
-    proxy_pass https://10.177.44.67:4418/;
-
-        add_header 'Access-Control-Allow-Origin' '*' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
-
-        if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
-            add_header 'Content-Length' '0';
-            return 204;
-        }
-
-}
-
-location /WEB_APP_BROKER_SYS67/ {
-    proxy_pass https://10.177.44.67:4416/;
-
-        add_header 'Access-Control-Allow-Origin' '*' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
-
-        if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
-            add_header 'Content-Length' '0';
-            return 204;
-        }
-
-}
-
-location /ATM_OUTBOUND_SYS67/ {
-    proxy_pass https://10.177.44.67:4423/;
-
-        add_header 'Access-Control-Allow-Origin' '*' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
-
-        if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
-            add_header 'Content-Length' '0';
-            return 204;
-        }
-
-}
-
-location /MISC_1208_SYS67/ {
-    proxy_pass https://10.177.44.67:4420/;
-
-        add_header 'Access-Control-Allow-Origin' '*' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-        add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization' always;
-
-        if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
-            add_header 'Content-Length' '0';
-            return 204;
-        }
-
-}
-
-
-
-location / {
-
-root /var/www/build;
-index index.html;
-try_files $uri /index.html;
-
- }
-
-
-  location /UAT/{
-    proxy_pass                          http://10.177.44.180:7443/;
-    proxy_set_header SCRIPT_NAME        /UAT;
-    proxy_set_header Host               $host;
-    proxy_set_header X-Real-IP          $remote_addr;
-    proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
-    proxy_connect_timeout       1000;
-    proxy_send_timeout          1000;
-    proxy_read_timeout          1000;
-    send_timeout                1000;
-  }
-
-
-location /UAT/taskDB{
-    proxy_pass 				http://10.177.44.58:8081/TaskDB/load;
-    proxy_set_header SCRIPT_NAME        /UAT;
-    proxy_set_header Host               $host;
-    proxy_set_header X-Real-IP          $remote_addr;
-    proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
-    proxy_connect_timeout       1000;
-    proxy_send_timeout          1000;
-    proxy_read_timeout          1000;
-    send_timeout                1000;
-  }
-
-#location /UAT/taskDB{
-#    proxy_pass                          http://10.177.44.58:8081/TaskDB;
-#    proxy_set_header SCRIPT_NAME        /UAT;
-#    proxy_set_header Host               $host;
-#    proxy_set_header X-Real-IP          $remote_addr;
-#    proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
-#    proxy_connect_timeout       1000;
-#    proxy_send_timeout          1000;
-#    proxy_read_timeout          1000;
-#    send_timeout                1000;
-#  }
-
-
-
-location /UAT/duplicate/{
-    proxy_pass                          http://10.177.44.58:8081/DuplicateService/Duplicate/;
-    proxy_set_header SCRIPT_NAME        /UAT;
-    proxy_set_header Host               $host;
-    proxy_set_header X-Real-IP          $remote_addr;
-    proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
-    proxy_connect_timeout       1000;
-    proxy_send_timeout          1000;
-    proxy_read_timeout          1000;
-    send_timeout                1000;
-  }
-
-location /UAT/duplicate{
-    proxy_pass                          http://10.177.44.58:8081/DuplicateService/Duplicate;
-    proxy_set_header SCRIPT_NAME        /UAT;
-    proxy_set_header Host               $host;
-    proxy_set_header X-Real-IP          $remote_addr;
-    proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
-    proxy_connect_timeout       1000;
-    proxy_send_timeout          1000;
-    proxy_read_timeout          1000;
-    send_timeout                1000;
-  }
-
-
-
-
-location /UAT/task/{
-  proxy_pass	http://10.177.44.58:3011/;
-  proxy_connect_timeout       1000;
-    proxy_send_timeout          1000;
-    proxy_read_timeout          1000;
-    send_timeout                1000;
-
-}
-
-
-
-
-location /UAT/checklist/{
-  proxy_pass     http://10.177.44.58:8081/TaskTrigger/UAT;
-  proxy_connect_timeout       1000;
-    proxy_send_timeout          1000;
-    proxy_read_timeout          1000;
-    send_timeout                1000;
-
-}
-
-location /UAT/cachehit1/{
-  proxy_pass     http://10.177.44.58:8081/TaskTrigger/cache1/;
-  proxy_connect_timeout       1000;
-    proxy_send_timeout          1000;
-    proxy_read_timeout          1000;
-    send_timeout                1000;
-
-}
-
-location /UAT/cachehit/{
-  proxy_pass     http://10.177.44.58:8081/TaskTrigger/cache;
-  proxy_connect_timeout       1000;
-    proxy_send_timeout          1000;
-    proxy_read_timeout          1000;
-    send_timeout                1000;
-
-}
-
-location /UAT/static/ {
-alias /var/www/html/DJP/static/ ;
-expires 30d;
-access_log off;
-}
-
-location /UAT/cache/{
-alias /var/www/html/DJP/ ;
-expires 30d;
-access_log off;
- proxy_send_timeout          1000;
-  proxy_read_timeout          1000;
-  send_timeout                1000;
-   proxy_connect_timeout       1000;
-}
-
- location /STORE/{
-    proxy_pass                          http://10.177.44.180:8446/;
-    proxy_set_header SCRIPT_NAME        /STORE;
-    proxy_set_header Host               $host;
-    proxy_set_header X-Real-IP          $remote_addr;
-    proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
-  }
-
-
-
- location /AI/{
-    proxy_pass                          http://10.177.44.180:9329/;
-    proxy_set_header SCRIPT_NAME        /STORE;
-    proxy_set_header Host               $host;
-    proxy_set_header X-Real-IP          $remote_addr;
-    proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
-  }
-
-
-location /STORE/db/{
-alias /var/www/html/port_monitoring_backend/port_monitoring_backend ;
-expires 30d;
-access_log off;
-}
-location /STORE/db/static/ {
-alias /var/www/html/port_monitoring_backend/static/;
-expires 30d;
-access_log off;
-}
-
-
-
-
-location /PORT{
-    proxy_pass                          http://10.177.44.180:8445/;
-    proxy_set_header SCRIPT_NAME        /PORT;
-    proxy_set_header Host               $host;
-    proxy_set_header X-Real-IP          $remote_addr;
-    proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
-  }
-
-location /API_STATUS{
-    proxy_pass                          http://10.177.44.180:6666/;
-    proxy_set_header SCRIPT_NAME        /PORT;
-    proxy_set_header Host               $host;
-    proxy_set_header X-Real-IP          $remote_addr;
-    proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
-  }
-
-###################################################EISHOME-UAT################################
-
-
-location ^~  /EISHOME/staticfiles/ {
-        alias /var/www/cgi-bin/PyPortal/staticfiles/;
-        add_header Cache-Control "no-cache, must-revalidate";
-        expires 30d;
-        access_log off;
-    }
-
-
- location /EISHOME/ {
-        proxy_pass                           http://10.177.44.180:5544/;
-        proxy_set_header SCRIPT_NAME        /EISHOME;
-        proxy_set_header Host               $host;
-        proxy_set_header X-Real-IP          $remote_addr;
-        proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto  $scheme;
-        proxy_connect_timeout       1200;
-        proxy_send_timeout          1200;
-        proxy_read_timeout          1200;
-        send_timeout                1200;
-    }
-
-
-
-
-
-}
-
-}
-
-
-
-
-
-
-
+[root@EISUATEXP09 ~]# ssh 10.177.103.154 -v
+OpenSSH_8.7p1, OpenSSL 3.5.1 1 Jul 2025
+debug1: Reading configuration data /etc/ssh/ssh_config
+debug1: Reading configuration data /etc/ssh/ssh_config.d/50-redhat.conf
+debug1: Reading configuration data /etc/crypto-policies/back-ends/openssh.config
+debug1: configuration requests final Match pass
+debug1: re-parsing configuration
+debug1: Reading configuration data /etc/ssh/ssh_config
+debug1: Reading configuration data /etc/ssh/ssh_config.d/50-redhat.conf
+debug1: Reading configuration data /etc/crypto-policies/back-ends/openssh.config
+debug1: Connecting to 10.177.103.154 [10.177.103.154] port 22.
+debug1: Connection established.
+debug1: identity file /root/.ssh/id_rsa type 0
+debug1: identity file /root/.ssh/id_rsa-cert type -1
+debug1: identity file /root/.ssh/id_dsa type -1
+debug1: identity file /root/.ssh/id_dsa-cert type -1
+debug1: identity file /root/.ssh/id_ecdsa type -1
+debug1: identity file /root/.ssh/id_ecdsa-cert type -1
+debug1: identity file /root/.ssh/id_ecdsa_sk type -1
+debug1: identity file /root/.ssh/id_ecdsa_sk-cert type -1
+debug1: identity file /root/.ssh/id_ed25519 type -1
+debug1: identity file /root/.ssh/id_ed25519-cert type -1
+debug1: identity file /root/.ssh/id_ed25519_sk type -1
+debug1: identity file /root/.ssh/id_ed25519_sk-cert type -1
+debug1: identity file /root/.ssh/id_xmss type -1
+debug1: identity file /root/.ssh/id_xmss-cert type -1
+debug1: Local version string SSH-2.0-OpenSSH_8.7
+debug1: Remote protocol version 2.0, remote software version OpenSSH_8.0
+debug1: compat_banner: match: OpenSSH_8.0 pat OpenSSH* compat 0x04000000
+debug1: Authenticating to 10.177.103.154:22 as 'root'
+debug1: load_hostkeys: fopen /root/.ssh/known_hosts2: No such file or directory
+debug1: load_hostkeys: fopen /etc/ssh/ssh_known_hosts: No such file or directory
+debug1: load_hostkeys: fopen /etc/ssh/ssh_known_hosts2: No such file or directory
+debug1: SSH2_MSG_KEXINIT sent
+debug1: SSH2_MSG_KEXINIT received
+debug1: kex: algorithm: curve25519-sha256
+debug1: kex: host key algorithm: ssh-ed25519
+debug1: kex: server->client cipher: aes256-gcm@openssh.com MAC: <implicit> compression: none
+debug1: kex: client->server cipher: aes256-gcm@openssh.com MAC: <implicit> compression: none
+debug1: kex: curve25519-sha256 need=32 dh_need=32
+debug1: kex: curve25519-sha256 need=32 dh_need=32
+debug1: expecting SSH2_MSG_KEX_ECDH_REPLY
+debug1: SSH2_MSG_KEX_ECDH_REPLY received
+debug1: Server host key: ssh-ed25519 SHA256:L+k/0bOmoJPaX7J9jbj1OLqUqVBhsDKvV/berbUlthQ
+debug1: load_hostkeys: fopen /root/.ssh/known_hosts2: No such file or directory
+debug1: load_hostkeys: fopen /etc/ssh/ssh_known_hosts: No such file or directory
+debug1: load_hostkeys: fopen /etc/ssh/ssh_known_hosts2: No such file or directory
+debug1: Host '10.177.103.154' is known and matches the ED25519 host key.
+debug1: Found key in /root/.ssh/known_hosts:70
+debug1: ssh_packet_send2_wrapped: resetting send seqnr 3
+debug1: rekey out after 4294967296 blocks
+debug1: SSH2_MSG_NEWKEYS sent
+debug1: expecting SSH2_MSG_NEWKEYS
+debug1: ssh_packet_read_poll2: resetting read seqnr 3
+debug1: SSH2_MSG_NEWKEYS received
+debug1: rekey in after 4294967296 blocks
+debug1: Will attempt key: /root/.ssh/id_rsa RSA SHA256:paFoA9PMzihKuRbwtTM8+5x8tk5BCwEL7nVuxjlP1WI
+debug1: Will attempt key: /root/.ssh/id_dsa
+debug1: Will attempt key: /root/.ssh/id_ecdsa
+debug1: Will attempt key: /root/.ssh/id_ecdsa_sk
+debug1: Will attempt key: /root/.ssh/id_ed25519
+debug1: Will attempt key: /root/.ssh/id_ed25519_sk
+debug1: Will attempt key: /root/.ssh/id_xmss
+debug1: SSH2_MSG_EXT_INFO received
+debug1: kex_input_ext_info: server-sig-algs=<ssh-ed25519,ssh-rsa,rsa-sha2-256,rsa-sha2-512,ssh-dss,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521>
+debug1: SSH2_MSG_SERVICE_ACCEPT received
+debug1: Authentications that can continue: publickey,gssapi-keyex,gssapi-with-mic,password
+debug1: Next authentication method: gssapi-with-mic
+debug1: No credentials were supplied, or the credentials were unavailable or inaccessible
+No Kerberos credentials available (default cache: KCM:)
+
+
+debug1: No credentials were supplied, or the credentials were unavailable or inaccessible
+No Kerberos credentials available (default cache: KCM:)
+
+
+debug1: Next authentication method: publickey
+debug1: Offering public key: /root/.ssh/id_rsa RSA SHA256:paFoA9PMzihKuRbwtTM8+5x8tk5BCwEL7nVuxjlP1WI
+debug1: Server accepts key: /root/.ssh/id_rsa RSA SHA256:paFoA9PMzihKuRbwtTM8+5x8tk5BCwEL7nVuxjlP1WI
+Authenticated to 10.177.103.154 ([10.177.103.154]:22) using "publickey".
+debug1: pkcs11_del_provider: called, provider_id = (null)
+debug1: channel 0: new [client-session]
+debug1: Requesting no-more-sessions@openssh.com
+debug1: Entering interactive session.
+debug1: pledge: exec
+debug1: client_input_global_request: rtype hostkeys-00@openssh.com want_reply 0
+debug1: client_input_hostkeys: searching /root/.ssh/known_hosts for 10.177.103.154 / (none)
+debug1: client_input_hostkeys: searching /root/.ssh/known_hosts2 for 10.177.103.154 / (none)
+debug1: client_input_hostkeys: hostkeys file /root/.ssh/known_hosts2 does not exist
+debug1: client_input_hostkeys: no new or deprecated keys from server
+debug1: Remote: /root/.ssh/authorized_keys:4: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding
+debug1: Remote: /root/.ssh/authorized_keys:4: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding
+debug1: X11 forwarding requested but DISPLAY not set
+This system is restricted to authorized users. Individuals attempting unauthorized access will be prosecuted. If unauthorized, terminate access now! Clicking on OK indicates your acceptance of the information in the background.
+
+Activate the web console with: systemctl enable --now cockpit.socket
+
+Register this system with Red Hat Insights: insights-client --register
+Create an account or view all your systems at https://red.ht/insights-dashboard
+Last login: Sat Apr 18 14:02:58 2026 from 10.177.103.154
+[root@YONOUATDB01 ~]#
+
+
+
+
+
+
+[root@YONOUATDB01 ~]# ssh 10.177.103.155 -v
+OpenSSH_8.0p1, OpenSSL 1.1.1k  FIPS 25 Mar 2021
+debug1: Reading configuration data /root/.ssh/config
+debug1: /root/.ssh/config line 1: Applying options for *
+debug1: Reading configuration data /etc/ssh/ssh_config
+debug1: /etc/ssh/ssh_config line 19: Applying options for *
+debug1: Reading configuration data /etc/ssh/ssh_config.d/05-redhat.conf
+debug1: Reading configuration data /etc/crypto-policies/back-ends/openssh.config
+debug1: configuration requests final Match pass
+debug1: re-parsing configuration
+debug1: Reading configuration data /root/.ssh/config
+debug1: /root/.ssh/config line 1: Applying options for *
+debug1: Reading configuration data /etc/ssh/ssh_config
+debug1: /etc/ssh/ssh_config line 19: Applying options for *
+debug1: Reading configuration data /etc/ssh/ssh_config.d/05-redhat.conf
+debug1: Reading configuration data /etc/crypto-policies/back-ends/openssh.config
+debug1: Connecting to 10.177.103.155 [10.177.103.155] port 22.
+debug1: Connection established.
+debug1: identity file /root/.ssh/id_rsa type 0
+debug1: identity file /root/.ssh/id_rsa-cert type -1
+debug1: identity file /root/.ssh/id_dsa type -1
+debug1: identity file /root/.ssh/id_dsa-cert type -1
+debug1: identity file /root/.ssh/id_ecdsa type -1
+debug1: identity file /root/.ssh/id_ecdsa-cert type -1
+debug1: identity file /root/.ssh/id_ed25519 type -1
+debug1: identity file /root/.ssh/id_ed25519-cert type -1
+debug1: identity file /root/.ssh/id_xmss type -1
+debug1: identity file /root/.ssh/id_xmss-cert type -1
+debug1: Local version string SSH-2.0-OpenSSH_8.0
+debug1: Remote protocol version 2.0, remote software version OpenSSH_8.0
+debug1: match: OpenSSH_8.0 pat OpenSSH* compat 0x04000000
+debug1: Authenticating to 10.177.103.155:22 as 'root'
+debug1: SSH2_MSG_KEXINIT sent
+debug1: SSH2_MSG_KEXINIT received
+debug1: kex: algorithm: curve25519-sha256
+debug1: kex: host key algorithm: ecdsa-sha2-nistp256
+debug1: kex: server->client cipher: aes128-ctr MAC: hmac-sha2-256-etm@openssh.com compression: none
+debug1: kex: client->server cipher: aes128-ctr MAC: hmac-sha2-256-etm@openssh.com compression: none
+debug1: kex: curve25519-sha256 need=32 dh_need=32
+debug1: kex: curve25519-sha256 need=32 dh_need=32
+debug1: expecting SSH2_MSG_KEX_ECDH_REPLY
+debug1: Server host key: ecdsa-sha2-nistp256 SHA256:2HttDBNJZtDsCT22dJNwU2riHxjE7/4RThyYYeaG1P0
+debug1: Host '10.177.103.155' is known and matches the ECDSA host key.
+debug1: Found key in /root/.ssh/known_hosts:2
+debug1: resetting send seqnr 3
+debug1: rekey out after 4294967296 blocks
+debug1: SSH2_MSG_NEWKEYS sent
+debug1: expecting SSH2_MSG_NEWKEYS
+debug1: resetting read seqnr 3
+debug1: SSH2_MSG_NEWKEYS received
+debug1: rekey in after 4294967296 blocks
+debug1: Will attempt key: /root/.ssh/id_rsa RSA SHA256:M7pCdvCDzwiEq2lkjI/tnvj5TtVVdWCo1N1oZCuKRns
+debug1: Will attempt key: /root/.ssh/id_dsa
+debug1: Will attempt key: /root/.ssh/id_ecdsa
+debug1: Will attempt key: /root/.ssh/id_ed25519
+debug1: Will attempt key: /root/.ssh/id_xmss
+debug1: SSH2_MSG_EXT_INFO received
+debug1: kex_input_ext_info: server-sig-algs=<ssh-ed25519,ssh-rsa,rsa-sha2-256,rsa-sha2-512,ssh-dss,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521>
+debug1: SSH2_MSG_SERVICE_ACCEPT received
+debug1: Authentications that can continue: publickey,gssapi-keyex,gssapi-with-mic,password
+debug1: Next authentication method: gssapi-with-mic
+debug1: Unspecified GSS failure.  Minor code may provide more information
+No Kerberos credentials available (default cache: KCM:)
+
+
+debug1: Unspecified GSS failure.  Minor code may provide more information
+No Kerberos credentials available (default cache: KCM:)
+
+
+debug1: Next authentication method: publickey
+debug1: Offering public key: /root/.ssh/id_rsa RSA SHA256:M7pCdvCDzwiEq2lkjI/tnvj5TtVVdWCo1N1oZCuKRns
+debug1: Server accepts key: /root/.ssh/id_rsa RSA SHA256:M7pCdvCDzwiEq2lkjI/tnvj5TtVVdWCo1N1oZCuKRns
+debug1: Authentication succeeded (publickey).
+Authenticated to 10.177.103.155 ([10.177.103.155]:22).
+debug1: channel 0: new [client-session]
+debug1: Requesting no-more-sessions@openssh.com
+debug1: Entering interactive session.
+debug1: pledge: network
+debug1: client_input_global_request: rtype hostkeys-00@openssh.com want_reply 0
+debug1: Remote: /root/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding
+debug1: Remote: /root/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding
+debug1: Sending environment.
+debug1: Sending env LANG = en_US.UTF-8
+This system is restricted to authorized users. Individuals attempting unauthorized access will be prosecuted. If unauthorized, terminate access now! Clicking on OK indicates your acceptance of the information in the background.
+
+Activate the web console with: systemctl enable --now cockpit.socket
+
+Register this system with Red Hat Insights: insights-client --register
+Create an account or view all your systems at https://red.ht/insights-dashboard
+Last login: Sat Apr 18 14:03:40 2026 from 10.177.103.154
+[root@YONOUATDB02 ~]#
