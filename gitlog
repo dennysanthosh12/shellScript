@@ -68,3 +68,52 @@ UUID=D3CF-027D          /boot/efi               vfat    umask=0077,shortname=win
 /dev/mapper/rhel-swap   none                    swap    defaults        0 0
 /dev/mapper/rootvg-varlv  /var                  xfs     defaults        0 0
 [root@eisuatapictk /]#
+
+
+[eisuser@EISUATEXP09 ~]$ df -hT
+Filesystem                       Type      Size  Used Avail Use% Mounted on
+devtmpfs                         devtmpfs  4.0M     0  4.0M   0% /dev
+tmpfs                            tmpfs      32G   32M   32G   1% /dev/shm
+tmpfs                            tmpfs      13G  328M   13G   3% /run
+/dev/mapper/rootvg-rootlv        xfs        30G  1.9G   29G   7% /
+/dev/mapper/rootvg-usrlv         xfs        10G  3.4G  6.7G  34% /usr
+/dev/mapper/rootvg-optlv         xfs        20G   11G  9.5G  53% /opt
+/dev/mapper/rootvg-tmplv         xfs        10G  5.4G  4.7G  54% /tmp
+/dev/mapper/rootvg-varlv         xfs        30G   21G  9.6G  69% /var
+/dev/mapper/rootvg-homelv        xfs        30G   22G  8.1G  74% /home
+/dev/mapper/appvg-optibmlv       xfs        20G   11G  9.9G  51% /opt/IBM
+/dev/mapper/appvg-optmqmlv       xfs        20G  3.5G   17G  18% /opt/mqm
+/dev/mapper/appvg-varmqsilv      xfs        20G   11G  9.6G  52% /var/mqsi
+/dev/mapper/appvg-varmqmlv       xfs       100G   17G   84G  17% /var/mqm
+/dev/sdb3                        xfs      1014M  466M  549M  46% /boot
+/dev/mapper/rootvg-homescriptslv xfs       5.0G   99M  4.9G   2% /home/scripts
+/dev/sdb2                        vfat      200M  7.4M  193M   4% /efi
+tmpfs                            tmpfs     6.3G     0  6.3G   0% /run/user/0
+tmpfs                            tmpfs     6.3G   12K  6.3G   1% /run/user/1001
+/dev/mapper/bindu--VG-bindu--Lv  ext4       20G   24K   19G   1% /home/bindu
+tmpfs                            tmpfs     6.3G     0  6.3G   0% /run/user/1002
+/dev/mapper/appvg-logtmplv       xfs        60G   16G   45G  26% /log_temp
+[eisuser@EISUATEXP09 ~]$ lsblk
+NAME                                  MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+sda                                     8:0    0  250G  0 disk
+└─sda1                                  8:1    0  250G  0 part
+  ├─appvg-optibmlv                    253:12   0   20G  0 lvm  /opt/IBM
+  ├─appvg-varmqmlv                    253:13   0  100G  0 lvm  /var/mqm
+  ├─appvg-optmqmlv                    253:14   0   20G  0 lvm  /opt/mqm
+  ├─appvg-varmqsilv                   253:15   0   20G  0 lvm  /var/mqsi
+  └─appvg-logtmplv                    253:16   0   60G  0 lvm  /log_temp
+sdb                                     8:16   0  150G  0 disk
+├─sdb1                                  8:17   0    1M  0 part
+├─sdb2                                  8:18   0  200M  0 part /efi
+│                                                              /boot/efi
+├─sdb3                                  8:19   0    1G  0 part /boot
+├─sdb4                                  8:20   0  135G  0 part
+│ ├─rootvg-rootlv                     253:4    0   30G  0 lvm  /
+│ ├─rootvg-usrlv                      253:5    0   10G  0 lvm  /usr
+│ ├─rootvg-varlv                      253:6    0   30G  0 lvm  /var
+│ ├─rootvg-optlv                      253:7    0   20G  0 lvm  /opt
+│ ├─rootvg-tmplv                      253:8    0   10G  0 lvm  /tmp
+│ ├─rootvg-homelv                     253:10   0   30G  0 lvm  /home
+│ └─rootvg-homescriptslv              253:11   0    5G  0 lvm  /home/scripts
+└─sdb5                                  8:21   0 13.8G  0 part
+  └─rootvg-swap                       253:9    0   10G  0 lvm  [SWAP]
