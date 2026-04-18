@@ -1,4 +1,4 @@
-[root@YONOUATDB01 ~]# ssh 10.177.103.155 -vvv
+[root@YONOUATDB01 ~]# ssh 10.177.103.154 -vvv
 OpenSSH_8.0p1, OpenSSL 1.1.1k  FIPS 25 Mar 2021
 debug1: Reading configuration data /root/.ssh/config
 debug1: /root/.ssh/config line 1: Applying options for *
@@ -6,7 +6,7 @@ debug1: Reading configuration data /etc/ssh/ssh_config
 debug1: /etc/ssh/ssh_config line 19: Applying options for *
 debug3: /etc/ssh/ssh_config line 51: Including file /etc/ssh/ssh_config.d/05-redhat.conf depth 0
 debug1: Reading configuration data /etc/ssh/ssh_config.d/05-redhat.conf
-debug2: checking match for 'final all' host 10.177.103.155 originally 10.177.103.155
+debug2: checking match for 'final all' host 10.177.103.154 originally 10.177.103.154
 debug3: /etc/ssh/ssh_config.d/05-redhat.conf line 3: not matched 'final'
 debug2: match not found
 debug3: /etc/ssh/ssh_config.d/05-redhat.conf line 5: Including file /etc/crypto-policies/back-ends/openssh.config depth 1 (parse only)
@@ -14,7 +14,7 @@ debug1: Reading configuration data /etc/crypto-policies/back-ends/openssh.config
 debug3: gss kex names ok: [gss-curve25519-sha256-,gss-nistp256-sha256-,gss-group14-sha256-,gss-group16-sha512-,gss-gex-sha1-,gss-group14-sha1-]
 debug3: kex names ok: [curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512]
 debug1: configuration requests final Match pass
-debug2: resolve_canonicalize: hostname 10.177.103.155 is address
+debug2: resolve_canonicalize: hostname 10.177.103.154 is address
 debug1: re-parsing configuration
 debug1: Reading configuration data /root/.ssh/config
 debug1: /root/.ssh/config line 1: Applying options for *
@@ -22,7 +22,7 @@ debug1: Reading configuration data /etc/ssh/ssh_config
 debug1: /etc/ssh/ssh_config line 19: Applying options for *
 debug3: /etc/ssh/ssh_config line 51: Including file /etc/ssh/ssh_config.d/05-redhat.conf depth 0
 debug1: Reading configuration data /etc/ssh/ssh_config.d/05-redhat.conf
-debug2: checking match for 'final all' host 10.177.103.155 originally 10.177.103.155
+debug2: checking match for 'final all' host 10.177.103.154 originally 10.177.103.154
 debug3: /etc/ssh/ssh_config.d/05-redhat.conf line 3: matched 'final'
 debug2: match found
 debug3: /etc/ssh/ssh_config.d/05-redhat.conf line 5: Including file /etc/crypto-policies/back-ends/openssh.config depth 1
@@ -30,7 +30,7 @@ debug1: Reading configuration data /etc/crypto-policies/back-ends/openssh.config
 debug3: gss kex names ok: [gss-curve25519-sha256-,gss-nistp256-sha256-,gss-group14-sha256-,gss-group16-sha512-,gss-gex-sha1-,gss-group14-sha1-]
 debug3: kex names ok: [curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512]
 debug2: ssh_connect_direct
-debug1: Connecting to 10.177.103.155 [10.177.103.155] port 22.
+debug1: Connecting to 10.177.103.154 [10.177.103.154] port 22.
 debug1: Connection established.
 debug1: identity file /root/.ssh/id_rsa type 0
 debug1: identity file /root/.ssh/id_rsa-cert type -1
@@ -46,10 +46,10 @@ debug1: Local version string SSH-2.0-OpenSSH_8.0
 debug1: Remote protocol version 2.0, remote software version OpenSSH_8.0
 debug1: match: OpenSSH_8.0 pat OpenSSH* compat 0x04000000
 debug2: fd 3 setting O_NONBLOCK
-debug1: Authenticating to 10.177.103.155:22 as 'root'
+debug1: Authenticating to 10.177.103.154:22 as 'root'
 debug3: hostkeys_foreach: reading file "/root/.ssh/known_hosts"
-debug3: record_hostkey: found key type ECDSA in file /root/.ssh/known_hosts:2
-debug3: load_hostkeys: loaded 1 keys from 10.177.103.155
+debug3: record_hostkey: found key type ECDSA in file /root/.ssh/known_hosts:1
+debug3: load_hostkeys: loaded 1 keys from 10.177.103.154
 debug3: order_hostkeyalgs: have matching best-preference key type ecdsa-sha2-nistp256-cert-v01@openssh.com, using HostkeyAlgorithms verbatim
 debug3: send packet: type 20
 debug1: SSH2_MSG_KEXINIT sent
@@ -71,10 +71,10 @@ debug2: reserved 0
 debug2: peer server KEXINIT proposal
 debug2: KEX algorithms: curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,kex-strict-s-v00@openssh.com
 debug2: host key algorithms: rsa-sha2-512,rsa-sha2-256,ssh-rsa,ecdsa-sha2-nistp256,ssh-ed25519
-debug2: ciphers ctos: aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr
-debug2: ciphers stoc: aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr
-debug2: MACs ctos: hmac-sha2-256-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha1,umac-128@openssh.com,hmac-sha2-512
-debug2: MACs stoc: hmac-sha2-256-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha1,umac-128@openssh.com,hmac-sha2-512
+debug2: ciphers ctos: aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes256-ctr,aes256-cbc,aes128-gcm@openssh.com,aes128-ctr,aes128-cbc
+debug2: ciphers stoc: aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes256-ctr,aes256-cbc,aes128-gcm@openssh.com,aes128-ctr,aes128-cbc
+debug2: MACs ctos: hmac-sha2-256-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,umac-128@openssh.com,hmac-sha2-512
+debug2: MACs stoc: hmac-sha2-256-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,umac-128@openssh.com,hmac-sha2-512
 debug2: compression ctos: none,zlib@openssh.com
 debug2: compression stoc: none,zlib@openssh.com
 debug2: languages ctos:
@@ -93,10 +93,10 @@ debug1: expecting SSH2_MSG_KEX_ECDH_REPLY
 debug3: receive packet: type 31
 debug1: Server host key: ecdsa-sha2-nistp256 SHA256:2HttDBNJZtDsCT22dJNwU2riHxjE7/4RThyYYeaG1P0
 debug3: hostkeys_foreach: reading file "/root/.ssh/known_hosts"
-debug3: record_hostkey: found key type ECDSA in file /root/.ssh/known_hosts:2
-debug3: load_hostkeys: loaded 1 keys from 10.177.103.155
-debug1: Host '10.177.103.155' is known and matches the ECDSA host key.
-debug1: Found key in /root/.ssh/known_hosts:2
+debug3: record_hostkey: found key type ECDSA in file /root/.ssh/known_hosts:1
+debug3: load_hostkeys: loaded 1 keys from 10.177.103.154
+debug1: Host '10.177.103.154' is known and matches the ECDSA host key.
+debug1: Found key in /root/.ssh/known_hosts:1
 debug3: send packet: type 21
 debug1: resetting send seqnr 3
 debug2: set_newkeys: mode 1
@@ -153,7 +153,7 @@ debug3: sign_and_send_pubkey: signing using rsa-sha2-256
 debug3: send packet: type 50
 debug3: receive packet: type 52
 debug1: Authentication succeeded (publickey).
-Authenticated to 10.177.103.155 ([10.177.103.155]:22).
+Authenticated to 10.177.103.154 ([10.177.103.154]:22).
 debug1: channel 0: new [client-session]
 debug3: ssh_session2_open: channel_new: 0
 debug2: channel 0: send open
@@ -222,5 +222,5 @@ Activate the web console with: systemctl enable --now cockpit.socket
 
 Register this system with Red Hat Insights: insights-client --register
 Create an account or view all your systems at https://red.ht/insights-dashboard
-Last login: Sat Apr 18 14:32:34 2026 from 10.177.103.154
-[root@YONOUATDB02 ~]#
+Last login: Sat Apr 18 14:32:25 2026 from 10.177.44.58
+[root@YONOUATDB01 ~]#
