@@ -1,33 +1,35 @@
-[root@YONOUATDB01 etc]# grep -ri "cbc"
-crypto-policies/state/CURRENT.pol:cipher = AES-256-GCM AES-256-CCM CHACHA20-POLY1305 CAMELLIA-256-GCM AES-256-CTR AES-256-CBC CAMELLIA-256-CBC AES-128-GCM AES-128-CCM CAMELLIA-128-GCM AES-128-CTR AES-128-CBC CAMELLIA-128-CBC
-crypto-policies/state/CURRENT.pol:cipher@gnutls = AES-256-GCM AES-256-CCM CHACHA20-POLY1305 AES-256-CBC AES-128-GCM AES-128-CCM AES-128-CBC
-crypto-policies/state/CURRENT.pol:cipher@java-tls = AES-256-GCM AES-256-CCM CHACHA20-POLY1305 AES-256-CBC AES-128-GCM AES-128-CCM AES-128-CBC
-crypto-policies/state/CURRENT.pol:cipher@nss = AES-256-GCM AES-256-CCM CHACHA20-POLY1305 AES-256-CBC AES-128-GCM AES-128-CCM AES-128-CBC
-crypto-policies/state/CURRENT.pol:cipher@openssl = AES-256-GCM AES-256-CCM CHACHA20-POLY1305 AES-256-CBC AES-128-GCM AES-128-CCM AES-128-CBC
-java/java-1.8.0-openjdk/java-1.8.0-openjdk-1.8.0.482.b08-1.el8.x86_64/lib/security/java.security:    DH keySize < 1024, EC keySize < 224, 3DES_EDE_CBC, anon, NULL, \
-java/java-1.8.0-openjdk/java-1.8.0-openjdk-1.8.0.482.b08-1.el8.x86_64/lib/security/java.security:# For example, the cipher suite TLS_RSA_WITH_AES_128_CBC_SHA uses RSA as the
-java/java-1.8.0-openjdk/java-1.8.0-openjdk-1.8.0.482.b08-1.el8.x86_64/lib/security/java.security:# key exchange algorithm, AES_128_CBC (128 bits AES cipher algorithm in CBC
-java/java-1.8.0-openjdk/java-1.8.0-openjdk-1.8.0.482.b08-1.el8.x86_64/lib/security/java.security:#     1. JSSE cipher suite name, e.g., TLS_RSA_WITH_AES_128_CBC_SHA
-java/java-1.8.0-openjdk/java-1.8.0-openjdk-1.8.0.482.b08-1.el8.x86_64/lib/security/java.security:#     3. JSSE cipher (encryption) algorithm name, e.g., AES_128_CBC
-java/java-1.8.0-openjdk/java-1.8.0-openjdk-1.8.0.482.b08-1.el8.x86_64/lib/security/java.security:#   jdk.tls.legacyAlgorithms=DH_anon, DES_CBC, SSL_RSA_WITH_RC4_128_MD5
-java/java-1.8.0-openjdk/java-1.8.0-openjdk-1.8.0.482.b08-1.el8.x86_64/lib/security/java.security:        RC4_128, RC4_40, DES_CBC, DES40_CBC, \
-java/java-1.8.0-openjdk/java-1.8.0-openjdk-1.8.0.482.b08-1.el8.x86_64/lib/security/java.security:        3DES_EDE_CBC
-java/java-1.8.0-openjdk/java-1.8.0-openjdk-1.8.0.482.b08-1.el8.x86_64/lib/security/blacklisted.certs:14E6D2764A4B06701C6CBC376A253775F79C782FBCB6C0EE6F99DE4BA1024ADD
+[root@YONOUATDB02 etc]# cat /etc/crypto-policies/back-ends/openss
+openssh.config        opensshserver.config  opensslcnf.config     openssl.config
+[root@YONOUATDB02 etc]# cat /etc/crypto-policies/back-ends/openss*
+Ciphers aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr
+MACs hmac-sha2-256-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha1,umac-128@openssh.com,hmac-sha2-512
+GSSAPIKexAlgorithms gss-curve25519-sha256-,gss-nistp256-sha256-,gss-group14-sha256-,gss-group16-sha512-,gss-gex-sha1-,gss-group14-sha1-
+KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512
+PubkeyAcceptedKeyTypes ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp384,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp521,ecdsa-sha2-nistp521-cert-v01@openssh.com,ssh-ed25519,ssh-ed25519-cert-v01@openssh.com,rsa-sha2-256,rsa-sha2-256-cert-v01@openssh.com,rsa-sha2-512,rsa-sha2-512-cert-v01@openssh.com,ssh-rsa,ssh-rsa-cert-v01@openssh.com
+CASignatureAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-ed25519,rsa-sha2-256,rsa-sha2-512,ssh-rsa
+CRYPTO_POLICY='-oCiphers=aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr -oMACs=hmac-sha2-256-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha1,umac-128@openssh.com,hmac-sha2-512 -oGSSAPIKexAlgorithms=gss-curve25519-sha256-,gss-nistp256-sha256-,gss-group14-sha256-,gss-group16-sha512-,gss-gex-sha1-,gss-group14-sha1- -oKexAlgorithms=curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512 -oHostKeyAlgorithms=ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp384,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp521,ecdsa-sha2-nistp521-cert-v01@openssh.com,ssh-ed25519,ssh-ed25519-cert-v01@openssh.com,rsa-sha2-256,rsa-sha2-256-cert-v01@openssh.com,rsa-sha2-512,rsa-sha2-512-cert-v01@openssh.com,ssh-rsa,ssh-rsa-cert-v01@openssh.com -oPubkeyAcceptedKeyTypes=ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp384,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp521,ecdsa-sha2-nistp521-cert-v01@openssh.com,ssh-ed25519,ssh-ed25519-cert-v01@openssh.com,rsa-sha2-256,rsa-sha2-256-cert-v01@openssh.com,rsa-sha2-512,rsa-sha2-512-cert-v01@openssh.com,ssh-rsa,ssh-rsa-cert-v01@openssh.com -oCASignatureAlgorithms=ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-ed25519,rsa-sha2-256,rsa-sha2-512,ssh-rsa'
+CipherString = @SECLEVEL=2:kEECDH:kRSA:kEDH:kPSK:kDHEPSK:kECDHEPSK:-aDSS:-3DES:!DES:!RC4:!RC2:!IDEA:-SEED:!eNULL:!aNULL:!MD5:-SHA384:-CAMELLIA:-ARIA:-AESCCM8
+Ciphersuites = TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:TLS_AES_128_CCM_SHA256
+TLS.MinProtocol = TLSv1.2
+TLS.MaxProtocol = TLSv1.3
+DTLS.MinProtocol = DTLSv1.2
+DTLS.MaxProtocol = DTLSv1.2
+SignatureAlgorithms = ECDSA+SHA256:ECDSA+SHA384:ECDSA+SHA512:ed25519:ed448:rsa_pss_pss_sha256:rsa_pss_rsae_sha256:rsa_pss_pss_sha384:rsa_pss_rsae_sha384:rsa_pss_pss_sha512:rsa_pss_rsae_sha512:RSA+SHA256:RSA+SHA384:RSA+SHA512:ECDSA+SHA224:RSA+SHA224:ECDSA+SHA1:RSA+SHA1@SECLEVEL=2:kEECDH:kRSA:kEDH:kPSK:kDHEPSK:kECDHEPSK:-aDSS:-3DES:!DES:!RC4:!RC2:!IDEA:-SEED:!eNULL:!aNULL:!MD5:-SHA384:-CAMELLIA:-ARIA:-AESCCM8[root@YONOUATDB02 etc]#
 
 
-
-[root@YONOUATDB02 etc]# grep -ri "cbc"
-crypto-policies/state/CURRENT.pol:cipher = AES-256-GCM AES-256-CCM CHACHA20-POLY1305 CAMELLIA-256-GCM AES-256-CTR AES-256-CBC CAMELLIA-256-CBC AES-128-GCM AES-128-CCM CAMELLIA-128-GCM AES-128-CTR AES-128-CBC CAMELLIA-128-CBC
-crypto-policies/state/CURRENT.pol:cipher@gnutls = AES-256-GCM AES-256-CCM CHACHA20-POLY1305 AES-256-CBC AES-128-GCM AES-128-CCM AES-128-CBC
-crypto-policies/state/CURRENT.pol:cipher@java-tls = AES-256-GCM AES-256-CCM CHACHA20-POLY1305 AES-256-CBC AES-128-GCM AES-128-CCM AES-128-CBC
-crypto-policies/state/CURRENT.pol:cipher@nss = AES-256-GCM AES-256-CCM CHACHA20-POLY1305 AES-256-CBC AES-128-GCM AES-128-CCM AES-128-CBC
-crypto-policies/state/CURRENT.pol:cipher@openssl = AES-256-GCM AES-256-CCM CHACHA20-POLY1305 AES-256-CBC AES-128-GCM AES-128-CCM AES-128-CBC
-java/java-1.8.0-openjdk/java-1.8.0-openjdk-1.8.0.482.b08-1.el8.x86_64/lib/security/java.security:    DH keySize < 1024, EC keySize < 224, 3DES_EDE_CBC, anon, NULL, \
-java/java-1.8.0-openjdk/java-1.8.0-openjdk-1.8.0.482.b08-1.el8.x86_64/lib/security/java.security:# For example, the cipher suite TLS_RSA_WITH_AES_128_CBC_SHA uses RSA as the
-java/java-1.8.0-openjdk/java-1.8.0-openjdk-1.8.0.482.b08-1.el8.x86_64/lib/security/java.security:# key exchange algorithm, AES_128_CBC (128 bits AES cipher algorithm in CBC
-java/java-1.8.0-openjdk/java-1.8.0-openjdk-1.8.0.482.b08-1.el8.x86_64/lib/security/java.security:#     1. JSSE cipher suite name, e.g., TLS_RSA_WITH_AES_128_CBC_SHA
-java/java-1.8.0-openjdk/java-1.8.0-openjdk-1.8.0.482.b08-1.el8.x86_64/lib/security/java.security:#     3. JSSE cipher (encryption) algorithm name, e.g., AES_128_CBC
-java/java-1.8.0-openjdk/java-1.8.0-openjdk-1.8.0.482.b08-1.el8.x86_64/lib/security/java.security:#   jdk.tls.legacyAlgorithms=DH_anon, DES_CBC, SSL_RSA_WITH_RC4_128_MD5
-java/java-1.8.0-openjdk/java-1.8.0-openjdk-1.8.0.482.b08-1.el8.x86_64/lib/security/java.security:        RC4_128, RC4_40, DES_CBC, DES40_CBC, \
-java/java-1.8.0-openjdk/java-1.8.0-openjdk-1.8.0.482.b08-1.el8.x86_64/lib/security/java.security:        3DES_EDE_CBC
-java/java-1.8.0-openjdk/java-1.8.0-openjdk-1.8.0.482.b08-1.el8.x86_64/lib/security/blacklisted.certs:14E6D2764A4B06701C6CBC376A253775F79C782FBCB6C0EE6F99DE4BA1024ADD
+[root@YONOUATDB01 etc]# cat /etc/crypto-policies/back-ends/openss*
+Ciphers aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr
+MACs hmac-sha2-256-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha1,umac-128@openssh.com,hmac-sha2-512
+GSSAPIKexAlgorithms gss-curve25519-sha256-,gss-nistp256-sha256-,gss-group14-sha256-,gss-group16-sha512-,gss-gex-sha1-,gss-group14-sha1-
+KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512
+PubkeyAcceptedKeyTypes ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp384,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp521,ecdsa-sha2-nistp521-cert-v01@openssh.com,ssh-ed25519,ssh-ed25519-cert-v01@openssh.com,rsa-sha2-256,rsa-sha2-256-cert-v01@openssh.com,rsa-sha2-512,rsa-sha2-512-cert-v01@openssh.com,ssh-rsa,ssh-rsa-cert-v01@openssh.com
+CASignatureAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-ed25519,rsa-sha2-256,rsa-sha2-512,ssh-rsa
+CRYPTO_POLICY='-oCiphers=aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes256-ctr,aes256-cbc,aes128-gcm@openssh.com,aes128-ctr,aes128-cbc -oMACs=hmac-sha2-256-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,umac-128@openssh.com,hmac-sha2-512 -oGSSAPIKexAlgorithms=gss-curve25519-sha256-,gss-nistp256-sha256-,gss-group14-sha256-,gss-group16-sha512-,gss-gex-sha1-,gss-group14-sha1- -oKexAlgorithms=curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512 -oHostKeyAlgorithms=ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp384,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp521,ecdsa-sha2-nistp521-cert-v01@openssh.com,ssh-ed25519,ssh-ed25519-cert-v01@openssh.com,rsa-sha2-256,rsa-sha2-256-cert-v01@openssh.com,rsa-sha2-512,rsa-sha2-512-cert-v01@openssh.com,ssh-rsa,ssh-rsa-cert-v01@openssh.com -oPubkeyAcceptedKeyTypes=ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp384,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp521,ecdsa-sha2-nistp521-cert-v01@openssh.com,ssh-ed25519,ssh-ed25519-cert-v01@openssh.com,rsa-sha2-256,rsa-sha2-256-cert-v01@openssh.com,rsa-sha2-512,rsa-sha2-512-cert-v01@openssh.com,ssh-rsa,ssh-rsa-cert-v01@openssh.com -oCASignatureAlgorithms=ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-ed25519,rsa-sha2-256,rsa-sha2-512,ssh-rsa'
+debug2: channel 0: window 997886 sent adjust 50690
+CipherString = @SECLEVEL=2:kEECDH:kRSA:kEDH:kPSK:kDHEPSK:kECDHEPSK:-aDSS:-3DES:!DES:!RC4:!RC2:!IDEA:-SEED:!eNULL:!aNULL:!MD5:-SHA384:-CAMELLIA:-ARIA:-AESCCM8
+Ciphersuites = TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:TLS_AES_128_CCM_SHA256
+TLS.MinProtocol = TLSv1.2
+TLS.MaxProtocol = TLSv1.3
+DTLS.MinProtocol = DTLSv1.2
+DTLS.MaxProtocol = DTLSv1.2
+SignatureAlgorithms = ECDSA+SHA256:ECDSA+SHA384:ECDSA+SHA512:ed25519:ed448:rsa_pss_pss_sha256:rsa_pss_rsae_sha256:rsa_pss_pss_sha384:rsa_pss_rsae_sha384:rsa_pss_pss_sha512:rsa_pss_rsae_sha512:RSA+SHA256:RSA+SHA384:RSA+SHA512:ECDSA+SHA224:RSA+SHA224:ECDSA+SHA1:RSA+SHA1@SECLEVEL=2:kEECDH:kRSA:kEDH:kPSK:kDHEPSK:kECDHEPSK:-aDSS:-3DES:!DES:!RC4:!RC2:!IDEA:-SEED:!eNULL:!aNULL:!MD5:-SHA384:-CAMELLIA:-ARIA:-AESCCM8[root@YONOUATDB01 etc]#
