@@ -1,4 +1,26 @@
-[eisuser@eisuatsftp01 ~]$ yum search mysql:8.4
-Not root, Subscription Management repositories not updated
-Last metadata expiration check: 1 day, 18:23:30 ago on Mon Apr 20 17:07:30 2026.
-No matches found.
+[root@eisuatsftp01 ~]# dnf module list mysql
+Updating Subscription Management repositories.
+Unable to read consumer identity
+
+This system is not registered with an entitlement server. You can use subscription-manager to register.
+
+Last metadata expiration check: 2:55:49 ago on Wed Apr 22 08:36:35 2026.
+AppStream
+Name                                               Stream                                              Profiles                                                                     Summary
+mysql                                              8.4                                                 api, client, filter, server [d]                                              MySQL Module
+
+Hint: [d]efault, [e]nabled, [x]disabled, [i]nstalled
+[root@eisuatsftp01 ~]# dnf list installed mysql*
+Updating Subscription Management repositories.
+Unable to read consumer identity
+
+This system is not registered with an entitlement server. You can use subscription-manager to register.
+
+Installed Packages
+mysql.x86_64                                                                                                        8.0.43-1.el9_6                                                                                                 @AppStream
+mysql-common.x86_64                                                                                                 8.0.43-1.el9_6                                                                                                 @AppStream
+mysql-errmsg.x86_64                                                                                                 8.0.43-1.el9_6                                                                                                 @AppStream
+mysql-libs.x86_64                                                                                                   8.0.43-1.el9_6                                                                                                 @AppStream
+mysql-selinux.noarch                                                                                                1.0.14-1.el9_6                                                                                                 @AppStream
+mysql-server.x86_64                                                                                                 8.0.43-1.el9_6                                                                                                 @AppStream
+[root@eisuatsftp01 ~]#
