@@ -1,36 +1,15 @@
-[eisuser@EISUATEXP09 ~]$ sudo netstat -antpl | grep 4003
-tcp6       0      0 :::4003                 :::*                    LISTEN      1939073/biphttplist
-[eisuser@EISUATEXP09 ~]$ ps -ef | grep 1939073
-eisuser  1939073 1939042  0 12:29 ?        00:00:11 /opt/IBM/ace/server/bin/biphttplistener PAYMENT_EXP
-eisuser  1977543 1968392  0 12:55 pts/3    00:00:00 grep --color=auto 1939073
-[eisuser@EISUATEXP09 ~]$
-[eisuser@EISUATEXP09 ~]$
-[eisuser@EISUATEXP09 ~]$
-[eisuser@EISUATEXP09 ~]$
-[eisuser@EISUATEXP09 ~]$ curl -k -X GET https://10.177.44.58:4003/apilist/fetch -d'{
-    "Server": "Payment_E_02",
-    "Port": "4420",
-    "hostname": "10.177.44.54"
-}'
-curl: (35) OpenSSL SSL_connect: SSL_ERROR_ZERO_RETURN in connection to 10.177.44.58:4003
-[eisuser@EISUATEXP09 ~]$
-[eisuser@EISUATEXP09 ~]$ sudo netstat -antpl | grep 4003
-tcp6       0      0 :::4003                 :::*                    LISTEN      1939073/biphttplist
-tcp6       0      0 10.177.44.58:4003       10.177.44.58:53636      TIME_WAIT   -
-[eisuser@EISUATEXP09 ~]$
-[eisuser@EISUATEXP09 ~]$ curl -k -X GET https://10.177.44.58:4003/apilist/fetch -d'{
-    "Server": "Payment_E_02",
-    "Port": "4420",
-    "hostname": "10.177.44.54"
-}' -v
-*   Trying 10.177.44.58:4003...
-* Connected to 10.177.44.58 (10.177.44.58) port 4003 (#0)
-* ALPN, offering h2
-* ALPN, offering http/1.1
-*  CAfile: /etc/pki/tls/certs/ca-bundle.crt
-* TLSv1.0 (OUT), TLS header, Certificate Status (22):
-* TLSv1.3 (OUT), TLS handshake, Client hello (1):
-* OpenSSL SSL_connect: SSL_ERROR_ZERO_RETURN in connection to 10.177.44.58:4003
-* Closing connection 0
-curl: (35) OpenSSL SSL_connect: SSL_ERROR_ZERO_RETURN in connection to 10.177.44.58:4003
-[eisuser@EISUATEXP09 ~]$
+CREATE COMPUTE MODULE getFetch_Compute1
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		CREATE FIELD OutputRoot.JSON.Data IDENTITY(JSON.Array)Data;
+		DECLARE apiRef REFERENCE TO InputRoot.JSON.Data.children.Item[1];
+		DECLARE i INTEGER 1;
+		WHILE LASTMOVE(apiRef) DO
+			SET OutputRoot.JSON.Data.Item[i] = apiRef.name;
+			SET i = i + 1;
+			MOVE apiRef NEXTSIBLING;
+		END WHILE;
+		RETURN TRUE;
+	END;
+
+END MODULE;
