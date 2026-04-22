@@ -1,237 +1,36 @@
-[root@eisuatsftp01 ~]# dnf module list mysql
-Updating Subscription Management repositories.
-Unable to read consumer identity
-
-This system is not registered with an entitlement server. You can use subscription-manager to register.
-
-Last metadata expiration check: 2:55:49 ago on Wed Apr 22 08:36:35 2026.
-AppStream
-Name                                               Stream                                              Profiles                                                                     Summary
-mysql                                              8.4                                                 api, client, filter, server [d]                                              MySQL Module
-
-Hint: [d]efault, [e]nabled, [x]disabled, [i]nstalled
-[root@eisuatsftp01 ~]# dnf list installed mysql*
-Updating Subscription Management repositories.
-Unable to read consumer identity
-
-This system is not registered with an entitlement server. You can use subscription-manager to register.
-
-Installed Packages
-mysql.x86_64                                                                                                        8.0.43-1.el9_6                                                                                                 @AppStream
-mysql-common.x86_64                                                                                                 8.0.43-1.el9_6                                                                                                 @AppStream
-mysql-errmsg.x86_64                                                                                                 8.0.43-1.el9_6                                                                                                 @AppStream
-mysql-libs.x86_64                                                                                                   8.0.43-1.el9_6                                                                                                 @AppStream
-mysql-selinux.noarch                                                                                                1.0.14-1.el9_6                                                                                                 @AppStream
-mysql-server.x86_64                                                                                                 8.0.43-1.el9_6                                                                                                 @AppStream
-[root@eisuatsftp01 ~]# systemctl status mysqld
-○ mysqld.service - MySQL 8.0 database server
-     Loaded: loaded (/usr/lib/systemd/system/mysqld.service; disabled; preset: disabled)
-     Active: inactive (dead)
-
-Apr 21 16:34:51 eisuatsftp01 systemd[1]: Stopping MySQL 8.0 database server...
-Apr 21 16:34:52 eisuatsftp01 systemd[1]: mysqld.service: Deactivated successfully.
-Apr 21 16:34:52 eisuatsftp01 systemd[1]: Stopped MySQL 8.0 database server.
-Apr 21 16:34:52 eisuatsftp01 systemd[1]: mysqld.service: Consumed 3min 25.199s CPU time.
-[root@eisuatsftp01 ~]# dnf remove mysql*
-Updating Subscription Management repositories.
-Unable to read consumer identity
-
-This system is not registered with an entitlement server. You can use subscription-manager to register.
-
-Dependencies resolved.
-=============================================================================================================================================================================================================================================
- Package                                                              Architecture                                     Version                                                    Repository                                            Size
-=============================================================================================================================================================================================================================================
-Removing:
- mysql                                                                x86_64                                           8.0.43-1.el9_6                                             @AppStream                                            60 M
- mysql-common                                                         x86_64                                           8.0.43-1.el9_6                                             @AppStream                                           445 k
- mysql-errmsg                                                         x86_64                                           8.0.43-1.el9_6                                             @AppStream                                           9.9 M
- mysql-libs                                                           x86_64                                           8.0.43-1.el9_6                                             @AppStream                                           6.5 M
- mysql-selinux                                                        noarch                                           1.0.14-1.el9_6                                             @AppStream                                            50 k
- mysql-server                                                         x86_64                                           8.0.43-1.el9_6                                             @AppStream                                           108 M
-Removing unused dependencies:
- mariadb-connector-c-config                                           noarch                                           3.2.6-1.el9_0                                              @AppStream                                           497
- mecab                                                                x86_64                                           0.996-3.el9.4                                              @AppStream                                           1.2 M
- protobuf-lite                                                        x86_64                                           3.14.0-16.el9                                              @AppStream                                           782 k
-
-Transaction Summary
-=============================================================================================================================================================================================================================================
-Remove  9 Packages
-
-Freed space: 187 M
-Is this ok [y/N]: y
-Running transaction check
-Transaction check succeeded.
-Running transaction test
-Transaction test succeeded.
-Running transaction
-  Preparing        :                                                                                                                                                                                                                     1/1
-  Running scriptlet: mysql-server-8.0.43-1.el9_6.x86_64                                                                                                                                                                                  1/9
-  Erasing          : mysql-server-8.0.43-1.el9_6.x86_64                                                                                                                                                                                  1/9
-  Running scriptlet: mysql-server-8.0.43-1.el9_6.x86_64                                                                                                                                                                                  1/9
-  Erasing          : mysql-errmsg-8.0.43-1.el9_6.x86_64                                                                                                                                                                                  2/9
-  Erasing          : mysql-8.0.43-1.el9_6.x86_64                                                                                                                                                                                         3/9
-  Erasing          : mysql-libs-8.0.43-1.el9_6.x86_64                                                                                                                                                                                    4/9
-  Erasing          : mysql-common-8.0.43-1.el9_6.x86_64                                                                                                                                                                                  5/9
-  Erasing          : mariadb-connector-c-config-3.2.6-1.el9_0.noarch                                                                                                                                                                     6/9
-  Erasing          : mysql-selinux-1.0.14-1.el9_6.noarch                                                                                                                                                                                 7/9
-  Running scriptlet: mysql-selinux-1.0.14-1.el9_6.noarch                                                                                                                                                                                 7/9
-  Erasing          : mecab-0.996-3.el9.4.x86_64                                                                                                                                                                                          8/9
-  Erasing          : protobuf-lite-3.14.0-16.el9.x86_64                                                                                                                                                                                  9/9
-  Running scriptlet: protobuf-lite-3.14.0-16.el9.x86_64                                                                                                                                                                                  9/9
-  Verifying        : mariadb-connector-c-config-3.2.6-1.el9_0.noarch                                                                                                                                                                     1/9
-  Verifying        : mecab-0.996-3.el9.4.x86_64                                                                                                                                                                                          2/9
-  Verifying        : mysql-8.0.43-1.el9_6.x86_64                                                                                                                                                                                         3/9
-  Verifying        : mysql-common-8.0.43-1.el9_6.x86_64                                                                                                                                                                                  4/9
-  Verifying        : mysql-errmsg-8.0.43-1.el9_6.x86_64                                                                                                                                                                                  5/9
-  Verifying        : mysql-libs-8.0.43-1.el9_6.x86_64                                                                                                                                                                                    6/9
-  Verifying        : mysql-selinux-1.0.14-1.el9_6.noarch                                                                                                                                                                                 7/9
-  Verifying        : mysql-server-8.0.43-1.el9_6.x86_64                                                                                                                                                                                  8/9
-  Verifying        : protobuf-lite-3.14.0-16.el9.x86_64                                                                                                                                                                                  9/9
-Installed products updated.
-
-Removed:
-  mariadb-connector-c-config-3.2.6-1.el9_0.noarch   mecab-0.996-3.el9.4.x86_64           mysql-8.0.43-1.el9_6.x86_64          mysql-common-8.0.43-1.el9_6.x86_64   mysql-errmsg-8.0.43-1.el9_6.x86_64   mysql-libs-8.0.43-1.el9_6.x86_64
-  mysql-selinux-1.0.14-1.el9_6.noarch               mysql-server-8.0.43-1.el9_6.x86_64   protobuf-lite-3.14.0-16.el9.x86_64
-
-Complete!
-[root@eisuatsftp01 ~]# dnf module reset mysql
-Updating Subscription Management repositories.
-Unable to read consumer identity
-
-This system is not registered with an entitlement server. You can use subscription-manager to register.
-
-Last metadata expiration check: 2:59:05 ago on Wed Apr 22 08:36:35 2026.
-Dependencies resolved.
-Nothing to do.
-Complete!
-[root@eisuatsftp01 ~]#
-[root@eisuatsftp01 ~]#
-[root@eisuatsftp01 ~]#
-[root@eisuatsftp01 ~]# dnf module enable mysql:8.4
-Updating Subscription Management repositories.
-Unable to read consumer identity
-
-This system is not registered with an entitlement server. You can use subscription-manager to register.
-
-Last metadata expiration check: 2:59:22 ago on Wed Apr 22 08:36:35 2026.
-Dependencies resolved.
-=============================================================================================================================================================================================================================================
- Package                                                  Architecture                                            Version                                                     Repository                                                Size
-=============================================================================================================================================================================================================================================
-Enabling module streams:
- mysql                                                                                                            8.4
-
-Transaction Summary
-=============================================================================================================================================================================================================================================
-
-Is this ok [y/N]: y
-Complete!
-[root@eisuatsftp01 ~]#
-[root@eisuatsftp01 ~]#
-[root@eisuatsftp01 ~]# dnf install mysql-server
-Updating Subscription Management repositories.
-Unable to read consumer identity
-
-This system is not registered with an entitlement server. You can use subscription-manager to register.
-
-Last metadata expiration check: 2:59:49 ago on Wed Apr 22 08:36:35 2026.
-Dependencies resolved.
-=============================================================================================================================================================================================================================================
- Package                                                        Architecture                               Version                                                                       Repository                                     Size
-=============================================================================================================================================================================================================================================
-Installing:
- mysql-server                                                   x86_64                                     8.4.6-1.module+el9.6.0+23497+d0c5dcca                                         AppStream                                      18 M
-Installing dependencies:
- mariadb-connector-c-config                                     noarch                                     3.2.6-1.el9_0                                                                 AppStream                                      11 k
- mecab                                                          x86_64                                     0.996-3.module+el9.6.0+22713+cbf15e23.4                                       AppStream                                     362 k
- mysql                                                          x86_64                                     8.4.6-1.module+el9.6.0+23497+d0c5dcca                                         AppStream                                     2.4 M
- mysql-common                                                   noarch                                     8.4.6-1.module+el9.6.0+23497+d0c5dcca                                         AppStream                                      74 k
- mysql-errmsg                                                   noarch                                     8.4.6-1.module+el9.6.0+23497+d0c5dcca                                         AppStream                                     530 k
- mysql-selinux                                                  noarch                                     1.0.14-1.el9_6                                                                AppStream                                      36 k
- protobuf-lite                                                  x86_64                                     3.14.0-16.el9                                                                 AppStream                                     233 k
-
-Transaction Summary
-=============================================================================================================================================================================================================================================
-Install  8 Packages
-
-Total download size: 22 M
-Installed size: 172 M
-Is this ok [y/N]: y
-Downloading Packages:
-(1/8): mariadb-connector-c-config-3.2.6-1.el9_0.noarch.rpm                                                                                                                                                   1.7 MB/s |  11 kB     00:00
-(2/8): mysql-common-8.4.6-1.module+el9.6.0+23497+d0c5dcca.noarch.rpm                                                                                                                                          18 MB/s |  74 kB     00:00
-(3/8): mecab-0.996-3.module+el9.6.0+22713+cbf15e23.4.x86_64.rpm                                                                                                                                               21 MB/s | 362 kB     00:00
-(4/8): mysql-selinux-1.0.14-1.el9_6.noarch.rpm                                                                                                                                                               6.0 MB/s |  36 kB     00:00
-(5/8): mysql-errmsg-8.4.6-1.module+el9.6.0+23497+d0c5dcca.noarch.rpm                                                                                                                                          28 MB/s | 530 kB     00:00
-(6/8): protobuf-lite-3.14.0-16.el9.x86_64.rpm                                                                                                                                                                 46 MB/s | 233 kB     00:00
-(7/8): mysql-8.4.6-1.module+el9.6.0+23497+d0c5dcca.x86_64.rpm                                                                                                                                                 52 MB/s | 2.4 MB     00:00
-(8/8): mysql-server-8.4.6-1.module+el9.6.0+23497+d0c5dcca.x86_64.rpm                                                                                                                                         210 MB/s |  18 MB     00:00
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Total                                                                                                                                                                                                        195 MB/s |  22 MB     00:00
-Running transaction check
-Transaction check succeeded.
-Running transaction test
-Transaction test succeeded.
-Running transaction
-  Preparing        :                                                                                                                                                                                                                     1/1
-  Installing       : mariadb-connector-c-config-3.2.6-1.el9_0.noarch                                                                                                                                                                     1/8
-  Installing       : mysql-common-8.4.6-1.module+el9.6.0+23497+d0c5dcca.noarch                                                                                                                                                           2/8
-  Installing       : mysql-8.4.6-1.module+el9.6.0+23497+d0c5dcca.x86_64                                                                                                                                                                  3/8
-  Installing       : mysql-errmsg-8.4.6-1.module+el9.6.0+23497+d0c5dcca.noarch                                                                                                                                                           4/8
-  Installing       : protobuf-lite-3.14.0-16.el9.x86_64                                                                                                                                                                                  5/8
-  Running scriptlet: mysql-selinux-1.0.14-1.el9_6.noarch                                                                                                                                                                                 6/8
-  Installing       : mysql-selinux-1.0.14-1.el9_6.noarch                                                                                                                                                                                 6/8
-  Running scriptlet: mysql-selinux-1.0.14-1.el9_6.noarch                                                                                                                                                                                 6/8
-libsemanage.semanage_direct_install_info: Overriding mysql module at lower priority 100 with module at priority 200.
-
-  Installing       : mecab-0.996-3.module+el9.6.0+22713+cbf15e23.4.x86_64                                                                                                                                                                7/8
-  Running scriptlet: mysql-server-8.4.6-1.module+el9.6.0+23497+d0c5dcca.x86_64                                                                                                                                                           8/8
-  Installing       : mysql-server-8.4.6-1.module+el9.6.0+23497+d0c5dcca.x86_64                                                                                                                                                           8/8
-  Running scriptlet: mysql-server-8.4.6-1.module+el9.6.0+23497+d0c5dcca.x86_64                                                                                                                                                           8/8
-  Running scriptlet: mysql-selinux-1.0.14-1.el9_6.noarch                                                                                                                                                                                 8/8
-  Running scriptlet: mysql-server-8.4.6-1.module+el9.6.0+23497+d0c5dcca.x86_64                                                                                                                                                           8/8
-  Verifying        : mariadb-connector-c-config-3.2.6-1.el9_0.noarch                                                                                                                                                                     1/8
-  Verifying        : mecab-0.996-3.module+el9.6.0+22713+cbf15e23.4.x86_64                                                                                                                                                                2/8
-  Verifying        : mysql-8.4.6-1.module+el9.6.0+23497+d0c5dcca.x86_64                                                                                                                                                                  3/8
-  Verifying        : mysql-common-8.4.6-1.module+el9.6.0+23497+d0c5dcca.noarch                                                                                                                                                           4/8
-  Verifying        : mysql-errmsg-8.4.6-1.module+el9.6.0+23497+d0c5dcca.noarch                                                                                                                                                           5/8
-  Verifying        : mysql-selinux-1.0.14-1.el9_6.noarch                                                                                                                                                                                 6/8
-  Verifying        : mysql-server-8.4.6-1.module+el9.6.0+23497+d0c5dcca.x86_64                                                                                                                                                           7/8
-  Verifying        : protobuf-lite-3.14.0-16.el9.x86_64                                                                                                                                                                                  8/8
-Installed products updated.
-
-Installed:
-  mariadb-connector-c-config-3.2.6-1.el9_0.noarch             mecab-0.996-3.module+el9.6.0+22713+cbf15e23.4.x86_64   mysql-8.4.6-1.module+el9.6.0+23497+d0c5dcca.x86_64          mysql-common-8.4.6-1.module+el9.6.0+23497+d0c5dcca.noarch
-  mysql-errmsg-8.4.6-1.module+el9.6.0+23497+d0c5dcca.noarch   mysql-selinux-1.0.14-1.el9_6.noarch                    mysql-server-8.4.6-1.module+el9.6.0+23497+d0c5dcca.x86_64   protobuf-lite-3.14.0-16.el9.x86_64
-
-Complete!
-[root@eisuatsftp01 ~]#
-[root@eisuatsftp01 ~]#
-
-[root@eisuatsftp01 ~]#
-[root@eisuatsftp01 ~]# dnf list installed mysql*
-Updating Subscription Management repositories.
-Unable to read consumer identity
-
-This system is not registered with an entitlement server. You can use subscription-manager to register.
-
-Installed Packages
-mysql.x86_64                                                                                             8.4.6-1.module+el9.6.0+23497+d0c5dcca                                                                                     @AppStream
-mysql-common.noarch                                                                                      8.4.6-1.module+el9.6.0+23497+d0c5dcca                                                                                     @AppStream
-mysql-errmsg.noarch                                                                                      8.4.6-1.module+el9.6.0+23497+d0c5dcca                                                                                     @AppStream
-mysql-selinux.noarch                                                                                     1.0.14-1.el9_6                                                                                                            @AppStream
-mysql-server.x86_64                                                                                      8.4.6-1.module+el9.6.0+23497+d0c5dcca                                                                                     @AppStream
-[root@eisuatsftp01 ~]#
-[root@eisuatsftp01 ~]#
-[root@eisuatsftp01 ~]#
-[root@eisuatsftp01 ~]#
-[root@eisuatsftp01 ~]#
-[root@eisuatsftp01 ~]#
-logout
-[eisuser@eisuatsftp01 ~]$ mysql -u root -p
-Enter password:
-ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/var/lib/mysql/mysql.sock' (2)
-[eisuser@eisuatsftp01 ~]$
-[eisuser@eisuatsftp01 ~]$
-[eisuser@eisuatsftp01 ~]$
+[eisuser@EISUATEXP09 ~]$ sudo netstat -antpl | grep 4003
+tcp6       0      0 :::4003                 :::*                    LISTEN      1939073/biphttplist
+[eisuser@EISUATEXP09 ~]$ ps -ef | grep 1939073
+eisuser  1939073 1939042  0 12:29 ?        00:00:11 /opt/IBM/ace/server/bin/biphttplistener PAYMENT_EXP
+eisuser  1977543 1968392  0 12:55 pts/3    00:00:00 grep --color=auto 1939073
+[eisuser@EISUATEXP09 ~]$
+[eisuser@EISUATEXP09 ~]$
+[eisuser@EISUATEXP09 ~]$
+[eisuser@EISUATEXP09 ~]$
+[eisuser@EISUATEXP09 ~]$ curl -k -X GET https://10.177.44.58:4003/apilist/fetch -d'{
+    "Server": "Payment_E_02",
+    "Port": "4420",
+    "hostname": "10.177.44.54"
+}'
+curl: (35) OpenSSL SSL_connect: SSL_ERROR_ZERO_RETURN in connection to 10.177.44.58:4003
+[eisuser@EISUATEXP09 ~]$
+[eisuser@EISUATEXP09 ~]$ sudo netstat -antpl | grep 4003
+tcp6       0      0 :::4003                 :::*                    LISTEN      1939073/biphttplist
+tcp6       0      0 10.177.44.58:4003       10.177.44.58:53636      TIME_WAIT   -
+[eisuser@EISUATEXP09 ~]$
+[eisuser@EISUATEXP09 ~]$ curl -k -X GET https://10.177.44.58:4003/apilist/fetch -d'{
+    "Server": "Payment_E_02",
+    "Port": "4420",
+    "hostname": "10.177.44.54"
+}' -v
+*   Trying 10.177.44.58:4003...
+* Connected to 10.177.44.58 (10.177.44.58) port 4003 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+*  CAfile: /etc/pki/tls/certs/ca-bundle.crt
+* TLSv1.0 (OUT), TLS header, Certificate Status (22):
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* OpenSSL SSL_connect: SSL_ERROR_ZERO_RETURN in connection to 10.177.44.58:4003
+* Closing connection 0
+curl: (35) OpenSSL SSL_connect: SSL_ERROR_ZERO_RETURN in connection to 10.177.44.58:4003
+[eisuser@EISUATEXP09 ~]$
