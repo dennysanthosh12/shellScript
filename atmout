@@ -1,1 +1,23 @@
-grep -ir "port" . 2>/dev/null | grep -v "#" | awk -F'[:=]' '{print $1 " -> " $NF}'
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://cache/details"
+            targetNamespace="http://cache/details"
+            elementFormDefault="qualified">
+
+    <xsd:element name="input">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="Rows" maxOccurs="unbounded">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="field_name" type="xsd:string"/>
+                            <xsd:element name="field_value" type="xsd:string"/>
+                            <xsd:element name="service_name" type="xsd:string"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+</xsd:schema>
