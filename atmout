@@ -1,42 +1,67 @@
+Failed to generate the map for mapping routine 'default/:getFetch_Mapping', with the following details: Location: '' Internal Error Number: '4'  Error Message: 'Map platform:/resource/getFetch_Mapping.map could not generate the xquery transformation. '. 
+
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" xmlns:map="default" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0">
-    <input path="/Cache.xsd" var="var3"/>
-    <input path="jar:file://!com/ibm/etools/mft/map/xsds/assembly/Environment.xsd" var="var2"/>
-    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var2"/>
+    <inlinedXMLSchema>
+        <![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?> 
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"> 
+       
+  <xsd:element name="ERROR" nillable="true"> 
+    <xsd:complexType> 
+      <xsd:sequence> 
+        <xsd:element name="Message" nillable="true" type="xsd:string"/> 
+      </xsd:sequence> 
+    </xsd:complexType> 
+  </xsd:element> 
+       
+  <xsd:element name="RESPONSE" nillable="true" type="xsd:string"/> 
+   
+</xsd:schema> 
+]]>
+    </inlinedXMLSchema>
+    <input path="/Cache.xsd" var="var6"/>
+    <input inlinedXMLSchema="true" path="../schema_1.xsd" var="var5"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var7"/>
     <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var1"/>
-    <output path="jar:file://!com/ibm/etools/mft/map/xsds/assembly/Environment.xsd" var="var4"/>
+    <output path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/JsonDomainMsg.xsd" var="var4"/>
     <generation engine="xquery"/>
     <mappingDeclaration name="getFetch_Mapping">
-        <input path="$var3/mb:msg(input,assembly,XMLNSC,Properties)" var="MessageAssembly1"/>
-        <input path="$var2/mb:env(Environment)" var="Environment"/>
-        <output path="$var4/mb:env(Environment)"/>
-        <passthrough>
-            <input path="$Environment/."/>
-            <output path="."/>
-            <updates/>
-        </passthrough>
-        <transaction>
-            <cachePut>
-                <input path="$MessageAssembly1/input/Rows"/>
-                <output path="$var1/CachePut" var="CachePut"/>
-                <move>
-                    <input path="field_name"/>
-                    <output path="$CachePut/Key"/>
-                </move>
-                <move>
-                    <input path="field_value"/>
-                    <output path="$CachePut/Value"/>
-                </move>
-                <assign value="SYSTEM.BROKER.DEFAULTMAP">
-                    <output path="$CachePut/MapName"/>
-                </assign>
-                <assign value="0">
-                    <output path="$CachePut/TimeToLive"/>
-                </assign>
-            </cachePut>
-            <cacheFailure>
-                <input path="$var2/CacheFailure"/>
-            </cacheFailure>
-        </transaction>
+        <input path="$var6/mb:msg(input,assembly,XMLNSC,Properties)" var="MessageAssembly"/>
+        <output namespace="http://www.ibm.com/iib/msl/json" path="$var4/mb:msg(JSON,assembly,JSON,Properties)" var="MessageAssembly2">
+            <cast castType="userDefined" path="$MessageAssembly2/JSON/Data/type('anyType')" qualifier="{http://www.ibm.com/iib/msl/json}JSONObject" ref="var4"/>
+            <cast castType="userDefined" path="$MessageAssembly2/JSON/spath('Data',2)/any" qualifier="RESPONSE" ref="var5"/>
+            <cast castType="userDefined" path="$MessageAssembly2/JSON/spath('Data',2)/any" qualifier="ERROR" ref="var5"/>
+        </output>
+        <foreach>
+            <input path="$MessageAssembly/input/Rows" var="Rows"/>
+            <output path="$MessageAssembly2/JSON/spath('Data',2)/RESPONSE" var="RESPONSE"/>
+            <output path="$MessageAssembly2/JSON/spath('Data',2)/ERROR" var="ERROR"/>
+            <transaction>
+                <cachePut>
+                    <input path="$Rows/."/>
+                    <output path="$var1/CachePut" var="CachePut"/>
+                    <move>
+                        <input path="field_value"/>
+                        <output path="$CachePut/Value"/>
+                    </move>
+                    <move>
+                        <input path="field_name"/>
+                        <output path="$CachePut/Key"/>
+                    </move>
+                </cachePut>
+                <cacheFailure>
+                    <input path="$var7/CacheFailure"/>
+                    <output path="$ERROR/."/>
+                    <move>
+                        <input path="Message"/>
+                        <output path="Message"/>
+                    </move>
+                </cacheFailure>
+            </transaction>
+        </foreach>
+        <move>
+            <input path="$MessageAssembly/Properties"/>
+            <output path="$MessageAssembly2/Properties"/>
+        </move>
     </mappingDeclaration>
 </mappingRoot>
