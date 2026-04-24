@@ -1,23 +1,42 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-            xmlns="http://cache/details"
-            targetNamespace="http://cache/details"
-            elementFormDefault="qualified">
-
-    <xsd:element name="input">
-        <xsd:complexType>
-            <xsd:sequence>
-                <xsd:element name="Rows" maxOccurs="unbounded">
-                    <xsd:complexType>
-                        <xsd:sequence>
-                            <xsd:element name="field_name" type="xsd:string"/>
-                            <xsd:element name="field_value" type="xsd:string"/>
-                            <xsd:element name="service_name" type="xsd:string"/>
-                        </xsd:sequence>
-                    </xsd:complexType>
-                </xsd:element>
-            </xsd:sequence>
-        </xsd:complexType>
-    </xsd:element>
-
-</xsd:schema>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" xmlns:map="default" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0">
+    <input path="/Cache.xsd" var="var3"/>
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/assembly/Environment.xsd" var="var2"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var2"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var1"/>
+    <output path="jar:file://!com/ibm/etools/mft/map/xsds/assembly/Environment.xsd" var="var4"/>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="getFetch_Mapping">
+        <input path="$var3/mb:msg(input,assembly,XMLNSC,Properties)" var="MessageAssembly1"/>
+        <input path="$var2/mb:env(Environment)" var="Environment"/>
+        <output path="$var4/mb:env(Environment)"/>
+        <passthrough>
+            <input path="$Environment/."/>
+            <output path="."/>
+            <updates/>
+        </passthrough>
+        <transaction>
+            <cachePut>
+                <input path="$MessageAssembly1/input/Rows"/>
+                <output path="$var1/CachePut" var="CachePut"/>
+                <move>
+                    <input path="field_name"/>
+                    <output path="$CachePut/Key"/>
+                </move>
+                <move>
+                    <input path="field_value"/>
+                    <output path="$CachePut/Value"/>
+                </move>
+                <assign value="SYSTEM.BROKER.DEFAULTMAP">
+                    <output path="$CachePut/MapName"/>
+                </assign>
+                <assign value="0">
+                    <output path="$CachePut/TimeToLive"/>
+                </assign>
+            </cachePut>
+            <cacheFailure>
+                <input path="$var2/CacheFailure"/>
+            </cacheFailure>
+        </transaction>
+    </mappingDeclaration>
+</mappingRoot>
