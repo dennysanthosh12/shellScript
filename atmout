@@ -1,28 +1,49 @@
 BIP3944E
 Failed to generate the map for mapping routine 'default/:getFetch_Mapping', with the following details: Location: '' Internal Error Number: '4'  Error Message: 'Map platform:/resource/getFetch_Mapping.map could not generate the xquery transformation. '. 
 
+
+Begin running task [Deploying 'ApiList' to integration server 'Payment_E_01']
+
+The BAR file 'C:/Users/v1020401/IBM/ACET12/workspace/GeneratedBarFiles/ApiListproject.generated.bar' has been deployed to integration server 'Payment_E_01' but there were one or more failures which may mean the deployed resources will be unable to execute.
+
+The task did not complete successfully: The deployment was partially successful. Check error messages for explanation.
+
+
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" xmlns:map="default" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0">
     <inlinedXMLSchema>
         <![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?> 
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"> 
-       
-  <xsd:element name="ERROR" nillable="true"> 
-    <xsd:complexType> 
-      <xsd:sequence> 
-        <xsd:element name="Message" nillable="true" type="xsd:string"/> 
-      </xsd:sequence> 
-    </xsd:complexType> 
-  </xsd:element> 
-       
-  <xsd:element name="RESPONSE" nillable="true"> 
-    <xsd:complexType> 
-      <xsd:sequence> 
-        <xsd:element name="Count" nillable="true" type="xsd:int"/> 
-      </xsd:sequence> 
-    </xsd:complexType> 
-  </xsd:element> 
+    
+        
    
+  <xsd:element name="ERROR" nillable="true"> 
+      
+     
+    <xsd:complexType> 
+        
+       
+      <xsd:sequence> 
+          
+         
+        <xsd:element maxOccurs="1" minOccurs="0" name="Message" nillable="true" type="xsd:string"/> 
+          
+             
+      </xsd:sequence> 
+        
+     
+    </xsd:complexType> 
+      
+   
+  </xsd:element> 
+    
+        
+   
+  <xsd:element name="RESPONSE" nillable="true" type="xsd:string">   
+  </xsd:element> 
+    
+    
+ 
 </xsd:schema> 
 ]]>
     </inlinedXMLSchema>
@@ -31,6 +52,10 @@ Failed to generate the map for mapping routine 'default/:getFetch_Mapping', with
     <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var7"/>
     <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var1"/>
     <output path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/JsonDomainMsg.xsd" var="var4"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="io" uri="http://www.ibm.com/msl/cache/1.0"/>
+        <namespace kind="supplement" prefix="out" uri="http://www.ibm.com/iib/msl/json"/>
+    </namespaces>
     <generation engine="xquery"/>
     <mappingDeclaration name="getFetch_Mapping">
         <input path="$var6/mb:msg(input,assembly,XMLNSC,Properties)" var="MessageAssembly"/>
@@ -56,23 +81,18 @@ Failed to generate the map for mapping routine 'default/:getFetch_Mapping', with
                         <output path="$CachePut/Key"/>
                     </move>
                 </cachePut>
-                <cacheReturn>
-                    <input path="$var7/CachePutReturn"/>
-                    <output path="$RESPONSE/."/>
-                    <move>
-                        <input path="Count"/>
-                        <output path="Count"/>
-                    </move>
-                </cacheReturn>
                 <cacheFailure>
-                    <input path="$var7/CacheFailure"/>
+                    <input path="$var7/CacheFailure" var="CacheFailure"/>
                     <output path="$ERROR/."/>
                     <move>
-                        <input path="Message"/>
+                        <input path="$CacheFailure/Message"/>
                         <output path="Message"/>
                     </move>
                 </cacheFailure>
             </transaction>
+            <assign value="SUCCESS">
+                <output path="$RESPONSE/."/>
+            </assign>
         </foreach>
         <move>
             <input path="$MessageAssembly/Properties"/>
@@ -80,3 +100,26 @@ Failed to generate the map for mapping routine 'default/:getFetch_Mapping', with
         </move>
     </mappingDeclaration>
 </mappingRoot>
+
+
+
+
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <xsd:element name="input">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="Rows" maxOccurs="unbounded">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="field_name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+                            <xsd:element name="field_value" type="xsd:string"/>
+
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>
