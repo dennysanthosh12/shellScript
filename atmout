@@ -1,14 +1,3 @@
-BIP3944E
-Failed to generate the map for mapping routine 'default/:getFetch_Mapping', with the following details: Location: '' Internal Error Number: '4'  Error Message: 'Map platform:/resource/getFetch_Mapping.map could not generate the xquery transformation. '. 
-
-
-Begin running task [Deploying 'ApiList' to integration server 'Payment_E_01']
-
-The BAR file 'C:/Users/v1020401/IBM/ACET12/workspace/GeneratedBarFiles/ApiListproject.generated.bar' has been deployed to integration server 'Payment_E_01' but there were one or more failures which may mean the deployed resources will be unable to execute.
-
-The task did not complete successfully: The deployment was partially successful. Check error messages for explanation.
-
-
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" xmlns:map="default" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0">
     <inlinedXMLSchema>
@@ -47,63 +36,60 @@ The task did not complete successfully: The deployment was partially successful.
 </xsd:schema> 
 ]]>
     </inlinedXMLSchema>
-    <input path="/Cache.xsd" var="var6"/>
     <input inlinedXMLSchema="true" path="../schema_1.xsd" var="var5"/>
-    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var7"/>
-    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var1"/>
+    <input path="/Cache.xsd" var="var2"/>
+    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var3"/>
     <output path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/JsonDomainMsg.xsd" var="var4"/>
+    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var"/>
     <namespaces>
         <namespace kind="supplement" prefix="io" uri="http://www.ibm.com/msl/cache/1.0"/>
         <namespace kind="supplement" prefix="out" uri="http://www.ibm.com/iib/msl/json"/>
     </namespaces>
     <generation engine="xquery"/>
     <mappingDeclaration name="getFetch_Mapping">
-        <input path="$var6/mb:msg(input,assembly,XMLNSC,Properties)" var="MessageAssembly"/>
+        <input path="$var2/mb:msg(input,assembly,XMLNSC,Properties)" var="MessageAssembly"/>
         <output namespace="http://www.ibm.com/iib/msl/json" path="$var4/mb:msg(JSON,assembly,JSON,Properties)" var="MessageAssembly2">
             <cast castType="userDefined" path="$MessageAssembly2/JSON/Data/type('anyType')" qualifier="{http://www.ibm.com/iib/msl/json}JSONObject" ref="var4"/>
             <cast castType="userDefined" path="$MessageAssembly2/JSON/spath('Data',2)/any" qualifier="RESPONSE" ref="var5"/>
             <cast castType="userDefined" path="$MessageAssembly2/JSON/spath('Data',2)/any" qualifier="ERROR" ref="var5"/>
         </output>
+        <move>
+            <input path="$MessageAssembly/Properties"/>
+            <output path="$MessageAssembly2/Properties"/>
+        </move>
         <foreach>
-            <input path="$MessageAssembly/input/Rows" var="Rows"/>
-            <output path="$MessageAssembly2/JSON/spath('Data',2)/RESPONSE" var="RESPONSE"/>
-            <output path="$MessageAssembly2/JSON/spath('Data',2)/ERROR" var="ERROR"/>
+            <input path="$MessageAssembly/input/Rows" var="Rows1"/>
+            <output path="$MessageAssembly2/JSON/spath('Data',2)"/>
             <transaction>
                 <cachePut>
-                    <input path="$Rows/."/>
-                    <output path="$var1/CachePut" var="CachePut"/>
+                    <input path="$Rows1/."/>
+                    <output path="$var/CachePut"/>
                     <move>
                         <input path="field_value"/>
-                        <output path="$CachePut/Value"/>
+                        <output path="Value"/>
                     </move>
                     <move>
                         <input path="field_name"/>
-                        <output path="$CachePut/Key"/>
+                        <output path="Key"/>
                     </move>
                 </cachePut>
                 <cacheFailure>
-                    <input path="$var7/CacheFailure" var="CacheFailure"/>
-                    <output path="$ERROR/."/>
+                    <input path="$var3/CacheFailure"/>
+                    <output path="ERROR"/>
                     <move>
-                        <input path="$CacheFailure/Message"/>
+                        <input path="Message"/>
                         <output path="Message"/>
                     </move>
                 </cacheFailure>
             </transaction>
             <assign value="SUCCESS">
-                <output path="$RESPONSE/."/>
+                <output path="RESPONSE"/>
             </assign>
         </foreach>
-        <move>
-            <input path="$MessageAssembly/Properties"/>
-            <output path="$MessageAssembly2/Properties"/>
-        </move>
     </mappingDeclaration>
 </mappingRoot>
 
-
-
-
+Cache.xsd
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
@@ -123,3 +109,74 @@ The task did not complete successfully: The deployment was partially successful.
         </xsd:complexType>
     </xsd:element>
 </xsd:schema>
+
+
+
+
+
+
+
+ExceptionList
+	RecoverableException
+			File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/MessageServices/ImbDataFlowNode.cpp
+			Line:INTEGER:1885
+			Function:CHARACTER:ImbDataFlowNode::createExceptionList
+			Type:CHARACTER:ComIbmMSLMappingNode
+			Name:CHARACTER:gen.ApiList#FCMComposite_1_5.getFetch#FCMComposite_1_4
+			Label:CHARACTER:gen.ApiList.getFetch (Implementation).Mapping
+			Catalog:CHARACTER:BIPmsgs
+			Severity:INTEGER:3
+			Number:INTEGER:2230
+			Text:CHARACTER:Node throwing exception
+			Insert
+					Type:INTEGER:14
+					Text:CHARACTER:gen.ApiList.getFetch (Implementation).Mapping
+			RecoverableException
+					File:CHARACTER:MbErrorHandler.java
+					Line:INTEGER:150
+					Function:CHARACTER:evaluate
+					Type:CHARACTER:
+					Name:CHARACTER:
+					Label:CHARACTER:
+					Catalog:CHARACTER:BIPmsgs
+					Severity:INTEGER:3
+					Number:INTEGER:3947
+					Text:CHARACTER:Caught BrokerXCIDynamicException
+					Insert
+							Type:INTEGER:5
+							Text:CHARACTER:{default}:getFetch_Mapping
+					Insert
+							Type:INTEGER:5
+							Text:CHARACTER:Cache Put: if ( not(exists($KeyParam)) )
+					RecoverableException
+							File:CHARACTER:MbErrorHandlerBase.java
+							Line:INTEGER:136
+							Function:CHARACTER:throwableToMbException
+							Type:CHARACTER:
+							Name:CHARACTER:
+							Label:CHARACTER:
+							Catalog:CHARACTER:BIPmsgs
+							Severity:INTEGER:3
+							Number:INTEGER:3949
+							Text:CHARACTER:Caught BrokerXCIDynamicException
+							Insert
+									Type:INTEGER:5
+									Text:CHARACTER:<com.ibm.broker.plugin.MbRecoverableException class:java.lang.Class method:missingParamPut source:BIPmsgs key:3994 >
+
+							RecoverableException
+									File:CHARACTER:MbErrorHandler.java
+									Line:INTEGER:114
+									Function:CHARACTER:missingParamPut
+									Type:CHARACTER:
+									Name:CHARACTER:
+									Label:CHARACTER:
+									Catalog:CHARACTER:BIPmsgs
+									Severity:INTEGER:3
+									Number:INTEGER:3994
+									Text:CHARACTER:Unable to put to Global Cache no data mapped for required parameter
+									Insert
+											Type:INTEGER:5
+											Text:CHARACTER:Cache Put
+									Insert
+											Type:INTEGER:5
+											Text:CHARACTER:Key
