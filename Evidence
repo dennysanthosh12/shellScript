@@ -1,26 +1,21 @@
-E:\GIT_REPOSITORY\cus-additionalCIFDetailsCreate_th_expDS-eapi>git switch dev
-Switched to branch 'dev'
+E:\GIT_REPOSITORY\cus-additionalCIFDetailsCreate_th_expDS-eapi>git add Config/config.yml
 
-E:\GIT_REPOSITORY\cus-additionalCIFDetailsCreate_th_expDS-eapi>git branch -r
-  origin/DEV
-  origin/HEAD -> origin/DEV
-  origin/PRE-PROD
-  origin/SIT
-  origin/SIT_FIX
-  origin/UAT
-  origin/feature/change
-  origin/feature/changes
-  origin/feature/fields
-  origin/main
+E:\GIT_REPOSITORY\cus-additionalCIFDetailsCreate_th_expDS-eapi>git commit
+[dev f7e0590] Merge remote-tracking branch 'origin/UAT' into dev
 
-E:\GIT_REPOSITORY\cus-additionalCIFDetailsCreate_th_expDS-eapi>git merge origin UAT
-merge: UAT - not something we can merge
+E:\GIT_REPOSITORY\cus-additionalCIFDetailsCreate_th_expDS-eapi>git commit
+On branch dev
+nothing to commit, working tree clean
 
-Did you mean this?
-        origin/UAT
+E:\GIT_REPOSITORY\cus-additionalCIFDetailsCreate_th_expDS-eapi>
+E:\GIT_REPOSITORY\cus-additionalCIFDetailsCreate_th_expDS-eapi>
+E:\GIT_REPOSITORY\cus-additionalCIFDetailsCreate_th_expDS-eapi>git branch
+* dev
 
-E:\GIT_REPOSITORY\cus-additionalCIFDetailsCreate_th_expDS-eapi>git merge origin/UAT
-CONFLICT (modify/delete): Config/config.yml deleted in HEAD and modified in origin/UAT.  Version origin/UAT of Config/config.yml left in tree.
-Automatic merge failed; fix conflicts and then commit the result.
+E:\GIT_REPOSITORY\cus-additionalCIFDetailsCreate_th_expDS-eapi>git grep "<<<<"
+Config/config.yml:<<<<<<< HEAD
+additionalCIFDetailsCreate_th_expDS/Validation.xsd:<<<<<<< HEAD
+additionalCIFDetailsCreate_th_expDS/additionalCIFDetailsCreate_th_expDS.subflow:<<<<<<< HEAD
+additionalCIFDetailsCreate_th_expDS/disabilityVerificationCreate_expDS_Compute.esql:<<<<<<< HEAD
 
 E:\GIT_REPOSITORY\cus-additionalCIFDetailsCreate_th_expDS-eapi>
