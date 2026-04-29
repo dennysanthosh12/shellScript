@@ -1,84 +1,215 @@
-Starting: Building Bar file
-==============================================================================
-Task         : Command line
-Description  : Run a command line script using Bash on Linux and macOS and cmd.exe on Windows
-Version      : 2.231.0
-Author       : Microsoft Corporation
-Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/command-line
-==============================================================================
-Generating script.
-========================== Starting Command Output ===========================
-/usr/bin/bash --noprofile --norc /home/azagent/_work/_temp/db547fdf-d1f6-4e5e-918c-0a19b1560ac4.sh
-BIP1859I: Successfully added file 'Validation.xsd' to the BAR file.
-[Fatal Error] :2:2: The markup in the document preceding the root element must be well-formed.
-org.xml.sax.SAXParseException: The markup in the document preceding the root element must be well-formed.
-	at org.apache.xerces.parsers.DOMParser.parse(Unknown Source)
-	at org.apache.xerces.jaxp.DocumentBuilderImpl.parse(Unknown Source)
-	at javax.xml.parsers.DocumentBuilder.parse(Unknown Source)
-	at com.ibm.broker.config.appdev.FlowRendererInternalMSGFLOW.read(FlowRendererInternalMSGFLOW.java:1255)
-	at com.ibm.broker.config.appdev.FlowRendererInternalParent.read(FlowRendererInternalParent.java:207)
-	at com.ibm.broker.config.appdev.FlowRendererMSGFLOW.read(FlowRendererMSGFLOW.java:170)
-	at com.ibm.broker.config.appdev.Flow.<init>(Flow.java:65)
-	at com.ibm.broker.config.appdev.BARInternalZip.handleContent(BARInternalZip.java:106)
-	at com.ibm.broker.config.appdev.AppZip.<init>(AppZip.java:78)
-	at com.ibm.broker.config.appdev.AppZip.<init>(AppZip.java:60)
-	at com.ibm.broker.config.appdev.FlowRendererInternalBAR.zipDirectory(FlowRendererInternalBAR.java:319)
-	at com.ibm.broker.config.appdev.FlowRendererInternalBAR.toByteArray(FlowRendererInternalBAR.java:199)
-	at com.ibm.broker.config.appdev.FlowRendererInternalBAR.toInputStream(FlowRendererInternalBAR.java:600)
-	at com.ibm.broker.config.appdev.FlowRendererInternalBAR.write(FlowRendererInternalBAR.java:524)
-	at com.ibm.broker.config.appdev.FlowRendererBAR.write(FlowRendererBAR.java:138)
-	at com.ibm.broker.config.appdev.CommandProcessor.packageBAR(CommandProcessor.java:438)
-	at com.ibm.broker.config.appdev.CommandProcessor.process(CommandProcessor.java:345)
-	at com.ibm.broker.config.util.FlowRendererBARIBMIntWrapper.main(FlowRendererBARIBMIntWrapper.java:225)
-BIP1859I: Successfully added file 'additionalCIFDetailsCreate_th_expDS.subflow' to the BAR file.
-BIP1859I: Successfully added file 'additionalCIFDetailsCreate_th_expDS_Filter1.esql' to the BAR file.
-BIP1859I: Successfully added file 'disabilityVerificationCreate_expDS.json' to the BAR file.
-BIP1859I: Successfully added file 'disabilityVerificationCreate_expDSInputCatchHandler.subflow' to the BAR file.
-BIP1859I: Successfully added file 'disabilityVerificationCreate_expDSInputFailureHandler.subflow' to the BAR file.
-BIP1859I: Successfully added file 'disabilityVerificationCreate_expDSInputTimeoutHandler.subflow' to the BAR file.
-BIP1859I: Successfully added file 'disabilityVerificationCreate_expDS_Compute.esql' to the BAR file.
-BIP1859I: Successfully added file 'disabilityVerificationCreate_expDS_Compute1.esql' to the BAR file.
-BIP1859I: Successfully added file 'disabilityVerificationCreate_expDS_Compute2.esql' to the BAR file.
-
-
-Starting: Deploying Bar File
-==============================================================================
-Task         : Command line
-Description  : Run a command line script using Bash on Linux and macOS and cmd.exe on Windows
-Version      : 2.231.0
-Author       : Microsoft Corporation
-Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/command-line
-==============================================================================
-Generating script.
-========================== Starting Command Output ===========================
-/usr/bin/bash --noprofile --norc /home/azagent/_work/_temp/8aa9febd-1e46-49d9-b144-2f0a9284e277.sh
-HOST: 10.177.44.52 , IntegrationNode: CUSTOMER_EXP_53.broker , IntegrationServer: Customer_E_08
-BIP8118I: Deploying to server... 
-BIP1357E: Source file 'additionalCIFDetailsCreate_th_expDS/additionalCIFDetailsCreate_th_expDS.subflow' could not be processed. 
- The source file additionalCIFDetailsCreate_th_expDS/additionalCIFDetailsCreate_th_expDS.subflow could not be processed. The failure to process this file has not prevented the processing of other files in the deployment. 
-Use the preceding error messages to ascertain the cause of the failure to process the file. 
-BIP5004E: An XML parsing error 'The content of elements must consist of well-formed character data or markup.' occurred on line 2 column 1 when parsing element ''.  Internal error codes are '1519' and '2'. 
- This error was reported by the generic XML parser, and is usually the result of a badly formed XML message. 
-Check that the input XML message is a well-formed XML message that adheres to the XML specification. The line number and column number that are quoted in the message give the position where the parser discovered the problem. However, the actual error might be earlier in the message.  
-Other possible causes are:  
-1. A character that is not supported by XML occurs in the instance message data.  
-     XML supports only a subset of control characters; therefore, ensure that no unsupported characters, such as X'00', appear in the document.  
-2. The Coded Character Set ID that is defined in the message header does not reflect the contents of the instance message.  
-     If the XML document has an XML prologue, the IBM MQ CodedCharSetId should be consistent with the XML Encoding field.  
-3. A reserved XML character appears in the instance message data.  
-     Characters that might be recognized as XML markup - for example, < and & - should be replaced with the corresponding XML entities - &lt; and &amp;. 
-BIP1360E: Message flow node 'additionalCIFDetailsCreate_th_expDS (Implementation)', 'gen.additionalCIFDetailsCreate_th_expDS#FCMComposite_1_8' in message flow 'gen.additionalCIFDetailsCreate_th_expDS' in RestAPI 'additionalCIFDetailsCreate_th_expDS' requires subflow 'additionalCIFDetailsCreate_th_expDS.subflow' which is not deployed. 
- While resolving the subflow definitions for message flow or subflow 'gen.additionalCIFDetailsCreate_th_expDS', the definition for the subflow 'RestAPI' could not be found. The top level message flow will be unable to start until the subflow is deployed. 
-Correct the error and redeploy the application or library which contains the subflow. 
-BIP1096E: The source 'additionalCIFDetailsCreate_th_expDS.bar' has been deployed but there were one or more failures which may mean the deployed resources will be unable to execute. 
- Use the proceeding messages to identify the cause of the failure(s). 
-BIP8071I: Successful command completion. 
-HOST: 10.177.44.53 , IntegrationNode: CUSTOMER_EXP_53.broker , IntegrationServer: Customer_E_08
-BIP8118I: Deploying to server... 
-BIP1357E: Source file 'additionalCIFDetailsCreate_th_expDS/additionalCIFDetailsCreate_th_expDS.subflow' could not be processed. 
- The source file additionalCIFDetailsCreate_th_expDS/additionalCIFDetailsCreate_th_expDS.subflow could not be processed. The failure to process this file has not prevented the processing of other files in the deployment. 
-Use the preceding error messages to ascertain the cause of the failure to process the file. 
-BIP5004E: An XML parsing error 'The content of elements must consist of well-formed character data or markup.' occurred on line 2 column 1 when parsing element ''.  Internal error codes are '1519' and '2'. 
- This error was reported by the generic XML parser, and is usually the result of a badly formed XML message. 
-Check that the input XML message is a well-formed XML message that adheres to the XML specification. The line number and column number that are quoted in the message give the position where the parser discovered the problem. However, the actual error might be earlier in the message.  
-Other possible causes are:  
+<?xml version="1.0" encoding="UTF-8"?>
+<<<<<<< HEAD
+<ecore:EPackage xmi:version="2.0" 
+xmlns:xmi="http://www.omg.org/XMI" xmlns:EIS_API_LOGGER_Start_Logger_DPG.subflow="EIS_API_LOGGER/Start_Logger_DPG.subflow" xmlns:ComIbmCompute.msgnode="ComIbmCompute.msgnode" xmlns:ComIbmFilter.msgnode="ComIbmFilter.msgnode" xmlns:ComIbmValidate.msgnode="ComIbmValidate.msgnode" xmlns:ComIbmWSRequest.msgnode="ComIbmWSRequest.msgnode" xmlns:EIS_API_LOGGER_TimeoutHandler.subflow="EIS_API_LOGGER/TimeoutHandler.subflow" xmlns:EIS_API_LOGGER_ErrorHandler.subflow="EIS_API_LOGGER/ErrorHandler.subflow" xmlns:EIS_API_LOGGER_End_Logger.subflow="EIS_API_LOGGER/End_Logger.subflow" xmlns:EIS_API_LOGGER_SUPOverride.subflow="EIS_API_LOGGER/SUPOverride.subflow" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:eflow="http://www.ibm.com/wbi/2005/eflow" 
+xmlns:utility="http://www.ibm.com/wbi/2005/eflow_utility" nsURI="additionalCIFDetailsCreate_th_expDS.subflow" 
+nsPrefix="additionalCIFDetailsCreate_th_expDS.subflow">
+<eClassifiers xmi:type="eflow:FCMComposite" name="FCMComposite_1" nodeLayoutStyle="SQUARE">
+<eSuperTypes href="http://www.ibm.com/wbi/2005/eflow#//FCMBlock"/>
+<eStructuralFeatures xmi:type="ecore:EAttribute" xmi:id="Property.Sys_URL" name="Sys_URL"  defaultValueLiteral="http://system.api:9002/NBC/060439/bancs/cbs/customers">
+  <eType xmi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+</eStructuralFeatures>
+<eStructuralFeatures xmi:type="ecore:EAttribute" xmi:id="Property.HTTPTimeOut" name="HTTPTimeOut"  defaultValueLiteral="10">
+  <eType xmi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+</eStructuralFeatures>
+<eStructuralFeatures xmi:type="ecore:EAttribute" xmi:id="Property.MAKER_CHECKER_1" name="MAKER_CHECKER_1"  defaultValueLiteral="CHECKER_ENABLED">
+  <eType xmi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+</eStructuralFeatures>
+<eStructuralFeatures xmi:type="ecore:EAttribute" xmi:id="Property.MAKER_CHECKER_2" name="MAKER_CHECKER_2"  defaultValueLiteral="CHECKER_SUP_ENABLED">
+  <eType xmi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+</eStructuralFeatures>
+<eStructuralFeatures xmi:type="ecore:EAttribute" xmi:id="Property.EXP_URL" name="EXP_URL"  defaultValueLiteral="/additionalCIFDetails_th/create/customers">
+  <eType xmi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+</eStructuralFeatures>
+<translation xmi:type="utility:TranslatableString" key="additionalCIFDetailsCreate_th_expDS" bundleName="additionalCIFDetailsCreate_th_expDS" pluginId="flowAPIgenerated"/>
+<colorGraphic16 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/flowAPIgenerated/icons/full/obj16/additionalCIFDetailsCreate_th_expDS.gif"/>
+<colorGraphic32 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/flowAPIgenerated/icons/full/obj30/additionalCIFDetailsCreate_th_expDS.gif"/>
+<composition>
+<nodes xmi:type="eflow:FCMSource" xmi:id="InTerminal.Input_1" location="20,15">
+<translation xmi:type="utility:TranslatableString" key="Input" bundleName="additionalCIFDetailsCreate_th_expDS" pluginId="flowAPIgenerated"/>
+</nodes>
+<nodes xmi:type="eflow:FCMSink" xmi:id="OutTerminal.Output_1" location="1136,68">
+<translation xmi:type="utility:TranslatableString" key="Output" bundleName="additionalCIFDetailsCreate_th_expDS" pluginId="flowAPIgenerated"/>
+</nodes>
+<nodes xmi:type="EIS_API_LOGGER_Start_Logger_DPG.subflow:FCMComposite_1" xmi:id="FCMComposite_1_1" location="54,81">
+<translation xmi:type="utility:ConstantString" string="Start_Logger_DPG"/>
+</nodes>
+<nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_2" location="131,167" computeExpression="esql://routine/#disabilityVerificationCreate_expDS_Compute.Main" computeMode="all">
+<translation xmi:type="utility:ConstantString" string="Compute"/>
+</nodes>
+<nodes xmi:type="ComIbmFilter.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_3" location="193,250" filterExpression="esql://routine/#disabilityVerificationCreate_expDS_Filter.Main">
+<translation xmi:type="utility:ConstantString" string="Filter"/>
+</nodes>
+<nodes xmi:type="ComIbmValidate.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_4" location="255,344" validateMaster="contentAndValue">
+<translation xmi:type="utility:ConstantString" string="Validate"/>
+</nodes>
+<nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_5" location="408,365" computeExpression="esql://routine/#disabilityVerificationCreate_expDS_Compute1.Main" computeMode="all">
+<translation xmi:type="utility:ConstantString" string="Compute1"/>
+</nodes>
+<nodes xmi:type="ComIbmWSRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_6" location="552,388" URLSpecifier="http://system.api:9002/NBC/060439/bancs/cbs/customers" timeoutForServer="10" messageDomainProperty="JSON">
+<translation xmi:type="utility:ConstantString" string="HTTP Request"/>
+</nodes>
+<nodes xmi:type="EIS_API_LOGGER_TimeoutHandler.subflow:FCMComposite_1" xmi:id="FCMComposite_1_8" location="588,530">
+<translation xmi:type="utility:ConstantString" string="TimeoutHandler"/>
+</nodes>
+<nodes xmi:type="EIS_API_LOGGER_ErrorHandler.subflow:FCMComposite_1" xmi:id="FCMComposite_1_9" location="596,4">
+<translation xmi:type="utility:ConstantString" string="ErrorHandler"/>
+</nodes>
+<nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_11" location="890,254" computeExpression="esql://routine/#disabilityVerificationCreate_expDS_Compute2.Main" computeMode="all">
+<translation xmi:type="utility:ConstantString" string="Compute2"/>
+</nodes>
+<nodes xmi:type="EIS_API_LOGGER_End_Logger.subflow:FCMComposite_1" xmi:id="FCMComposite_1_13" location="1073,176">
+<translation xmi:type="utility:ConstantString" string="End_Logger"/>
+</nodes>
+<nodes xmi:type="EIS_API_LOGGER_SUPOverride.subflow:FCMComposite_1" xmi:id="FCMComposite_1_7" location="1116,330">
+<translation xmi:type="utility:ConstantString" string="SUPOverride"/>
+</nodes>
+<nodes xmi:type="ComIbmFilter.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_10" location="926,372" filterExpression="esql://routine/#additionalCIFDetailsCreate_th_expDS_Filter1.Main">
+<translation xmi:type="utility:ConstantString" string="Filter1"/>
+</nodes>
+<connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_1" targetNode="FCMComposite_1_1" sourceNode="InTerminal.Input_1" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.Input"/>
+<connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_2" targetNode="FCMComposite_1_13" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.Output1" targetTerminalName="InTerminal.Input"/>
+<connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_3" targetNode="FCMComposite_1_2" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.in"/>
+<connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_4" targetNode="FCMComposite_1_11" sourceNode="FCMComposite_1_3" sourceTerminalName="OutTerminal.false" targetTerminalName="InTerminal.in"/>
+<connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_5" targetNode="FCMComposite_1_9" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.Input"/>
+<connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_6" targetNode="FCMComposite_1_6" sourceNode="FCMComposite_1_5" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+<connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_7" targetNode="FCMComposite_1_8" sourceNode="FCMComposite_1_6" sourceTerminalName="OutTerminal.error" targetTerminalName="InTerminal.Input"/>
+<connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_8" targetNode="OutTerminal.Output_1" sourceNode="FCMComposite_1_13" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.in"/>
+<connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_9" targetNode="FCMComposite_1_11" sourceNode="FCMComposite_1_8" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.in"/>
+<connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_10" targetNode="FCMComposite_1_11" sourceNode="FCMComposite_1_9" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.in"/>
+<connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_11" targetNode="FCMComposite_1_11" sourceNode="FCMComposite_1_6" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+<connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_12" targetNode="FCMComposite_1_9" sourceNode="FCMComposite_1_6" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.Input"/>
+<connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_13" targetNode="FCMComposite_1_5" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.match" targetTerminalName="InTerminal.in"/>
+<connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_14" targetNode="FCMComposite_1_4" sourceNode="FCMComposite_1_3" sourceTerminalName="OutTerminal.true" targetTerminalName="InTerminal.in"/>
+<connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_15" targetNode="FCMComposite_1_3" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+<connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_16" targetNode="FCMComposite_1_10" sourceNode="FCMComposite_1_11" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+<connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_17" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_10" sourceTerminalName="OutTerminal.false" targetTerminalName="InTerminal.Input"/>
+<connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_18" targetNode="OutTerminal.Output_1" sourceNode="FCMComposite_1_7" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.in"/>
+<connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_19" targetNode="FCMComposite_1_13" sourceNode="FCMComposite_1_10" sourceTerminalName="OutTerminal.true" targetTerminalName="InTerminal.Input"/>
+</composition>
+<propertyOrganizer>
+<propertyDescriptor groupName="Group.Basic" configurable="true" userDefined="true" describedAttribute="Property.Sys_URL">
+<propertyName xmi:type="utility:TranslatableString" key="Property.Sys_URL" bundleName="additionalCIFDetailsCreate_th_expDS" pluginId="flowAPIgenerated"/>
+<propertyDescriptor groupName="Group.Basic" configurable="true" userDefined="true" describedAttribute="Property.HTTPTimeOut">
+<propertyName xmi:type="utility:TranslatableString" key="Property.HTTPTimeOut" bundleName="additionalCIFDetailsCreate_th_expDS" pluginId="flowAPIgenerated"/>
+<propertyDescriptor groupName="Group.Basic" configurable="true" userDefined="true" describedAttribute="Property.MAKER_CHECKER_1">
+<propertyName xmi:type="utility:TranslatableString" key="Property.MAKER_CHECKER_1" bundleName="additionalCIFDetailsCreate_th_expDS" pluginId="flowAPIgenerated"/>
+<propertyDescriptor groupName="Group.Basic" configurable="true" userDefined="true" describedAttribute="Property.MAKER_CHECKER_2">
+<propertyName xmi:type="utility:TranslatableString" key="Property.MAKER_CHECKER_2" bundleName="additionalCIFDetailsCreate_th_expDS" pluginId="flowAPIgenerated"/>
+<propertyDescriptor groupName="Group.Basic" configurable="true" userDefined="true" describedAttribute="Property.EXP_URL">
+<propertyName xmi:type="utility:TranslatableString" key="Property.EXP_URL" bundleName="additionalCIFDetailsCreate_th_expDS" pluginId="flowAPIgenerated"/>
+</propertyDescriptor>
+</propertyDescriptor>
+</propertyDescriptor>
+</propertyDescriptor>
+</propertyDescriptor>
+</propertyOrganizer>
+<stickyBoard/>
+</eClassifiers>
+=======
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ComIbmCompute.msgnode="ComIbmCompute.msgnode" xmlns:ComIbmFilter.msgnode="ComIbmFilter.msgnode" xmlns:ComIbmValidate.msgnode="ComIbmValidate.msgnode" xmlns:ComIbmWSRequest.msgnode="ComIbmWSRequest.msgnode" xmlns:EIS_API_LOGGER_End_Logger.subflow="EIS_API_LOGGER/End_Logger.subflow" xmlns:EIS_API_LOGGER_ErrorHandler.subflow="EIS_API_LOGGER/ErrorHandler.subflow" xmlns:EIS_API_LOGGER_SUPOverride.subflow="EIS_API_LOGGER/SUPOverride.subflow"
+    xmlns:EIS_API_LOGGER_Start_Logger_DPG.subflow="EIS_API_LOGGER/Start_Logger_DPG.subflow" xmlns:EIS_API_LOGGER_TimeoutHandler.subflow="EIS_API_LOGGER/TimeoutHandler.subflow" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:eflow="http://www.ibm.com/wbi/2005/eflow" xmlns:utility="http://www.ibm.com/wbi/2005/eflow_utility" nsURI="additionalCIFDetailsCreate_th_expDS.subflow" nsPrefix="additionalCIFDetailsCreate_th_expDS.subflow">
+  <eClassifiers xmi:type="eflow:FCMComposite" name="FCMComposite_1" nodeLayoutStyle="SQUARE">
+    <eSuperTypes href="http://www.ibm.com/wbi/2005/eflow#//FCMBlock"/>
+    <eStructuralFeatures xmi:type="ecore:EAttribute" xmi:id="Property.Sys_URL" name="Sys_URL" defaultValueLiteral="http://system.api:9002/NBC/060439/bancs/cbs/customers">
+      <eType xmi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xmi:type="ecore:EAttribute" xmi:id="Property.HTTPTimeOut" name="HTTPTimeOut" defaultValueLiteral="10">
+      <eType xmi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xmi:type="ecore:EAttribute" xmi:id="Property.MAKER_CHECKER_1" name="MAKER_CHECKER_1" defaultValueLiteral="CHECKER_ENABLED">
+      <eType xmi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xmi:type="ecore:EAttribute" xmi:id="Property.MAKER_CHECKER_2" name="MAKER_CHECKER_2" defaultValueLiteral="CHECKER_SUP_ENABLED">
+      <eType xmi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xmi:type="ecore:EAttribute" xmi:id="Property.EXP_URL" name="EXP_URL" defaultValueLiteral="/additionalCIFDetails_th/create/customers">
+      <eType xmi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <translation xmi:type="utility:TranslatableString" key="additionalCIFDetailsCreate_th_expDS" bundleName="additionalCIFDetailsCreate_th_expDS" pluginId="additionalCIFDetailsCreate_th_expDS"/>
+    <colorGraphic16 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/additionalCIFDetailsCreate_th_expDS/icons/full/obj16/additionalCIFDetailsCreate_th_expDS.gif"/>
+    <colorGraphic32 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/additionalCIFDetailsCreate_th_expDS/icons/full/obj30/additionalCIFDetailsCreate_th_expDS.gif"/>
+    <composition>
+      <nodes xmi:type="eflow:FCMSource" xmi:id="InTerminal.Input_1" location="20,15">
+        <translation xmi:type="utility:TranslatableString" key="Input" bundleName="additionalCIFDetailsCreate_th_expDS" pluginId="additionalCIFDetailsCreate_th_expDS"/>
+      </nodes>
+      <nodes xmi:type="eflow:FCMSink" xmi:id="OutTerminal.Output_1" location="1136,68">
+        <translation xmi:type="utility:TranslatableString" key="Output" bundleName="additionalCIFDetailsCreate_th_expDS" pluginId="additionalCIFDetailsCreate_th_expDS"/>
+      </nodes>
+      <nodes xmi:type="EIS_API_LOGGER_Start_Logger_DPG.subflow:FCMComposite_1" xmi:id="FCMComposite_1_1" location="54,81">
+        <translation xmi:type="utility:ConstantString" string="Start_Logger_DPG"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_2" location="131,167" computeExpression="esql://routine/#disabilityVerificationCreate_expDS_Compute.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="Compute"/>
+      </nodes>
+      <nodes xmi:type="ComIbmFilter.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_3" location="193,250" filterExpression="esql://routine/#disabilityVerificationCreate_expDS_Filter.Main">
+        <translation xmi:type="utility:ConstantString" string="Filter"/>
+      </nodes>
+      <nodes xmi:type="ComIbmValidate.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_4" location="255,344" validateMaster="contentAndValue">
+        <translation xmi:type="utility:ConstantString" string="Validate"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_5" location="408,365" computeExpression="esql://routine/#disabilityVerificationCreate_expDS_Compute1.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="Compute1"/>
+      </nodes>
+      <nodes xmi:type="ComIbmWSRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_6" location="552,388" URLSpecifier="http://system.api:9002/NBC/060439/bancs/cbs/customers" timeoutForServer="10" messageDomainProperty="JSON">
+        <translation xmi:type="utility:ConstantString" string="HTTP Request"/>
+      </nodes>
+      <nodes xmi:type="EIS_API_LOGGER_TimeoutHandler.subflow:FCMComposite_1" xmi:id="FCMComposite_1_8" location="588,530">
+        <translation xmi:type="utility:ConstantString" string="TimeoutHandler"/>
+      </nodes>
+      <nodes xmi:type="EIS_API_LOGGER_ErrorHandler.subflow:FCMComposite_1" xmi:id="FCMComposite_1_9" location="596,4">
+        <translation xmi:type="utility:ConstantString" string="ErrorHandler"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_11" location="890,254" computeExpression="esql://routine/#disabilityVerificationCreate_expDS_Compute2.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="Compute2"/>
+      </nodes>
+      <nodes xmi:type="EIS_API_LOGGER_End_Logger.subflow:FCMComposite_1" xmi:id="FCMComposite_1_13" location="1073,176">
+        <translation xmi:type="utility:ConstantString" string="End_Logger"/>
+      </nodes>
+      <nodes xmi:type="EIS_API_LOGGER_SUPOverride.subflow:FCMComposite_1" xmi:id="FCMComposite_1_7" location="1116,330">
+        <translation xmi:type="utility:ConstantString" string="SUPOverride"/>
+      </nodes>
+      <nodes xmi:type="ComIbmFilter.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_10" location="926,372" filterExpression="esql://routine/#additionalCIFDetailsCreate_th_expDS_Filter1.Main">
+        <translation xmi:type="utility:ConstantString" string="Filter1"/>
+      </nodes>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_1" targetNode="FCMComposite_1_1" sourceNode="InTerminal.Input_1" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.Input"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_2" targetNode="FCMComposite_1_13" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.Output1" targetTerminalName="InTerminal.Input"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_3" targetNode="FCMComposite_1_2" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_4" targetNode="FCMComposite_1_11" sourceNode="FCMComposite_1_3" sourceTerminalName="OutTerminal.false" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_5" targetNode="FCMComposite_1_9" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.Input"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_6" targetNode="FCMComposite_1_6" sourceNode="FCMComposite_1_5" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_7" targetNode="FCMComposite_1_8" sourceNode="FCMComposite_1_6" sourceTerminalName="OutTerminal.error" targetTerminalName="InTerminal.Input"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_8" targetNode="OutTerminal.Output_1" sourceNode="FCMComposite_1_13" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_9" targetNode="FCMComposite_1_11" sourceNode="FCMComposite_1_8" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_10" targetNode="FCMComposite_1_11" sourceNode="FCMComposite_1_9" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_11" targetNode="FCMComposite_1_11" sourceNode="FCMComposite_1_6" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_13" targetNode="FCMComposite_1_9" sourceNode="FCMComposite_1_6" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.Input"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_14" targetNode="FCMComposite_1_5" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.match" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_15" targetNode="FCMComposite_1_4" sourceNode="FCMComposite_1_3" sourceTerminalName="OutTerminal.true" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_16" targetNode="FCMComposite_1_3" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_12" targetNode="FCMComposite_1_10" sourceNode="FCMComposite_1_11" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_17" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_10" sourceTerminalName="OutTerminal.false" targetTerminalName="InTerminal.Input"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_18" targetNode="OutTerminal.Output_1" sourceNode="FCMComposite_1_7" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_19" targetNode="FCMComposite_1_13" sourceNode="FCMComposite_1_10" sourceTerminalName="OutTerminal.true" targetTerminalName="InTerminal.Input"/>
+    </composition>
+    <propertyOrganizer>
+      <propertyDescriptor groupName="Group.Basic" configurable="true" userDefined="true" describedAttribute="Property.Sys_URL">
+        <propertyName xmi:type="utility:TranslatableString" key="Property.Sys_URL" bundleName="additionalCIFDetailsCreate_th_expDS" pluginId="additionalCIFDetailsCreate_th_expDS"/>
+        <propertyDescriptor groupName="Group.Basic" configurable="true" userDefined="true" describedAttribute="Property.HTTPTimeOut">
+          <propertyName xmi:type="utility:TranslatableString" key="Property.HTTPTimeOut" bundleName="additionalCIFDetailsCreate_th_expDS" pluginId="additionalCIFDetailsCreate_th_expDS"/>
+          <propertyDescriptor groupName="Group.Basic" configurable="true" userDefined="true" describedAttribute="Property.MAKER_CHECKER_1">
+            <propertyName xmi:type="utility:TranslatableString" key="Property.MAKER_CHECKER_1" bundleName="additionalCIFDetailsCreate_th_expDS" pluginId="additionalCIFDetailsCreate_th_expDS"/>
+            <propertyDescriptor groupName="Group.Basic" configurable="true" userDefined="true" describedAttribute="Property.MAKER_CHECKER_2">
+              <propertyName xmi:type="utility:TranslatableString" key="Property.MAKER_CHECKER_2" bundleName="additionalCIFDetailsCreate_th_expDS" pluginId="additionalCIFDetailsCreate_th_expDS"/>
+              <propertyDescriptor groupName="Group.Basic" configurable="true" userDefined="true" describedAttribute="Property.EXP_URL">
+                <propertyName xmi:type="utility:TranslatableString" key="Property.EXP_URL" bundleName="additionalCIFDetailsCreate_th_expDS" pluginId="additionalCIFDetailsCreate_th_expDS"/>
+              </propertyDescriptor>
+            </propertyDescriptor>
+          </propertyDescriptor>
+        </propertyDescriptor>
+      </propertyDescriptor>
+    </propertyOrganizer>
+    <stickyBoard/>
+  </eClassifiers>
+>>>>>>> origin/UAT
+</ecore:EPackage>
