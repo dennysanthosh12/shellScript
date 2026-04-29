@@ -1,25 +1,84 @@
-[eisuser@EISUATEXP09 ~]$ for i in {50..70}
-> do
-> ssh -tq 10.177.44.$i "sudo passwd -S addmitam"
-> done
-addmitam PS 2025-04-25 8 365 7 30 (Password set, SHA512 crypt.)
-addmitam PS 2025-03-15 8 365 7 30 (Password set, SHA512 crypt.)
-addmitam PS 2026-01-13 0 365 7 30 (Password set, SHA512 crypt.)
-addmitam PS 2025-03-15 8 365 7 30 (Password set, SHA512 crypt.)
-addmitam PS 2025-03-15 8 365 7 30 (Password set, SHA512 crypt.)
-addmitam PS 2025-03-15 8 365 7 30 (Password set, SHA512 crypt.)
-addmitam PS 2025-03-15 8 365 7 30 (Password set, SHA512 crypt.)
-addmitam PS 2025-03-15 8 365 7 30 (Password set, SHA512 crypt.)
-addmitam PS 2026-03-13 0 365 7 30 (Password set, SHA512 crypt.)
-addmitam PS 2025-07-17 7 365 7 30 (Password set, SHA512 crypt.)
-addmitam PS 2025-03-15 8 365 7 30 (Password set, SHA512 crypt.)
-addmitam PS 2025-03-15 7 365 7 30 (Password set, SHA512 crypt.)
-addmitam PS 2025-03-15 7 365 7 30 (Password set, SHA512 crypt.)
-addmitam PS 2025-03-15 7 365 7 30 (Password set, SHA512 crypt.)
-addmitam PS 2025-03-15 8 365 7 30 (Password set, SHA512 crypt.)
-addmitam PS 2025-03-15 8 365 7 30 (Password set, SHA512 crypt.)
-addmitam PS 2025-03-15 8 365 7 30 (Password set, SHA512 crypt.)
-addmitam PS 2026-03-30 0 365 7 30 (Password set, SHA512 crypt.)
-addmitam PS 2026-01-22 8 365 7 30 (Password set, SHA512 crypt.)
-addmitam PS 2025-03-15 8 365 7 30 (Password set, SHA512 crypt.)
-addmitam PS 2025-03-15 8 365 7 30 (Password set, SHA512 crypt.)
+Starting: Building Bar file
+==============================================================================
+Task         : Command line
+Description  : Run a command line script using Bash on Linux and macOS and cmd.exe on Windows
+Version      : 2.231.0
+Author       : Microsoft Corporation
+Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/command-line
+==============================================================================
+Generating script.
+========================== Starting Command Output ===========================
+/usr/bin/bash --noprofile --norc /home/azagent/_work/_temp/db547fdf-d1f6-4e5e-918c-0a19b1560ac4.sh
+BIP1859I: Successfully added file 'Validation.xsd' to the BAR file.
+[Fatal Error] :2:2: The markup in the document preceding the root element must be well-formed.
+org.xml.sax.SAXParseException: The markup in the document preceding the root element must be well-formed.
+	at org.apache.xerces.parsers.DOMParser.parse(Unknown Source)
+	at org.apache.xerces.jaxp.DocumentBuilderImpl.parse(Unknown Source)
+	at javax.xml.parsers.DocumentBuilder.parse(Unknown Source)
+	at com.ibm.broker.config.appdev.FlowRendererInternalMSGFLOW.read(FlowRendererInternalMSGFLOW.java:1255)
+	at com.ibm.broker.config.appdev.FlowRendererInternalParent.read(FlowRendererInternalParent.java:207)
+	at com.ibm.broker.config.appdev.FlowRendererMSGFLOW.read(FlowRendererMSGFLOW.java:170)
+	at com.ibm.broker.config.appdev.Flow.<init>(Flow.java:65)
+	at com.ibm.broker.config.appdev.BARInternalZip.handleContent(BARInternalZip.java:106)
+	at com.ibm.broker.config.appdev.AppZip.<init>(AppZip.java:78)
+	at com.ibm.broker.config.appdev.AppZip.<init>(AppZip.java:60)
+	at com.ibm.broker.config.appdev.FlowRendererInternalBAR.zipDirectory(FlowRendererInternalBAR.java:319)
+	at com.ibm.broker.config.appdev.FlowRendererInternalBAR.toByteArray(FlowRendererInternalBAR.java:199)
+	at com.ibm.broker.config.appdev.FlowRendererInternalBAR.toInputStream(FlowRendererInternalBAR.java:600)
+	at com.ibm.broker.config.appdev.FlowRendererInternalBAR.write(FlowRendererInternalBAR.java:524)
+	at com.ibm.broker.config.appdev.FlowRendererBAR.write(FlowRendererBAR.java:138)
+	at com.ibm.broker.config.appdev.CommandProcessor.packageBAR(CommandProcessor.java:438)
+	at com.ibm.broker.config.appdev.CommandProcessor.process(CommandProcessor.java:345)
+	at com.ibm.broker.config.util.FlowRendererBARIBMIntWrapper.main(FlowRendererBARIBMIntWrapper.java:225)
+BIP1859I: Successfully added file 'additionalCIFDetailsCreate_th_expDS.subflow' to the BAR file.
+BIP1859I: Successfully added file 'additionalCIFDetailsCreate_th_expDS_Filter1.esql' to the BAR file.
+BIP1859I: Successfully added file 'disabilityVerificationCreate_expDS.json' to the BAR file.
+BIP1859I: Successfully added file 'disabilityVerificationCreate_expDSInputCatchHandler.subflow' to the BAR file.
+BIP1859I: Successfully added file 'disabilityVerificationCreate_expDSInputFailureHandler.subflow' to the BAR file.
+BIP1859I: Successfully added file 'disabilityVerificationCreate_expDSInputTimeoutHandler.subflow' to the BAR file.
+BIP1859I: Successfully added file 'disabilityVerificationCreate_expDS_Compute.esql' to the BAR file.
+BIP1859I: Successfully added file 'disabilityVerificationCreate_expDS_Compute1.esql' to the BAR file.
+BIP1859I: Successfully added file 'disabilityVerificationCreate_expDS_Compute2.esql' to the BAR file.
+
+
+Starting: Deploying Bar File
+==============================================================================
+Task         : Command line
+Description  : Run a command line script using Bash on Linux and macOS and cmd.exe on Windows
+Version      : 2.231.0
+Author       : Microsoft Corporation
+Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/command-line
+==============================================================================
+Generating script.
+========================== Starting Command Output ===========================
+/usr/bin/bash --noprofile --norc /home/azagent/_work/_temp/8aa9febd-1e46-49d9-b144-2f0a9284e277.sh
+HOST: 10.177.44.52 , IntegrationNode: CUSTOMER_EXP_53.broker , IntegrationServer: Customer_E_08
+BIP8118I: Deploying to server... 
+BIP1357E: Source file 'additionalCIFDetailsCreate_th_expDS/additionalCIFDetailsCreate_th_expDS.subflow' could not be processed. 
+ The source file additionalCIFDetailsCreate_th_expDS/additionalCIFDetailsCreate_th_expDS.subflow could not be processed. The failure to process this file has not prevented the processing of other files in the deployment. 
+Use the preceding error messages to ascertain the cause of the failure to process the file. 
+BIP5004E: An XML parsing error 'The content of elements must consist of well-formed character data or markup.' occurred on line 2 column 1 when parsing element ''.  Internal error codes are '1519' and '2'. 
+ This error was reported by the generic XML parser, and is usually the result of a badly formed XML message. 
+Check that the input XML message is a well-formed XML message that adheres to the XML specification. The line number and column number that are quoted in the message give the position where the parser discovered the problem. However, the actual error might be earlier in the message.  
+Other possible causes are:  
+1. A character that is not supported by XML occurs in the instance message data.  
+     XML supports only a subset of control characters; therefore, ensure that no unsupported characters, such as X'00', appear in the document.  
+2. The Coded Character Set ID that is defined in the message header does not reflect the contents of the instance message.  
+     If the XML document has an XML prologue, the IBM MQ CodedCharSetId should be consistent with the XML Encoding field.  
+3. A reserved XML character appears in the instance message data.  
+     Characters that might be recognized as XML markup - for example, < and & - should be replaced with the corresponding XML entities - &lt; and &amp;. 
+BIP1360E: Message flow node 'additionalCIFDetailsCreate_th_expDS (Implementation)', 'gen.additionalCIFDetailsCreate_th_expDS#FCMComposite_1_8' in message flow 'gen.additionalCIFDetailsCreate_th_expDS' in RestAPI 'additionalCIFDetailsCreate_th_expDS' requires subflow 'additionalCIFDetailsCreate_th_expDS.subflow' which is not deployed. 
+ While resolving the subflow definitions for message flow or subflow 'gen.additionalCIFDetailsCreate_th_expDS', the definition for the subflow 'RestAPI' could not be found. The top level message flow will be unable to start until the subflow is deployed. 
+Correct the error and redeploy the application or library which contains the subflow. 
+BIP1096E: The source 'additionalCIFDetailsCreate_th_expDS.bar' has been deployed but there were one or more failures which may mean the deployed resources will be unable to execute. 
+ Use the proceeding messages to identify the cause of the failure(s). 
+BIP8071I: Successful command completion. 
+HOST: 10.177.44.53 , IntegrationNode: CUSTOMER_EXP_53.broker , IntegrationServer: Customer_E_08
+BIP8118I: Deploying to server... 
+BIP1357E: Source file 'additionalCIFDetailsCreate_th_expDS/additionalCIFDetailsCreate_th_expDS.subflow' could not be processed. 
+ The source file additionalCIFDetailsCreate_th_expDS/additionalCIFDetailsCreate_th_expDS.subflow could not be processed. The failure to process this file has not prevented the processing of other files in the deployment. 
+Use the preceding error messages to ascertain the cause of the failure to process the file. 
+BIP5004E: An XML parsing error 'The content of elements must consist of well-formed character data or markup.' occurred on line 2 column 1 when parsing element ''.  Internal error codes are '1519' and '2'. 
+ This error was reported by the generic XML parser, and is usually the result of a badly formed XML message. 
+Check that the input XML message is a well-formed XML message that adheres to the XML specification. The line number and column number that are quoted in the message give the position where the parser discovered the problem. However, the actual error might be earlier in the message.  
+Other possible causes are:  
