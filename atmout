@@ -1,127 +1,236 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" 
-             xmlns:map="default" 
-             domainID="com.ibm.msl.mapping.xml" 
-             domainIDExtension="mb" 
-             mainMap="true" 
-             targetNamespace="default" 
-             version="8.0.5.0">
+Message
+	Properties
+			MessageSet:UNKNOWN:null
+			MessageType:UNKNOWN:null
+			MessageFormat:UNKNOWN:null
+			Encoding:UNKNOWN:null
+			CodedCharSetId:UNKNOWN:null
+			Transactional:UNKNOWN:null
+			Persistence:UNKNOWN:null
+			CreationTime:UNKNOWN:null
+			ExpirationTime:UNKNOWN:null
+			Priority:UNKNOWN:null
+			ReplyIdentifier:UNKNOWN:null
+			ReplyProtocol:CHARACTER:SOAP-HTTP
+			Topic:UNKNOWN:null
+			ContentType:UNKNOWN:null
+			IdentitySourceType:UNKNOWN:null
+			IdentitySourceToken:UNKNOWN:null
+			IdentitySourcePassword:UNKNOWN:null
+			IdentitySourceIssuedBy:UNKNOWN:null
+			IdentityMappedType:UNKNOWN:null
+			IdentityMappedToken:UNKNOWN:null
+			IdentityMappedPassword:UNKNOWN:null
+			IdentityMappedIssuedBy:UNKNOWN:null
+	JSON
+			Data
+	XMLNSC
+			input
+					Rows
+							FIELD_NAME:CHARACTER:BGLToBGLFundTransferMR_expDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:PPYY
+					Rows
+							FIELD_NAME:CHARACTER:inbFundTransfer_expDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:PAYY
+					Rows
+							FIELD_NAME:CHARACTER:FE_transactionEnquiryMR_exp_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:NNYY
+					Rows
+							FIELD_NAME:CHARACTER:BGLToVostroFundTransferMR_expDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:NNYY
+					Rows
+							FIELD_NAME:CHARACTER:customerToBGLFundTransferMR_bh_expDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:NNYY
+					Rows
+							FIELD_NAME:CHARACTER:autoLoanDisbursementRTGS_orchDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:NNYY
+					Rows
+							FIELD_NAME:CHARACTER:neftFundTransferDeposits_expDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:NNYY
+					Rows
+							FIELD_NAME:CHARACTER:fibuChequeCorrectionTransaction_expDs_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:NNYY
+					Rows
+							FIELD_NAME:CHARACTER:fibuCorrectionForOBCTransactions_expDs_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:NNYY
+					Rows
+							FIELD_NAME:CHARACTER:fibuCorrectionForTransferTransactions_expDs_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:NNYY
+					Rows
+							FIELD_NAME:CHARACTER:fibuEnquireHostAckPendingTransaction_expDs_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:NNYY
+					Rows
+							FIELD_NAME:CHARACTER:fibuOutwardClearingTran_expDs_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:NNYY
+					Rows
+							FIELD_NAME:CHARACTER:fibuCorrectionForCashTransactions_expDs_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:NNYY
+					Rows
+							FIELD_NAME:CHARACTER:rtgsFundTransfer_bh_MR_expDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:NNYY
+					Rows
+							FIELD_NAME:CHARACTER:fibuTransferChequeDeposit_expDs_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:NNYY
+					Rows
+							FIELD_NAME:CHARACTER:fibuCashTransaction_expDs_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:NNYY
+					Rows
+							FIELD_NAME:CHARACTER:BGLtoBGLFundTransfer_VPS_expDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:NNYY
+					Rows
+							FIELD_NAME:CHARACTER:neftFundTransferLoans_expDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:NNYY
+					Rows
+							FIELD_NAME:CHARACTER:GLToCustomerFundTransferMR_bh_expDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:PAYY
+					Rows
+							FIELD_NAME:CHARACTER:correctDepositToBGLFundTransfer_VPS_expDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:PPYY
+					Rows
+							FIELD_NAME:CHARACTER:customerToCustomerFundTransferMR_expDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:PPYY
+					Rows
+							FIELD_NAME:CHARACTER:recoveryOfProcessingFeePGoldLoan_th_OrchDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:PPYY
+					Rows
+							FIELD_NAME:CHARACTER:RTGSDisbursementLoans_expDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:NNYY
+					Rows
+							FIELD_NAME:CHARACTER:glFundTransfer_th_expDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:PPYY
+					Rows
+							FIELD_NAME:CHARACTER:smsNotification_expDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:PAYY
+					Rows
+							FIELD_NAME:CHARACTER:fibuLifeTransaction_expDs_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:PPYY
+					Rows
+							FIELD_NAME:CHARACTER:depositToBGLFundTransfer_VPS_expDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:PPYY
+					Rows
+							FIELD_NAME:CHARACTER:emvKeySynchronization_expDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:NNYY
+					Rows
+							FIELD_NAME:CHARACTER:emv32BitChipCardValidation_expDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:NNYY
+					Rows
+							FIELD_NAME:CHARACTER:autoLoanDisbursementTransfer_orchDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:PPYY
+					Rows
+							FIELD_NAME:CHARACTER:BGLtoDepositFundtransfer_VPS_expDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:PPYY
+					Rows
+							FIELD_NAME:CHARACTER:correctBglToBglFundTransfer_VPS_expDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:PPYY
+					Rows
+							FIELD_NAME:CHARACTER:customerToBGLFundTransferMR_expDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:PPYY
+					Rows
+							FIELD_NAME:CHARACTER:BGLToBGLFundTransferMR_bh_expDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:PPYY
+					Rows
+							FIELD_NAME:CHARACTER:TC_BRANCH_CODE
+							FIELD_VALUE:CHARACTER:01111
+					Rows
+							FIELD_NAME:CHARACTER:ProtocolID_P4
+							FIELD_VALUE:CHARACTER:0171
+					Rows
+							FIELD_NAME:CHARACTER:TransactionType_P4
+							FIELD_VALUE:CHARACTER:P4
+					Rows
+							FIELD_NAME:CHARACTER:ProtocolID_P1
+							FIELD_VALUE:CHARACTER:0243
+					Rows
+							FIELD_NAME:CHARACTER:TransactionType_P1
+							FIELD_VALUE:CHARACTER:P1
+					Rows
+							FIELD_NAME:CHARACTER:STUB_MR_P4
+							FIELD_VALUE:CHARACTER: 0229P4FT04430SBIFT22300051064062032037                                00013071412012031010000O.K                                                                                                                                         
+					Rows
+							FIELD_NAME:CHARACTER:STUB_MR_P1
+							FIELD_VALUE:CHARACTER: 0206P1DB00437SBIDB22301122604577156144                                0000003000227717212392869001062025010000O.K                                                                                                 
+					Rows
+							FIELD_NAME:CHARACTER:Q
+							FIELD_VALUE:CHARACTER:GT
+					Rows
+							FIELD_NAME:CHARACTER:vostroToGLFundTransfer_expDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:PPYY
+					Rows
+							FIELD_NAME:CHARACTER:personalCifCreation_orchDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:NNYY
+					Rows
+							FIELD_NAME:CHARACTER:glFundTransfer_bth_expDS_INSERT_SELECTOR
+							FIELD_VALUE:CHARACTER:NNYY
+					Rows
+							FIELD_NAME:CHARACTER:BS_ifscEnquiry_expDS_RESPINDEX
+							FIELD_VALUE:CHARACTER:1111
+							
+							
+							
+							
+After Mapping node 
 
-    <inlinedXMLSchema>
-        <![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+ExceptionList
+	RecoverableException
+			File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/MessageServices/ImbDataFlowNode.cpp
+			Line:INTEGER:1885
+			Function:CHARACTER:ImbDataFlowNode::createExceptionList
+			Type:CHARACTER:ComIbmMSLMappingNode
+			Name:CHARACTER:gen.ApiList#FCMComposite_1_5.getFetch#FCMComposite_1_4
+			Label:CHARACTER:gen.ApiList.getFetch (Implementation).Mapping
+			Catalog:CHARACTER:BIPmsgs
+			Severity:INTEGER:3
+			Number:INTEGER:2230
+			Text:CHARACTER:Node throwing exception
+			Insert
+					Type:INTEGER:14
+					Text:CHARACTER:gen.ApiList.getFetch (Implementation).Mapping
+			RecoverableException
+					File:CHARACTER:MbErrorHandler.java
+					Line:INTEGER:150
+					Function:CHARACTER:evaluate
+					Type:CHARACTER:
+					Name:CHARACTER:
+					Label:CHARACTER:
+					Catalog:CHARACTER:BIPmsgs
+					Severity:INTEGER:3
+					Number:INTEGER:3947
+					Text:CHARACTER:Caught BrokerXCIDynamicException
+					Insert
+							Type:INTEGER:5
+							Text:CHARACTER:{default}:getFetch_Mapping
+					Insert
+							Type:INTEGER:5
+							Text:CHARACTER:Cache Put: if ( not(exists($KeyParam)) )
+					RecoverableException
+							File:CHARACTER:MbErrorHandlerBase.java
+							Line:INTEGER:136
+							Function:CHARACTER:throwableToMbException
+							Type:CHARACTER:
+							Name:CHARACTER:
+							Label:CHARACTER:
+							Catalog:CHARACTER:BIPmsgs
+							Severity:INTEGER:3
+							Number:INTEGER:3949
+							Text:CHARACTER:Caught BrokerXCIDynamicException
+							Insert
+									Type:INTEGER:5
+									Text:CHARACTER:<com.ibm.broker.plugin.MbRecoverableException class:java.lang.Class method:missingParamPut source:BIPmsgs key:3994 >
 
-  <xsd:element name="ERROR" nillable="true">
-    <xsd:complexType>
-      <xsd:sequence>
-        <xsd:element maxOccurs="1" minOccurs="0" name="Message" nillable="true" type="xsd:string"/>
-      </xsd:sequence>
-    </xsd:complexType>
-  </xsd:element>
-
-  <xsd:element name="RESPONSE" nillable="true" type="xsd:string"/>
-
-</xsd:schema>
-]]>
-    </inlinedXMLSchema>
-
-    <!-- Input: your message schema (Cache.xsd with input/Rows) -->
-    <input path="/Cache.xsd" var="var2"/>
-
-    <!-- Input: IBM internal cache XSD for CacheFailure -->
-    <input path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var3"/>
-
-    <!-- Input: inlined schema for RESPONSE/ERROR type resolution -->
-    <input inlinedXMLSchema="true" path="../schema_1.xsd" var="var5"/>
-
-    <!-- Output: JSON domain message -->
-    <output path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/JsonDomainMsg.xsd" var="var4"/>
-
-    <!-- Output: IBM cache XSD for CachePut -->
-    <output path="jar:file://!com/ibm/msl/mapping/cache/xsds/cache.xsd" var="var"/>
-
-    <namespaces>
-        <namespace kind="supplement" prefix="io" uri="http://www.ibm.com/msl/cache/1.0"/>
-        <namespace kind="supplement" prefix="out" uri="http://www.ibm.com/iib/msl/json"/>
-    </namespaces>
-
-    <generation engine="xquery"/>
-
-    <mappingDeclaration name="getFetch_Mapping">
-
-        <!-- Input message assembly from XMLNSC domain -->
-        <input path="$var2/mb:msg(input,assembly,XMLNSC,Properties)" var="MessageAssembly"/>
-
-        <!-- Output message assembly to JSON domain -->
-        <output namespace="http://www.ibm.com/iib/msl/json" 
-                path="$var4/mb:msg(JSON,assembly,JSON,Properties)" 
-                var="MessageAssembly2">
-
-            <!-- Cast Data root as JSONObject -->
-            <cast castType="userDefined" 
-                  path="$MessageAssembly2/JSON/Data/type('anyType')" 
-                  qualifier="{http://www.ibm.com/iib/msl/json}JSONObject" 
-                  ref="var4"/>
-
-            <!-- Cast array slot 2 for RESPONSE type — separate spath index -->
-            <cast castType="userDefined" 
-                  path="$MessageAssembly2/JSON/spath('Data',2)/any" 
-                  qualifier="RESPONSE" 
-                  ref="var5"/>
-
-            <!-- Cast array slot 3 for ERROR type — separate spath index -->
-            <cast castType="userDefined" 
-                  path="$MessageAssembly2/JSON/spath('Data',3)/any" 
-                  qualifier="ERROR" 
-                  ref="var5"/>
-
-        </output>
-
-        <!-- Propagate Properties from input to output -->
-        <move>
-            <input path="$MessageAssembly/Properties"/>
-            <output path="$MessageAssembly2/Properties"/>
-        </move>
-
-        <!-- Loop over each Row in the input -->
-        <foreach>
-            <input path="$MessageAssembly/input/Rows" var="Rows1"/>
-            <output path="$MessageAssembly2/JSON/spath('Data',2)"/>
-
-            <!-- Cache PUT transaction -->
-            <transaction>
-                <cachePut>
-                    <input path="$Rows1/."/>
-                    <output path="$var/CachePut" var="CachePut"/>
-                    <!-- FIX: fully anchored input and output paths -->
-                    <move>
-                        <input path="$Rows1/field_name"/>
-                        <output path="$CachePut/Key"/>
-                    </move>
-                    <move>
-                        <input path="$Rows1/field_value"/>
-                        <output path="$CachePut/Value"/>
-                    </move>
-                </cachePut>
-
-                <!-- On cache failure, write ERROR to output array -->
-                <cacheFailure>
-                    <input path="$var3/CacheFailure" var="CacheFailure"/>
-                    <output path="$MessageAssembly2/JSON/spath('Data',3)/ERROR" var="ERROR"/>
-                    <move>
-                        <input path="$CacheFailure/Message"/>
-                        <output path="$ERROR/Message"/>
-                    </move>
-                </cacheFailure>
-            </transaction>
-
-            <!-- On cache success, write RESPONSE to output array -->
-            <assign value="SUCCESS">
-                <output path="$MessageAssembly2/JSON/spath('Data',2)/RESPONSE"/>
-            </assign>
-
-        </foreach>
-
-    </mappingDeclaration>
-
-</mappingRoot>
+							RecoverableException
+									File:CHARACTER:MbErrorHandler.java
+									Line:INTEGER:114
+									Function:CHARACTER:missingParamPut
+									Type:CHARACTER:
+									Name:CHARACTER:
+									Label:CHARACTER:
+									Catalog:CHARACTER:BIPmsgs
+									Severity:INTEGER:3
+									Number:INTEGER:3994
+									Text:CHARACTER:Unable to put to Global Cache no data mapped for required parameter
+									Insert
+											Type:INTEGER:5
+											Text:CHARACTER:Cache Put
+									Insert
+											Type:INTEGER:5
+											Text:CHARACTER:Key
