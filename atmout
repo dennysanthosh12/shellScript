@@ -1,15 +1,55 @@
-Request
-J000000ISO0060000400800822000000000000004000000000000000506062141000026001.
-expected
-000000ISO0060000400800822000000000000004000000000000000506062141000026001.
-
-tcpdump
-12:43:49.669525 IP 10.177.56.216.14305 > EISUATEXP07.8048: Flags [P.], seq 304:380, ack 1, win 65535, length 76
-E..tF.@.3../
-.8.
-.,87..p....p.4.P...P0...J000000ISO0060000400800822000000000000004000000000000000506071349000006001.
-12:43:49.669565 IP EISUATEXP07.8048 > 10.177.56.216.14305: Flags [.], ack 380, win 64012, length 0
-E..(..@.@...
-.,8
-.8..p7.p.4....-P...z...
-12:43:50.937726 IP 10.177.56.217.prismiq-plugin > EISUATEXP07.8048: Flags [S], seq 2192870973, win 29200, options [mss 1460,sackOK,TS val 484482752 ecr 0,nop,wscale 7], length 0
+ExceptionList
+	RecoverableException
+			File:CHARACTER:/build/jenkins_swg/slot0/product-build/WMB/src/DataFlowEngine/MessageServices/ImbDataFlowNode.cpp
+			Line:INTEGER:1885
+			Function:CHARACTER:ImbDataFlowNode::createExceptionList
+			Type:CHARACTER:ComIbmTCPIPServerInputNode
+			Name:CHARACTER:grcCDM_TCP#FCMComposite_1_22
+			Label:CHARACTER:grcCDM_TCP.TCPIP Server Input
+			Catalog:CHARACTER:BIPmsgs
+			Severity:INTEGER:3
+			Number:INTEGER:2230
+			Text:CHARACTER:Node throwing exception
+			Insert
+					Type:INTEGER:14
+					Text:CHARACTER:grcCDM_TCP.TCPIP Server Input
+			RecoverableException
+					File:CHARACTER:MbErrorHandler.java
+					Line:INTEGER:150
+					Function:CHARACTER:readAndSeachForDelimiter
+					Type:CHARACTER:
+					Name:CHARACTER:
+					Label:CHARACTER:
+					Catalog:CHARACTER:BIPmsgs
+					Severity:INTEGER:3
+					Number:INTEGER:3598
+					Text:CHARACTER:exception while looking for delimiter
+					Insert
+							Type:INTEGER:5
+							Text:CHARACTER:03
+					RecoverableException
+							File:CHARACTER:MbErrorHandler.java
+							Line:INTEGER:114
+							Function:CHARACTER:waitForData
+							Type:CHARACTER:
+							Name:CHARACTER:
+							Label:CHARACTER:
+							Catalog:CHARACTER:BIPmsgs
+							Severity:INTEGER:3
+							Number:INTEGER:3552
+							Text:CHARACTER:timed out wating for data
+							Insert
+									Type:INTEGER:5
+									Text:CHARACTER:localhost
+							Insert
+									Type:INTEGER:5
+									Text:CHARACTER:8048
+							Insert
+									Type:INTEGER:5
+									Text:CHARACTER:6a65a0:19dfc32e5fa:-8000
+							Insert
+									Type:INTEGER:5
+									Text:CHARACTER:25000
+							Insert
+									Type:INTEGER:5
+									Text:CHARACTER:36 32 31 34 31 30 30 30 30 32 36 30 30 31 2E 0A 
