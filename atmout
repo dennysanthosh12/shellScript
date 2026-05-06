@@ -1,6 +1,15 @@
-isql unixODBC 2.3.9
+Request
+J000000ISO0060000400800822000000000000004000000000000000506062141000026001.
+expected
+000000ISO0060000400800822000000000000004000000000000000506062141000026001.
 
-[azagent@az-rh-uat-01 ~]$ echo "START TRANSACTION;" | isql -v UAT "$DB_USER" "$DB_PASS"  -b                                                                                                                                                  [37000][IBM][ODBC Oracle Wire Protocol driver][Oracle]ORA-00900: invalid SQL statement
-
-[ISQL]ERROR: Could not SQLExecute
-[azagent@az-rh-uat-01 ~]$
+tcpdump
+12:43:49.669525 IP 10.177.56.216.14305 > EISUATEXP07.8048: Flags [P.], seq 304:380, ack 1, win 65535, length 76
+E..tF.@.3../
+.8.
+.,87..p....p.4.P...P0...J000000ISO0060000400800822000000000000004000000000000000506071349000006001.
+12:43:49.669565 IP EISUATEXP07.8048 > 10.177.56.216.14305: Flags [.], ack 380, win 64012, length 0
+E..(..@.@...
+.,8
+.8..p7.p.4....-P...z...
+12:43:50.937726 IP 10.177.56.217.prismiq-plugin > EISUATEXP07.8048: Flags [S], seq 2192870973, win 29200, options [mss 1460,sackOK,TS val 484482752 ecr 0,nop,wscale 7], length 0
