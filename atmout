@@ -1,4 +1,13 @@
-[azagent@az-rh-uat-01 ~]$ echo "SET TRANSACTION READ WRITE;" | isql -v UAT "$DB_USER" "$DB_PASS"  -b
-[37000][IBM][ODBC Oracle Wire Protocol driver][Oracle]ORA-03048: SQL reserved word ';' is not syntactically valid following 'SET TRANSACTION READ WRITE'
 
-[ISQL]ERROR: Could not SQLExecute
+
+CREATE COMPUTE MODULE postUpdate_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE ref REFERENCE TO InputRoot.JSON.Data.Item[1];
+		WHILE LASTMOVE(ref) DO
+		  PASSTHRU('INSERT INTO EISUATSUPPORT.APIDETAILS (API_NAME,INTEGRATION_NODE,INTEGRATION_SERVER,SERVER_IP,API_STATE,DEPLOYED_DATE) VALUES(?,?,?,?,?,?)' VALUES (ref.ApiName,ref.IntegrationNode,ref.IntegrationServer,ref.ServerIP,ref.ApiState,ref.DeployedDate)) TO DATABASE.SI;
+		END WHILE;
+		RETURN TRUE;
+	END;
+
+END MODULE;
