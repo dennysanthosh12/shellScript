@@ -1,2 +1,14 @@
-[eisuser@EISUATEXP09 ~]$ curl -k -X POST http://10.177.44.58:5021/api/update
-{"error": {"code":500, "status": "Internal Server Error", "detail": "BIP2230E: Error detected whilst processing a message in node 'gen.ApiUpdate.postUpdate (Implementation).Compute'. \\nBIP2488E:  (.postUpdate_Compute.Main, 5.5) Error detected whilst executing the SQL statement ''INSERT INTO EISUATSUPPORT.APIDETAILS (API_NAME,INTEGRATION_NODE,INTEGRATION_SERVER,SERVER_IP,API_STATE,DEPLOYED_DATE) VALUES (?,?,?,?,?,?)' VALUES(ref.ApiName, ref.IntegrationNode, ref.IntegrationServer, ref.ServerIP, ref.ApiState, ref.DeployedDate);'. \\nBIP2321E: Database error: ODBC return code '-1' using ODBC driver manager '/opt/IBM/ace/ie02/lib/libodbcinterface.so'. \\nBIP2322E: Database error: SQL State '22018'; Native Error Code '0'; Error Text '[IBM][ODBC Oracle Wire Protocol driver]Invalid character value. Error in parameter 6.'. "}}
+
+
+CREATE COMPUTE MODULE postUpdate_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE ref REFERENCE TO InputRoot.JSON.Data.Item[1];
+		WHILE LASTMOVE(ref) DO
+		  PASSTHRU('INSERT INTO EISUATSUPPORT.APIDETAILS (API_NAME,INTEGRATION_NODE,INTEGRATION_SERVER,SERVER_IP,API_STATE,DEPLOYED_DATE) VALUES (?,?,?,?,?,?)' , ref.ApiName,ref.IntegrationNode,ref.IntegrationServer,ref.ServerIP,ref.ApiState,COALESCE(CAST(ref.DeployedDate AS DATE FORMAT 'yyyy-MM-dd'),0000-00-00)) ;
+		  MOVE ref NEXTSIBLING;
+		END WHILE;
+		RETURN TRUE;
+	END;
+
+END MODULE;
