@@ -1,14 +1,65 @@
+curl -k -X POST http://10.177.44.58:5021/api/update
+{"error": {"code":500, "status": "Internal Server Error", "detail": "BIP2230E: Error detected whilst processing a message in node 'gen.ApiUpdate.postUpdate (Implementation).Compute'. \\nBIP2488E:  (.postUpdate_Compute.Main, 7.5) Error detected whilst executing the SQL statement ''INSERT INTO EISUATSUPPORT.APIDETAILS (API_NAME,INTEGRATION_NODE,INTEGRATION_SERVER,SERVER_IP,API_STATE,DEPLOYED_DATE) VALUES (?,?,?,?,?,?)' VALUES(ref.ApiName, ref.IntegrationNode, ref.IntegrationServer, ref.ServerIP, ref.ApiState, CAST(ref.DeployedDate AS DATE FORMAT 'yyyy-MM-dd'));'. \\nBIP2521E: (.postUpdate_Compute.Main, 7.237) : Error casting the value ''null'' to 'DATE'. \\nBIP3204S: Input expression 'null' does not match FORMAT expression 'yyyy^C
+
 
 
 CREATE COMPUTE MODULE postUpdate_Compute
 	CREATE FUNCTION Main() RETURNS BOOLEAN
 	BEGIN
 		DECLARE ref REFERENCE TO InputRoot.JSON.Data.Item[1];
+		DECLARE COUNT INTEGER 0;
 		WHILE LASTMOVE(ref) DO
-		  PASSTHRU('INSERT INTO EISUATSUPPORT.APIDETAILS (API_NAME,INTEGRATION_NODE,INTEGRATION_SERVER,SERVER_IP,API_STATE,DEPLOYED_DATE) VALUES (?,?,?,?,?,?)' , ref.ApiName,ref.IntegrationNode,ref.IntegrationServer,ref.ServerIP,ref.ApiState,COALESCE(CAST(ref.DeployedDate AS DATE FORMAT 'yyyy-MM-dd'),0000-00-00)) ;
+			IF ref.DeployedDate IS NOT NULL  OR ref.DeployedDate <> 'null'  THEN
+				PASSTHRU('INSERT INTO EISUATSUPPORT.APIDETAILS (API_NAME,INTEGRATION_NODE,INTEGRATION_SERVER,SERVER_IP,API_STATE,DEPLOYED_DATE) VALUES (?,?,?,?,?,?)' , ref.ApiName,ref.IntegrationNode,ref.IntegrationServer,ref.ServerIP,ref.ApiState,CAST(ref.DeployedDate AS DATE FORMAT 'yyyy-MM-dd')) ;
+			ELSE
+				PASSTHRU('INSERT INTO EISUATSUPPORT.APIDETAILS (API_NAME,INTEGRATION_NODE,INTEGRATION_SERVER,SERVER_IP,API_STATE) VALUES (?,?,?,?,?)' , ref.ApiName,ref.IntegrationNode,ref.IntegrationServer,ref.ServerIP,ref.ApiState) ;
+			END IF;
+		  SET COUNT = COUNT +1;
 		  MOVE ref NEXTSIBLING;
 		END WHILE;
+		
+		SET OutputRoot.JSON.Data.Count = COUNT;
 		RETURN TRUE;
 	END;
 
 END MODULE;
+
+
+
+data is in this format 
+[
+  {
+    "ApiName": "microserviceTdrStdrEnquiry_sys",
+    "IntegrationNode": "MISC_1208_SYS",
+    "IntegrationServer": "MISC_1208_01",
+    "ServerIP": "10.177.44.67",
+    "ApiState": "running",
+    "DeployedDate": "2026-05-02"
+  },
+  {
+    "ApiName": "microserviceCasaODEnquiry_sys",
+    "IntegrationNode": "MISC_1208_SYS",
+    "IntegrationServer": "MISC_1208_01",
+    "ServerIP": "10.177.44.67",
+    "ApiState": "running",
+    "DeployedDate": "2026-05-06"
+  },
+  {
+    "ApiName": "microserviceLoanEnquiry_sys",
+    "IntegrationNode": "MISC_1208_SYS",
+    "IntegrationServer": "MISC_1208_01",
+    "ServerIP": "10.177.44.67",
+    "ApiState": "running",
+    "DeployedDate": "2026-05-06"
+  }
+]
+
+DESC APIDETAILS;
+Name               Null?    Type          
+------------------ -------- ------------- 
+API_NAME           NOT NULL VARCHAR2(100) 
+INTEGRATION_NODE   NOT NULL VARCHAR2(60)  
+INTEGRATION_SERVER NOT NULL VARCHAR2(60)  
+SERVER_IP          NOT NULL VARCHAR2(40)  
+API_STATE          NOT NULL VARCHAR2(20)  
+DEPLOYED_DATE               DATE          
