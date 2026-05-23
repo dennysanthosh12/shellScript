@@ -1,131 +1,26 @@
-CACHE UPDATE
 
-View raw log
-Pool: TFS-RH-1
-Agent: TFS-RHAGENTPOOL-1
-Started: Just now
-Duration: 14s
+Validation
+
+
+##[error]Error reported in diagnostic logs. Please examine the log for more details.
+    - /opt/azagent/_diag/Worker_20260523-063354-utc.log
+System.UnauthorizedAccessException: Access to the path '/opt/azagent/_diag/pages/a21a2c7b-44c8-47f7-8d37-76a660858b36_1.log' is denied.
+ ---> System.IO.IOException: Permission denied
+   --- End of inner exception stack trace ---
+   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64& fileLength, UnixFileMode& filePermissions, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.StreamWriter.ValidateArgsAndOpenPath(String path, Boolean append, Encoding encoding, Int32 bufferSize)
+   at System.IO.StreamWriter..ctor(String path, Boolean append, Encoding encoding)
+   at Microsoft.VisualStudio.Services.Agent.PagingLogger.NewPage() in /mnt/vss/_work/1/s/src/Microsoft.VisualStudio.Services.Agent/Logging.cs:line 130
+   at Microsoft.VisualStudio.Services.Agent.PagingLogger.Create() in /mnt/vss/_work/1/s/src/Microsoft.VisualStudio.Services.Agent/Logging.cs:line 121
+   at Microsoft.VisualStudio.Services.Agent.PagingLogger.Write(String message) in /mnt/vss/_work/1/s/src/Microsoft.VisualStudio.Services.Agent/Logging.cs:line 72
+   at Microsoft.VisualStudio.Services.Agent.Worker.ExecutionContext.Write(String tag, String inputMessage, Boolean canMaskSecrets) in /mnt/vss/_work/1/s/src/Agent.Worker/ExecutionContext.cs:line 768
+   at Microsoft.VisualStudio.Services.Agent.Worker.ExecutionContextExtension.Section(IExecutionContext context, String message) in /mnt/vss/_work/1/s/src/Agent.Worker/ExecutionContext.cs:line 1166
+   at Microsoft.VisualStudio.Services.Agent.Worker.JobRunner.RunAsync(AgentJobRequestMessage message, CancellationToken jobRequestCancellationToken) in /mnt/vss/_work/1/s/src/Agent.Worker/JobRunner.cs:line 117
+   at Microsoft.VisualStudio.Services.Agent.Worker.JobRunner.RunAsync(AgentJobRequestMessage message, CancellationToken jobRequestCancellationToken) in /mnt/vss/_work/1/s/src/Agent.Worker/JobRunner.cs:line 475
+   at Microsoft.VisualStudio.Services.Agent.Worker.Worker.RunAsync(String pipeIn, String pipeOut) in /mnt/vss/_work/1/s/src/Agent.Worker/Worker.cs:line 104
+   at Microsoft.VisualStudio.Services.Agent.Worker.Program.MainAsync(IHostContext context, String[] args) in /mnt/vss/_work/1/s/src/Agent.Worker/Program.cs:line 54
 
 Job preparation parameters
-Job live console data:
-Finishing: CACHE UPDATE
-
-Initialize job
-
-View raw log
-Starting: Initialize job
-Agent name: 'TFS-RHAGENTPOOL-1'
-Agent machine name: 'az-rh-uat-01'
-Current agent version: '4.269.0'
-Agent running as: 'azagent'
-Prepare build directory.
-Set build variables.
-Download all required tasks.
-Checking job knob settings.
-   Knob: CheckForTaskDeprecation = false Source: $(AZP_AGENT_CHECK_FOR_TASK_DEPRECATION) 
-Finished checking job knob settings.
-Start tracking orphan processes.
-Finishing: Initialize job
-
-
-Checkout acc-ppfmaturityextension_expds-eapi@SIT to s
-
-View raw log
-git config gc.auto 0
-git config --get-all http.https://10.177.44.155/tfs/SBIPOC/devops_testing/_git/acc-ppfmaturityextension_expds-eapi.extraheader
-git config --get-all http.extraheader
-git config --get-regexp .*extraheader
-git config --get-all http.proxy
-git config http.version HTTP/1.1
-git --config-env=http.extraheader=env_var_http.extraheader fetch --force --tags --prune --prune-tags --progress --no-recurse-submodules origin
-remote: Azure Repos        
-remote: 
-remote: Found 56 objects to send. (5 ms)        
-From https://10.177.44.155/tfs/SBIPOC/devops_testing/_git/acc-ppfmaturityextension_expds-eapi
- * [new branch]      DEV        -> origin/DEV
- * [new branch]      PRE-PROD   -> origin/PRE-PROD
- * [new branch]      SIT        -> origin/SIT
- * [new branch]      UAT        -> origin/UAT
- * [new branch]      main       -> origin/main
-git --config-env=http.extraheader=env_var_http.extraheader fetch --force --tags --prune --prune-tags --progress --no-recurse-submodules origin   +c85b5a0798250cbf4a38a49347f7b622ef14bacd
-From https://10.177.44.155/tfs/SBIPOC/devops_testing/_git/acc-ppfmaturityextension_expds-eapi
- * branch            c85b5a0798250cbf4a38a49347f7b622ef14bacd -> FETCH_HEAD
-git checkout --progress --force c85b5a0798250cbf4a38a49347f7b622ef14bacd
-Note: switching to 'c85b5a0798250cbf4a38a49347f7b622ef14bacd'.
-
-You are in 'detached HEAD' state. You can look around, make experimental
-changes and commit them, and you can discard any commits you make in this
-state without impacting any branches by switching back to a branch.
-
-If you want to create a new branch to retain commits you create, you may
-do so (now or later) by using -c with the switch command. Example:
-
-  git switch -c <new-branch-name>
-
-Or undo this operation with:
-
-  git switch -
-
-Turn off this advice by setting config variable advice.detachedHead to false
-
-HEAD is now at c85b5a0 Updated override.properties
-Finishing: Checkout acc-ppfmaturityextension_expds-eapi@SIT to s
-
-
-Download
-
-View raw log
-Starting: Download
-==============================================================================
-Task         : Download build artifacts
-Description  : Download files that were saved as artifacts of a completed build
-Version      : 1.220.0
-Author       : Microsoft Corporation
-Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/download-build-artifacts
-==============================================================================
-Download from the specified build: #764
-Download artifact to: /home/azagent/_work/769/
-Pattern: **
-Minimatch patterns: [**]
-Applying include pattern against original list.
-4 matches
-4 final results
-Start downloading FCS artifact- drop
-Downloading: /home/azagent/_work/769/drop/override.properties
-Downloading: /home/azagent/_work/769/drop/config.yml
-Downloading: /home/azagent/_work/769/drop/ppfMaturityExtension_expDS.bar
-Downloading artifact finished.
-Finishing: Download
-
-Update cache in Database
-
-View raw log
-Starting: Update cache in Database
-==============================================================================
-Task         : Command line
-Description  : Run a command line script using Bash on Linux and macOS and cmd.exe on Windows
-Version      : 2.231.0
-Author       : Microsoft Corporation
-Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/command-line
-==============================================================================
-Generating script.
-========================== Starting Command Output ===========================
-/usr/bin/bash --noprofile --norc /home/azagent/_work/_temp/de98b47a-7158-4709-bdd2-d2c6a71a2b07.sh
-BIP1281I: No integration nodes have been defined on this machine. 
-BIP8071I: Successful command completion. 
-	linux-vdso.so.1 (0x00007ffdf5311000)
-	/usr/lib64/liboneagentproc.so (0x00007f46cb200000)
-	libodbc.so.2 => /opt/IBM/ace/ie02/lib/libodbc.so.2 (0x00007f46cae00000)
-	libreadline.so.8 => /usr/lib64/libreadline.so.8 (0x00007f46cb562000)
-	libc.so.6 => /usr/lib64/libc.so.6 (0x00007f46caa00000)
-	libdl.so.2 => /usr/lib64/libdl.so.2 (0x00007f46cb55d000)
-	libpthread.so.0 => /usr/lib64/libpthread.so.0 (0x00007f46cb558000)
-	libtinfo.so.6 => /usr/lib64/libtinfo.so.6 (0x00007f46cb528000)
-	/lib64/ld-linux-x86-64.so.2 (0x00007f46cb5d0000)
-Executing SQL: INSERT into EISSIT.cache_details (FIELD_NAME, FIELD_VALUE, REQUEST_ACTION, PROCESSING_ACTION, RESPONSE_ACTION, SOURCE_ID, BACKEND_TYPE, BACKEND_SUB_TYPE, TRAN_CODE, SERVICE_NAME,CREATION_TIME) VALUES('IT_JVP_THINK360_SA_DOWNLOAD_REPORT_CCSID_TEST12','ST|Y2_test9','SOURCE_ID','SOURCE ID CONFIGURATION','NULL','MULTIPLE','THINK360','SA_DOWNLOAD_REPORT','IT_JVP','thirdPartyAAMAZE_sys',TRUNC(SYSDATE))
-[ISQL]ERROR: Could not SQLExecute
-[23000][IBM][ODBC Oracle Wire Protocol driver][Oracle]ORA-00001: unique constraint (EISSIT.FN_PK) violated on table EISSIT.CACHE_DETAILS columns (FIELD_NAME)
-ORA-03301: (ORA-00001 details) row with column values (FIELD_NAME:'IT_JVP_THINK360_SA_DOWNLOAD_REPORT_CCSID_TEST12') already exists
-FAILED: Query did not execute
-##[error]Bash exited with code '1'.
-Finishing: Update cache in Database
