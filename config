@@ -37,6 +37,8 @@
             script: |
               source ~/.bashrc
               set -e
+              ldd $(which isql)
+              
               if [ ! -f config.yml ]; then
                 echo "config.yml file was not found !!"
                 exit 1
@@ -55,13 +57,52 @@
                 fi
               done
 
+        - task: CmdLine@2
+          displayName: Update Cache in Server
+          env:
+            BRANCH: $(Build.SourceBranchName)
+          inputs:
+            workingDirectory: $(Pipeline.Workspace)/drop/
+            script: |
+              set -e
+
+              IntegrationNode=($(yq e ".IntegrationNode" config.yml))
+              broker_files=()
+
+              for node in "${IntegrationNode[@]}"; do
+                for broker_file in /home/devops/broker/$BRANCH/${node}*; do
+                  fname=$(basename "$broker_file")
+                  if [[ $fname =~ ^${node}_([0-9]+)\.broker$ ]]; then
+                    broker_files+=("$broker_file")
+                  fi
+                done
+              done
+
+              if [ ${#broker_files[@]} -eq 0 ]; then
+                echo "Error: No Integration Node found for $IntegrationNode"
+                exit 1
+              fi
+
+              for broker_file in "${broker_files[@]}"; do
+                host=$(cat "$broker_file" | grep host | cut -d"\"" -f4)
+                if yq -e ".Cache" config.yml >/dev/null 2>&1; then
+                  response=$(curl --connect-timeout 3 --max-time 5 -s -k -X POST http://"$host":8002/cache/v1/loadCache \
+                  -H "Content-Type: application/json" \
+                  -d "$(yq -o=json ".Cache | map({\"FIELD_NAME\": .FIELD_NAME, \"FIELD_VALUE\": .FIELD_VALUE})" config.yml)")
+                  if [[ "$response" != *'"RESPONSE":"success"'* ]]; then
+                    echo "Cache load failed: $response"
+                    exit 1
+                  fi
+                  echo "Cache load successful on $host"
+                  echo "$(yq -o=json ".Cache | map({\"FIELD_NAME\": .FIELD_NAME, \"FIELD_VALUE\": .FIELD_VALUE})" config.yml)"
+                fi
+              done
 
 
 
 
-Update cache in Database
 
-View raw log
+
 Starting: Update cache in Database
 ==============================================================================
 Task         : Command line
@@ -72,7 +113,62 @@ Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/c
 ==============================================================================
 Generating script.
 ========================== Starting Command Output ===========================
-/usr/bin/bash --noprofile --norc /home/azagent/_work/_temp/7a7cc6a5-e1fa-4029-91c1-4d5744455972.sh
-Executing SQL: INSERT into EISSIT.cache_details (FIELD_NAME, FIELD_VALUE, REQUEST_ACTION, PROCESSING_ACTION, RESPONSE_ACTION, SOURCE_ID, BACKEND_TYPE, BACKEND_SUB_TYPE, TRAN_CODE, SERVICE_NAME,CREATION_TIME) VALUES('IT_JVP_THINK360_SA_DOWNLOAD_REPORT_CCSID_TEST11','ST|Y2_test9','SOURCE_ID','SOURCE ID CONFIGURATION','NULL','MULTIPLE','THINK360','SA_DOWNLOAD_REPORT','IT_JVP','thirdPartyAAMAZE_sys',TRUNC(SYSDATE))
+/usr/bin/bash --noprofile --norc /home/azagent/_work/_temp/0342e0a8-b906-4fe7-982f-aa68e64cd6b9.sh
+	linux-vdso.so.1 (0x00007ffff59b0000)
+	/usr/lib64/liboneagentproc.so (0x00007f5e83a00000)
+	libodbc.so.2 => /opt/IBM/ace/ie02/lib/libodbc.so.2 (0x00007f5e83600000)
+	libreadline.so.8 => /usr/lib64/libreadline.so.8 (0x00007f5e83c54000)
+	libc.so.6 => /usr/lib64/libc.so.6 (0x00007f5e83200000)
+	libdl.so.2 => /usr/lib64/libdl.so.2 (0x00007f5e83c4f000)
+	libpthread.so.0 => /usr/lib64/libpthread.so.0 (0x00007f5e83c4a000)
+	libtinfo.so.6 => /usr/lib64/libtinfo.so.6 (0x00007f5e839d0000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007f5e83cc2000)
+Executing SQL: INSERT into EISSIT.cache_details (FIELD_NAME, FIELD_VALUE, REQUEST_ACTION, PROCESSING_ACTION, RESPONSE_ACTION, SOURCE_ID, BACKEND_TYPE, BACKEND_SUB_TYPE, TRAN_CODE, SERVICE_NAME,CREATION_TIME) VALUES('IT_JVP_THINK360_SA_DOWNLOAD_REPORT_CCSID_TEST12','ST|Y2_test9','SOURCE_ID','SOURCE ID CONFIGURATION','NULL','MULTIPLE','THINK360','SA_DOWNLOAD_REPORT','IT_JVP','thirdPartyAAMAZE_sys',TRUNC(SYSDATE))
 ##[error]Bash exited with code '139'.
 Finishing: Update cache in Database
+
+
+
+
+
+
+
+[root@az-rh-uat-03 ~]# systemctl status vsts.agent.*
+● vsts.agent.eistfsserver.TFS\x2dRH\x2d1.az\x2drh\x2duat\x2d03.service - Azure Pipelines Agent (eistfsserver.TFS-RH-1.az-rh-uat-03)
+     Loaded: loaded (/etc/systemd/system/vsts.agent.eistfsserver.TFS\x2dRH\x2d1.az\x2drh\x2duat\x2d03.service; enabled; preset: disabled)
+     Active: active (running) since Sat 2026-05-23 01:16:22 EDT; 3min 30s ago
+   Main PID: 72114 (runsvc.sh)
+      Tasks: 28 (limit: 100052)
+     Memory: 82.4M (peak: 202.5M)
+        CPU: 6.875s
+     CGroup: /system.slice/vsts.agent.eistfsserver.TFS\x2dRH\x2d1.az\x2drh\x2duat\x2d03.service
+             ├─72114 /bin/bash /opt/azagent/runsvc.sh
+             ├─72119 ./externals/node20_1/bin/node ./bin/AgentService.js
+             └─72126 /opt/azagent/bin/Agent.Listener run --startuptype service
+
+May 23 01:16:22 az-rh-uat-03 runsvc.sh[72119]: Started listener process
+May 23 01:16:22 az-rh-uat-03 runsvc.sh[72119]: Started running service
+May 23 01:16:23 az-rh-uat-03 runsvc.sh[72119]: Scanning for tool capabilities.
+May 23 01:16:23 az-rh-uat-03 runsvc.sh[72119]: Connecting to the server.
+May 23 01:16:23 az-rh-uat-03 runsvc.sh[72119]: 2026-05-23 05:16:23Z: Listening for Jobs
+May 23 01:19:38 az-rh-uat-03 runsvc.sh[72119]: Downgrading agent to a lower version. This is usually due to a rollback of the currently published agent for a bug fix. To disable this behavior, set environment variable AZP_AGENT_DOWNGRAD>
+May 23 01:19:38 az-rh-uat-03 runsvc.sh[72119]: Agent update in progress, do not shutdown agent.
+May 23 01:19:38 az-rh-uat-03 runsvc.sh[72119]: Downloading 3.238.0 agent
+May 23 01:19:40 az-rh-uat-03 runsvc.sh[72119]: 2026-05-23 05:19:40Z: Running job: CACHE UPDATE
+May 23 01:19:46 az-rh-uat-03 runsvc.sh[72119]: 2026-05-23 05:19:46Z: Job CACHE UPDATE completed with result: Failed
+
+[root@az-rh-uat-03 ~]#
+[root@az-rh-uat-03 ~]# echo "$LD_LIBRARY_PATH"
+/opt/IBM/ace/common/java17/lib:/opt/IBM/ace/common/java17/lib/default:/opt/IBM/ace/ie02/lib:/var/mqsi/extensions/13.0/server/lib:/var/mqsi/extensions/13.0/lib:/opt/IBM/ace/server/xml4c/lib:/opt/IBM/ace/server/lib:/opt/IBM/ace/server/bin:/opt/IBM/ace/server/ODBC/drivers/lib:/opt/IBM/ace/server/xlxpc/lib:/opt/IBM/ace/server/dfdlc/lib
+[root@az-rh-uat-03 ~]# ldd $(which isql)
+        linux-vdso.so.1 (0x00007fffc47f7000)
+        /usr/lib64/liboneagentproc.so (0x00007f22bb600000)
+        libodbc.so.2 => /opt/IBM/ace/ie02/lib/libodbc.so.2 (0x00007f22bb200000)
+        libreadline.so.8 => /usr/lib64/libreadline.so.8 (0x00007f22bb901000)
+        libc.so.6 => /usr/lib64/libc.so.6 (0x00007f22bae00000)
+        libdl.so.2 => /usr/lib64/libdl.so.2 (0x00007f22bb8fc000)
+        libpthread.so.0 => /usr/lib64/libpthread.so.0 (0x00007f22bb8f7000)
+        libtinfo.so.6 => /usr/lib64/libtinfo.so.6 (0x00007f22bb8c7000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007f22bb96f000)
+[root@az-rh-uat-03 ~]#
+[root@az-rh-uat-03 ~]#
