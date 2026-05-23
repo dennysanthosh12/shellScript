@@ -1,12 +1,129 @@
-[eisuser@az-rh-uat-02 ~]$ sudo su  -
-Last login: Thu May 21 01:56:49 EDT 2026 on pts/0
-[root@az-rh-uat-02 ~]# ldd $(which isql)
-        linux-vdso.so.1 (0x00007fff405f9000)
-        /usr/lib64/liboneagentproc.so (0x00007fe116800000)
-        libodbc.so.2 => /usr/lib64/libodbc.so.2 (0x00007fe116b66000)
-        libreadline.so.8 => /usr/lib64/libreadline.so.8 (0x00007fe116b0e000)
-        libc.so.6 => /usr/lib64/libc.so.6 (0x00007fe116400000)
-        libltdl.so.7 => /usr/lib64/libltdl.so.7 (0x00007fe116b00000)
-        libtinfo.so.6 => /usr/lib64/libtinfo.so.6 (0x00007fe116ad0000)
-        /lib64/ld-linux-x86-64.so.2 (0x00007fe116bec000)
-[root@az-rh-uat-02 ~]#
+CACHE UPDATE
+
+View raw log
+Pool: TFS-RH-1
+Queued: Just now
+Agent: az-rh-uat-02
+Started: Just now
+Duration: 3s
+
+The agent request is already running or has already completed.
+Job preparation parameters
+Job live console data:
+Finishing: CACHE UPDATE
+
+
+
+Initialize job
+
+View raw log
+Starting: Initialize job
+Agent name: 'az-rh-uat-02'
+Agent machine name: 'az-rh-uat-02'
+Current agent version: '4.269.0'
+Agent running as: 'root'
+Prepare build directory.
+Set build variables.
+Download all required tasks.
+Checking job knob settings.
+   Knob: CheckForTaskDeprecation = false Source: $(AZP_AGENT_CHECK_FOR_TASK_DEPRECATION) 
+Finished checking job knob settings.
+Start tracking orphan processes.
+Finishing: Initialize job
+
+
+
+
+Starting: Checkout acc-ppfmaturityextension_expds-eapi@SIT to s
+==============================================================================
+Task         : Get sources
+Description  : Get sources from a repository. Supports Git, TfsVC, and SVN repositories.
+Version      : 1.0.0
+Author       : Microsoft
+Help         : [More Information](https://go.microsoft.com/fwlink/?LinkId=798199)
+==============================================================================
+Syncing repository: acc-ppfmaturityextension_expds-eapi (Git)
+git version
+git version 2.47.3
+git init "/home/azagent/_work/499/s"
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: is subject to change. To configure the initial branch name to use in all
+hint: of your new repositories, which will suppress this warning, call:
+hint:
+hint: 	git config --global init.defaultBranch <name>
+hint:
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint:
+hint: 	git branch -m <name>
+Initialized empty Git repository in /home/azagent/_work/499/s/.git/
+git remote add origin https://eistfsserver.sbi.co.in/tfs/SBIPOC/devops_testing/_git/acc-ppfmaturityextension_expds-eapi
+git config gc.auto 0
+git config --get-all http.https://eistfsserver.sbi.co.in/tfs/SBIPOC/devops_testing/_git/acc-ppfmaturityextension_expds-eapi.extraheader
+git config --get-all http.extraheader
+git config --get-regexp .*extraheader
+git config --get-all http.proxy
+git config http.version HTTP/1.1
+git --config-env=http.extraheader=env_var_http.extraheader fetch --force --tags --prune --prune-tags --progress --no-recurse-submodules origin
+remote: Azure Repos        
+remote: 
+remote: Found 56 objects to send. (5 ms)        
+From https://eistfsserver.sbi.co.in/tfs/SBIPOC/devops_testing/_git/acc-ppfmaturityextension_expds-eapi
+ * [new branch]      DEV        -> origin/DEV
+ * [new branch]      PRE-PROD   -> origin/PRE-PROD
+ * [new branch]      SIT        -> origin/SIT
+ * [new branch]      UAT        -> origin/UAT
+ * [new branch]      main       -> origin/main
+git --config-env=http.extraheader=env_var_http.extraheader fetch --force --tags --prune --prune-tags --progress --no-recurse-submodules origin   +c85b5a0798250cbf4a38a49347f7b622ef14bacd
+
+Starting: Download
+==============================================================================
+Task         : Download build artifacts
+Description  : Download files that were saved as artifacts of a completed build
+Version      : 1.220.0
+Author       : Microsoft Corporation
+Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/download-build-artifacts
+==============================================================================
+Download from the specified build: #764
+Download artifact to: /home/azagent/_work/499/
+Pattern: **
+Minimatch patterns: [**]
+Applying include pattern against original list.
+4 matches
+4 final results
+Start downloading FCS artifact- drop
+Downloading: /home/azagent/_work/499/drop/config.yml
+Downloading: /home/azagent/_work/499/drop/ppfMaturityExtension_expDS.bar
+Downloading: /home/azagent/_work/499/drop/override.properties
+Downloading artifact finished.
+Finishing: Download
+
+
+
+Starting: Update cache in Database
+==============================================================================
+Task         : Command line
+Description  : Run a command line script using Bash on Linux and macOS and cmd.exe on Windows
+Version      : 2.231.0
+Author       : Microsoft Corporation
+Help         : https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/command-line
+==============================================================================
+Generating script.
+========================== Starting Command Output ===========================
+/usr/bin/bash --noprofile --norc /home/azagent/_work/_temp/177cb879-38b1-4215-92aa-9250c1de38bc.sh
+terminate called after throwing an instance of 'ImbRecoverableException'
+/home/azagent/_work/_temp/177cb879-38b1-4215-92aa-9250c1de38bc.sh: line 2: 510023 Aborted                 (core dumped) mqsilist
+	linux-vdso.so.1 (0x00007ffdaf9e8000)
+	/usr/lib64/liboneagentproc.so (0x00007f5131000000)
+	libodbc.so.2 => /opt/IBM/ace/ie02/lib/libodbc.so.2 (0x00007f5130c00000)
+	libreadline.so.8 => /usr/lib64/libreadline.so.8 (0x00007f5131396000)
+	libc.so.6 => /usr/lib64/libc.so.6 (0x00007f5130800000)
+	libdl.so.2 => /usr/lib64/libdl.so.2 (0x00007f5131391000)
+	libpthread.so.0 => /usr/lib64/libpthread.so.0 (0x00007f513138c000)
+	libtinfo.so.6 => /usr/lib64/libtinfo.so.6 (0x00007f513135c000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007f5131404000)
+Executing SQL: INSERT into EISSIT.cache_details (FIELD_NAME, FIELD_VALUE, REQUEST_ACTION, PROCESSING_ACTION, RESPONSE_ACTION, SOURCE_ID, BACKEND_TYPE, BACKEND_SUB_TYPE, TRAN_CODE, SERVICE_NAME,CREATION_TIME) VALUES('IT_JVP_THINK360_SA_DOWNLOAD_REPORT_CCSID_TEST12','ST|Y2_test9','SOURCE_ID','SOURCE ID CONFIGURATION','NULL','MULTIPLE','THINK360','SA_DOWNLOAD_REPORT','IT_JVP','thirdPartyAAMAZE_sys',TRUNC(SYSDATE))
+##[error]Bash exited with code '139'.
+Finishing: Update cache in Database
+
+
